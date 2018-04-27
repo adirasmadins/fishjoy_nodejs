@@ -1,0 +1,12 @@
+{
+    "enable": true,
+    "server": {
+        "host": "127.0.0.1",
+        "port": 6379,
+        "auth": false,
+        "password": "Chufeng123456",
+        "db": 0,
+        "prefix": ""
+    },
+    "ext": {}
+}

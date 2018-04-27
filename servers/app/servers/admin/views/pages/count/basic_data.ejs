@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1002;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="row marginB30">
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/register2.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title">Total Register</p>
+						   <p class="showdata-num cgreen">123</p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/topup2.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title">Total Topup</p>
+						   <p class="showdata-num corange">123</p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/cash2.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title">Total Cash</p>
+						   <p class="showdata-num cgreen">123</p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/ccu2.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title">Max CCU</p>
+						   <p class="showdata-num corange">123</p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/dau2.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title">Max Dau</p>
+						   <p class="showdata-num cgreen">123</p>
+					  </div>
+				</div>
+			</div>
+		</div>
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading">Rel-Time CCU (divide by 10 minutes)</div>
+			  <div class="panel-body tab-content">
+			  	   <div id="CCU_source" style="width:1100px;height:500px;"></div>
+			  </div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading">Today DAU (divide by 1 hour)</div>
+			  <div class="panel-body tab-content">
+			  	   <div id="DAU_source" style="width:1000px;height:500px;"></div>
+			  </div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading">Today NRU (divide by 1 hour)</div>
+			  <div class="panel-body tab-content">
+			  	   <div id="NRU_source" style="width:1000px;height:500px;"></div>
+			  </div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading">Historical Data Inquire</div>
+			  <div class="panel-body tab-content">
+			  		<!-- 搜索框 -->
+			  		<div class="formbox padding20 borderB marginB30">
+			  			<form class="form-inline">
+			  			  <div class="form-group">
+			  		          	<div class="form-group marginL10">
+			  		          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1633;%>：</label>
+			  		      	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+			  		      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="" name="start_time">
+			  		      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  		      	        </div>
+			  		      			<input type="hidden" id="s_date" value=""/>
+			  		          	</div>
+			  		          	<div class="form-group">
+			  		          	    <label for="e_date" class="control-label textright lineheight34 fn">－</label>
+			  		      	        <div class="input-group date e_date width200" data-date="" data-link-field="e_date">
+			  		      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="" name="end_time">
+			  		      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  		      	        </div>
+			  		      			<input type="hidden" id="e_date" value=""/>
+			  		          	</div>
+			  			  </div>
+			  			  <button type="submit" class="btn greenbtn marginL10"><%=t1555;%></button>
+			  	<!-- 						  <a class="btn defineBtnbig marginL10 addbtn">添加员工</a>
+			  	-->		</form>
+			  		</div>
+			  	   <div id="H_DAU" style="width:1000px;height:500px;" class="marginB30"></div>
+			  	   <div id="H_NRU" style="width:1000px;height:500px;"></div>
+			  </div>
+			</div>
+		</div>
+	</div>			  				  		
+<script type="text/javascript">
+	var namebox = {
+		'ccu':['0~10分在线','11~20分在线','21~30分在线','31~40分在线','41~50分在线','51~60分在线'],
+		'dau':['活跃用户数'],
+		'nru':['新注册用户'],
+		'h_dau':['历史活跃用户'],
+		'h_nru':['历史新增用户'],
+		'alertTip':'请选择查询日期!'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/count/basic_data.js"></script>
+</body>
+</html>

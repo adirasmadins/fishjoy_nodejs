@@ -1,0 +1,47 @@
+exports.fake1 = {
+    pages: 10,
+    chart: [
+        {
+            uid:123, 
+            nickname:'haha', 
+            recharge:300000,
+            cash:300000,
+            otherCost:10000, 
+            profitHistory:2000,
+            profitRateHistory:0.02,
+            profitRecentHour:10000,
+            profitRateRecentHour:0.2,
+            isFreeze:true,
+            catchRate:1,
+            gold:100
+        },
+        {
+            uid:123, 
+            nickname:'haha', 
+            recharge:300000,
+            cash:300000,
+            otherCost:10000, 
+            profitHistory:2000,
+            profitRateHistory:0.02,
+            profitRecentHour:10000,
+            profitRateRecentHour:0.2,
+            isFreeze:true,
+            catchRate:1,
+            gold:100
+        },
+        {
+            uid:123, 
+            nickname:'haha', 
+            recharge:300000,
+            cash:300000,
+            otherCost:10000, 
+            profitHistory:2000,
+            profitRateHistory:0.02,
+            profitRecentHour:10000,
+            profitRateRecentHour:0.2,
+            isFreeze:true,
+            catchRate:1,
+            gold:100
+        },
+    ]
+};

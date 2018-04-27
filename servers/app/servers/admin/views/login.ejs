@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录</title> -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title><%=t1612;%></title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/commonPC.css">
+    <link rel="stylesheet" href="css/definePC.css">
+	 <!--[if lt IE 9]>
+	   <script src="js/html5shiv.min.js"></script>
+	   <script src="js/respond.min.js"></script>
+	 <![endif]-->
+</head>
+<body>
+<div id="mainLogin"> 
+	<div class="loginbox">
+		<div class="panel">
+			<div class="panel-heading"><%=t1609;%></div>
+			<div class="panel-body">
+  		     	<form class="form-horizontal login-form">
+  		     		<div class="form-group">
+  		     			<p class="lang-box">Language | Ngôn ngữ. | 语言</p>
+  		     			<div class="login-input">
+  		     				<select class="langselect">
+  		     					<option value="en_US">English</option>
+  		     					<option value="vi_VN">Tiếng Việt</option>
+  		     					<option value="zh_CN" id="zh_CN">中文</option>
+  		     				</select>
+  		     			</div>
+  		     		</div>
+			     	<div class="form-group">
+			     		<div class="lang-box">
+			     			<i class="iconfont">&#xe60a;</i> 
+			     			<span class="marginLR5" id="account_name"></span> 
+			     		</div>
+			     		<div class="login-input">
+			     			<input type="text" name="" id="account"> 
+			     		</div>
+			     	</div>
+			     	<div class="form-group">
+			     		<div class="lang-box">
+			     			<i class="iconfont">&#xe60f;</i> 
+			     			<span class="marginLR5" id="pasd_name"></span> 
+			     		</div>
+			     		<div class="login-input">
+			     			<!-- <i class="iconfont">&#xe60f;</i> 
+			     			<span class="marginLR5" id="pasd_name">密码</span> 
+			     			<span>▏</span> -->
+			     			<input type="password" name="" id="pasd">
+			     		</div>
+			     	</div>
+
+				  <div class="form-group">
+				  	<a href="javascript:;" class="btn login-btn bgorange cfff"></a>
+				  </div>
+				</form>
+			</div>
+   		</div>
+	 </div> 
+</div>
+<div id="modal"></div>
+<script type="text/javascript">
+	var namebox = {
+		'alertTip':'<%=t1616;%>'
+	}
+	var p_namebox = {
+		'modal_title':'<%=t1625;%>'
+	}
+</script>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/definePC.js"></script>
+<script src="js/manage/login/login.js"></script>
+</body>
+</html> 

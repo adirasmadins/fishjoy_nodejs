@@ -1,0 +1,86 @@
+{
+  "development": {
+    "gate": [{
+      "id": "gate",
+      "host": "103.90.220.174",
+      "clientPort": 3001,
+      "frontend": true,
+      "args": " --inspect=103.90.220.174:13001"
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "103.90.220.174",
+      "port": 3201,
+      "publicHost": "103.90.220.174",
+      "args": " --inspect=103.90.220.174:13201"
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "103.90.220.174",
+      "port": 3401,
+      "args": " --inspect=103.90.220.174:13401"
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "103.90.220.174",
+      "port": 3501,
+      "publicHost": "103.90.220.174",
+      "args": " --inspect=103.90.220.174:13501"
+    }],
+    "hall": [{
+      "id": "hall-1-1",
+      "host": "103.90.220.174",
+      "port": 3601,
+      "publicHost": "103.90.220.174",
+      "args": " --inspect=103.90.220.174:13601"
+    },{
+      "id": "hall-1-2",
+      "host": "103.90.220.174",
+      "port": 3603,
+      "publicHost": "103.90.220.174",
+      "args": " --inspect=103.90.220.174:13603"
+    }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "103.90.220.174",
+      "port": 3701,
+      "publicHost": "103.90.220.174",
+      "args": " --inspect=103.90.220.174:13701"
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "103.90.220.174",
+      "port": 4201,
+      "publicHost": "103.90.220.174",
+      "args": " --inspect=103.90.220.174:14201"
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1-1",
+      "host": "103.90.220.174",
+      "port": 5001,
+      "args": " --inspect=103.90.220.174:15001"
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "103.90.220.174",
+      "port": 4001,
+      "clientHost": "103.90.220.174",
+      "clientPort": 4003,
+      "frontend": true,
+      "args": " --inspect=103.90.220.174:14001",
+      "maxLoad": 250
+    },{
+      "id": "game-1-2",
+      "host": "103.90.220.174",
+      "port": 4005,
+      "clientHost": "103.90.220.174",
+      "clientPort": 4007,
+      "frontend": true,
+      "args": " --inspect=103.90.220.174:14005",
+      "maxLoad": 250
+    }]
+  },
+  "production": {
+  }
+}

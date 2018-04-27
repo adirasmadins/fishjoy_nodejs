@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>总览</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="css/commonPC.css">
+    <link rel="stylesheet" href="css/definePC.css">
+	 <!--[if lt IE 9]>
+	   <script src="js/html5shiv.min.js"></script>
+	   <script src="js/respond.min.js"></script>
+	 <![endif]-->
+	 <script src="js/jquery-1.11.3.js"></script>
+	 <script src="js/bootstrap.js"></script>
+	 <script src="js/bootstrap-datetimepicker.js"></script>
+	 <script src="js/arttemplate.js"></script>
+	 <script src="js/lang.js"></script>
+	 <script src="js/echarts.common.min.js"></script>
+	 <script src="js/definePC.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<!-- 左菜单 -->
+		<div class="fl menubox">
+			<div class="title-box"><span class="iconfont ft20">&#xe847;</span>后台管理</div>
+			<ul class="panel-group nav-left bgblack" id="tt" role="tablist" aria-multiselectable="true">
+				<li class="panel">
+					<div role="tab" id="i0">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con0" aria-expanded="false" aria-controls="con0">
+				          <span class="iconfont marginR5">&#xe637;</span>
+				          <span>统计信息</span>
+				        </a>
+					</div>
+			        <div id="con0" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="i0">
+			        	<ul>
+			        		<li><a data-href="pages/count/basic_data" class="nav-link">总览</a></li>
+			        	    <li><a data-href="pages/count/rel_time_data" class="nav-link">实时数据</a></li>
+			        	    <li><a data-href="pages/count/keep_data" class="nav-link">留存数据</a></li>
+			        	    <li><a data-href="pages/count/pay_data" class="nav-link">付费数据</a></li>
+			        	    <li><a data-href="pages/count/recharge_log" class="nav-link">充值日志</a></li>
+			        	    <li><a data-href="pages/count/recharge_ranking" class="nav-link">充值排名</a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i1">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con1" aria-expanded="false" aria-controls="con1">
+				          <span class="iconfont marginR5">&#xe614;</span>
+				          <span>游戏数据</span>
+				        </a>
+					</div>
+			        <div id="con1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i1">
+			        	<ul>  
+			        	    <li><a data-href="pages/game_data/gold" class="nav-link">金币数据</a></li>
+			        	    <li><a data-href="pages/game_data/login_log" class="nav-link">登陆日志</a></li>
+			        	    <li><a data-href="pages/game_data/player_info" class="nav-link">玩家信息</a></li>
+			        	    <li><a data-href="pages/game_data/activity_log" class="nav-link">活动日志</a></li>
+			        	    <li><a data-href="pages/game_data/player_gold_log" class="nav-link">玩家金币日志</a></li>
+			        	    <li><a data-href="pages/game_data/player_thing_log" class="nav-link">玩家物品日志</a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i2">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con2" aria-expanded="false" aria-controls="con2">
+				          <span class="iconfont marginR5">&#xe615;</span>
+				          <span>游戏管理</span>
+				        </a>
+					</div>
+			        <div id="con2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i2">
+			        	<ul>  
+			        	    <li><a data-href="pages/game_manage/cash_condition" class="nav-link">提现条件管理</a></li>
+			        	    <li><a data-href="pages/game_manage/gift" class="nav-link">礼包管理</a></li>
+			        	    <li><a data-href="pages/game_manage/notice" class="nav-link">公告管理</a></li>
+			        	    <li><a data-href="pages/game_manage/email" class="nav-link">邮件管理</a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i3">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con3" aria-expanded="false" aria-controls="con3">
+				          <span class="iconfont marginR5">&#xe602;</span>
+				          <span>运营监控</span>
+				        </a>
+					</div>
+			        <div id="con3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i3">
+			        	<ul>  
+			        	    <li><a data-href="pages/operate/orders" class="nav-link">订单管理</a></li>
+			        	    <li><a data-href="pages/operate/rel_time_data" class="nav-link">数据实时监控</a></li>
+			        	    <li><a data-href="pages/operate/player_account" class="nav-link">玩家账户管理</a></li>
+			        	    <li><a data-href="pages/operate/fire_data" class="nav-link">开火数据</a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i4">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con4" aria-expanded="false" aria-controls="con4">
+				          <span class="iconfont marginR5">&#xe631;</span>
+				          <span>后台管理</span>
+				        </a>
+					</div>
+			        <div id="con4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i4">
+			        	<ul>  
+			        	    <li><a data-href="pages/backstage/backstage_users" class="nav-link">后台用户管理</a></li>
+			        	</ul> 
+			        </div>
+				</li>
+			</ul>
+		</div>
+		<!-- 内容 -->
+		<div class="fl contentbox">
+			<div class="topinfobox row marginLR0">
+				<div class="col-xs-6 textleft">
+					<img src="img/head.png" class="user-img">
+					<span class="marginR30">张三</span>
+				</div>
+				<div class="col-xs-6">
+					<span>语言：</span>
+					<select class="form-control" style="display: inline-block;width: 100px;">
+						<option value="ch">中文</option>
+						<option value="en">English</option>
+					</select>
+					<a class="btn btn-danger marginL10">退出</a>
+					
+				</div>
+			</div>
+			
+			<iframe name="mainbox" id="mainbox" src="pages/count/rel_time_data" scrolling="auto" frameborder="0" width="100%" allowtransparency="true"></iframe>
+		</div>
+	</div>
+</div>
+<!-- 公用弹窗 -->
+<div id="modal"></div>
+<script type="text/javascript">
+	function test(h){
+	    document.getElementById("test").style.height = h+"px"
+	}  
+	// 时间选择
+	$('.s_date').datetimepicker({
+	    todayBtn:  1,
+	    autoclose: 1,
+	    todayHighlight: 1,
+	    startView: 2,
+	    minView: 0,
+	    format: 'yyyy-mm-dd hh:ii:ss',
+	    forceParse: 0,
+	    pickerPosition:'bottom-left'
+	});
+
+</script>
+</body>
+</html>

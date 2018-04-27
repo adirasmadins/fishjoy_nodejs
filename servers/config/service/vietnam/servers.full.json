@@ -1,0 +1,497 @@
+{
+  "development": {
+    "gate": [{
+      "id": "gate",
+      "host": "10.163.56.148",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=13001"
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "10.163.37.43",
+      "port": 3201,
+      "auto-restart": true,
+      "args": " --inspect=13201"
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "10.163.32.192",
+      "port": 3301,
+      "auto-restart": true,
+      "args": " --inspect=13301"
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "10.163.71.9",
+      "port": 3401,
+      "auto-restart": true,
+      "args": " --inspect=13401"
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "10.163.16.119",
+      "port": 3501,
+      "publicHost": "fishjoy.szhlsg.com",
+      "auto-restart": true,
+      "args": " --inspect=13501"
+    }],
+    "hall": [{
+        "id": "hall-1-1",
+        "host": "10.163.71.9",
+        "port": 3601,
+        "publicHost": "hall.szhlsg.com",
+        "auto-restart": true,
+        "args": " --inspect=13601"
+      },
+      {
+        "id": "hall-1-2",
+        "host": "10.163.71.9",
+        "port": 3603,
+        "publicHost": "hall.szhlsg.com",
+        "auto-restart": true,
+        "args": " --inspect=13603"
+      }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "10.163.2.179",
+      "port": 3701,
+      "publicHost": "chat.szhlsg.com",
+      "auto-restart": true,
+      "args": " --inspect=13701"
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "10.163.32.192",
+      "port": 3801,
+      "publicHost": "admin.szhlsg.com",
+      "auto-restart": true,
+      "args": " --inspect=13801"
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "10.163.37.28",
+      "port": 3901,
+      "auto-restart": true,
+      "args": " --inspect=13901"
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "10.163.37.28",
+      "port": 4101,
+      "auto-restart": true,
+      "args": " --inspect=14101"
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "10.163.37.43",
+      "port": 4201,
+      "publicHost": "pay.szhlsg.com",
+      "auto-restart": true,
+      "args": " --inspect=14201"
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1-1",
+      "host": "10.163.37.43",
+      "port": 5001,
+      "auto-restart": true,
+      "args": " --inspect=15001"
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "10.163.21.197",
+      "port": 4001,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "10.163.21.197",
+      "port": 4005,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-3",
+      "host": "10.163.21.197",
+      "port": 4009,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-4",
+      "host": "10.163.21.197",
+      "port": 4013,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14013",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-1",
+      "host": "10.163.21.193",
+      "port": 4001,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-2",
+      "host": "10.163.21.193",
+      "port": 4005,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-3",
+      "host": "10.163.21.193",
+      "port": 4009,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-4",
+      "host": "10.163.21.193",
+      "port": 4013,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14013",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-1",
+      "host": "10.163.36.187",
+      "port": 4001,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-2",
+      "host": "10.163.36.187",
+      "port": 4005,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-3",
+      "host": "10.163.36.187",
+      "port": 4009,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-4",
+      "host": "10.163.36.187",
+      "port": 4013,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14013",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-1",
+      "host": "10.163.33.91",
+      "port": 4001,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-2",
+      "host": "10.163.33.91",
+      "port": 4005,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-3",
+      "host": "10.163.33.91",
+      "port": 4009,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-4",
+      "host": "10.163.33.91",
+      "port": 4013,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "args": " --inspect=14013",
+      "maxLoad": 250
+    }]
+  },
+  "production": {
+    "gate": [{
+      "id": "gate",
+      "host": "10.163.56.148",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": true
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "10.163.37.43",
+      "port": 3201,
+      "auto-restart": true
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "10.163.32.192",
+      "port": 3301,
+      "auto-restart": true
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "10.163.71.9",
+      "port": 3401,
+      "auto-restart": true
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "10.163.2.179",
+      "port": 3501,
+      "publicHost": "211.159.155.61",
+      "auto-restart": true
+    }],
+    "hall": [{
+        "id": "hall-1-1",
+        "host": "10.163.71.9",
+        "port": 3601,
+        "publicHost": "hall.szhlsg.com",
+        "auto-restart": true
+      },
+      {
+        "id": "hall-1-2",
+        "host": "10.163.71.9",
+        "port": 3603,
+        "publicHost": "hall.szhlsg.com",
+        "auto-restart": true
+      }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "10.163.2.179",
+      "port": 3701,
+      "publicHost": "chat.szhlsg.com",
+      "auto-restart": true
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "10.163.32.192",
+      "port": 3801,
+      "publicHost": "admin.szhlsg.com",
+      "auto-restart": true
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "10.163.37.28",
+      "port": 3901,
+      "auto-restart": true
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "10.163.37.28",
+      "port": 4101,
+      "auto-restart": true
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "10.163.37.43",
+      "port": 4201,
+      "publicHost": "pay.szhlsg.com",
+      "auto-restart": true
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1-1",
+      "host": "10.163.37.43",
+      "port": 5001,
+      "auto-restart": true
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "10.163.21.197",
+      "port": 4001,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "10.163.21.197",
+      "port": 4005,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-3",
+      "host": "10.163.21.197",
+      "port": 4009,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-4",
+      "host": "10.163.21.197",
+      "port": 4013,
+      "clientHost": "room1.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-1",
+      "host": "10.163.21.193",
+      "port": 4001,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-2",
+      "host": "10.163.21.193",
+      "port": 4005,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-3",
+      "host": "10.163.21.193",
+      "port": 4009,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-4",
+      "host": "10.163.21.193",
+      "port": 4013,
+      "clientHost": "room2.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-1",
+      "host": "10.163.36.187",
+      "port": 4001,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-2",
+      "host": "10.163.36.187",
+      "port": 4005,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-3",
+      "host": "10.163.36.187",
+      "port": 4009,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-4",
+      "host": "10.163.36.187",
+      "port": 4013,
+      "clientHost": "room3.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-1",
+      "host": "10.163.33.91",
+      "port": 4001,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-2",
+      "host": "10.163.33.91",
+      "port": 4005,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-3",
+      "host": "10.163.33.91",
+      "port": 4009,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-4",
+      "host": "10.163.33.91",
+      "port": 4013,
+      "clientHost": "room4.szhlsg.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }]
+  }
+}

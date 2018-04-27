@@ -1,0 +1,40 @@
+exports.fake1 = {
+    rows: 1000,
+    pages: 5,
+    chart: [
+        {
+            signupTime: '2018-02-01 00:00:00',
+            lastLoginTime: '2018-02-20 00:00:00',
+            uid: 512,
+            phoneNumber: '13399999999',
+            nickname: 'dgfhagfd',
+            playerLevel: 10,
+            vipLevel: 1,
+            rechargeTotal: 10000,
+            cashTotal: 10000,
+            gold: 1000,
+            profitTotal: 1000,
+            profitRateTotal: '-0.21%',
+            profitLastHour: 100,
+            profitRateLastHour: '-0.21%',
+            isFreeze: true,
+        },
+        {
+            signupTime: '2018-02-01 00:00:00',
+            lastLoginTime: '2018-02-20 00:00:00',
+            uid: 512,
+            phoneNumber: '13399999999',
+            nickname: 'dgfhagfd',
+            playerLevel: 10,
+            vipLevel: 1,
+            rechargeTotal: 10000,
+            cashTotal: 10000,
+            gold: 1000,
+            profitTotal: 1000,
+            profitRateTotal: '-0.21%',
+            profitLastHour: 100,
+            profitRateLastHour: '-0.21%',
+            isFreeze: false
+        },
+    ]
+};

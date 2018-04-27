@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%=t1609;%></title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="css/commonPC.css">
+    <link rel="stylesheet" href="css/definePC.css">
+	 <!--[if lt IE 9]>
+	   <script src="js/html5shiv.min.js"></script>
+	   <script src="js/respond.min.js"></script>
+	 <![endif]-->
+	 <script src="js/jquery-1.11.3.js"></script>
+	 <script src="js/bootstrap.js"></script>
+	 <script src="js/bootstrap-datetimepicker.js"></script>
+	 <script src="js/arttemplate.js"></script>
+	 <script src="js/lang.js"></script>
+	 <script src="js/echarts.common.min.js"></script>
+	 <script src="js/definePC.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<!-- 左菜单 -->
+		<div class="fl menubox">
+			<div class="title-box"><span class="iconfont ft20">&#xe847;</span><%=t1025%></div>
+			<ul class="panel-group nav-left bgblack" id="tt" role="tablist" aria-multiselectable="true">
+				<li class="panel">
+					<div role="tab" id="i0">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con0" aria-expanded="false" aria-controls="con0">
+				          <span class="iconfont">&#xe637;</span>
+				          <span><%=t1001;%></span>
+				        </a>
+					</div>
+			        <div id="con0" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="i0">
+			        	<ul>
+			        		<li><a data-href="pages/count/basic_data" class="nav-link"><%=t1002;%></a></li>
+			        	    <li><a data-href="pages/count/rel_time_data" class="nav-link"><%=t1003;%></a></li>
+			        	    <li><a data-href="pages/count/keep_data" class="nav-link"><%=t1004;%></a></li>
+			        	    <li><a data-href="pages/count/pay_data" class="nav-link"><%=t1005;%></a></li>
+			        	    <li><a data-href="pages/count/recharge_log" class="nav-link"><%=t1006;%></a></li>
+			        	    <li><a data-href="pages/count/recharge_ranking" class="nav-link"><%=t1007;%></a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i1">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con1" aria-expanded="false" aria-controls="con1">
+				          <span class="iconfont">&#xe614;</span>
+				          <span><%=t1008;%></span>
+				        </a>
+					</div>
+			        <div id="con1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i1">
+			        	<ul>  
+			        	    <li><a data-href="pages/game_data/gold" class="nav-link"><%=t1009;%></a></li>
+			        	    <li><a data-href="pages/game_data/login_log" class="nav-link"><%=t1010;%></a></li>
+			        	    <li><a data-href="pages/game_data/player_info" class="nav-link"><%=t1011;%></a></li>
+			        	    <li><a data-href="pages/game_data/activity_log" class="nav-link"><%=t1012;%></a></li>
+			        	    <li><a data-href="pages/game_data/player_gold_log" class="nav-link"><%=t1013;%></a></li>
+			        	    <li><a data-href="pages/game_data/player_thing_log" class="nav-link"><%=t1014;%></a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i2">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con2" aria-expanded="false" aria-controls="con2">
+				          <span class="iconfont">&#xe615;</span>
+				          <span><%=t1015;%></span>
+				        </a>
+					</div>
+			        <div id="con2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i2">
+			        	<ul>  
+			        	    <li><a data-href="pages/game_manage/cash_condition" class="nav-link"><%=t1016;%></a></li>
+			        	    <li><a data-href="pages/game_manage/gift" class="nav-link"><%=t1017;%></a></li>
+			        	    <li><a data-href="pages/game_manage/notice" class="nav-link"><%=t1018;%></a></li>
+			        	    <li><a data-href="pages/game_manage/email" class="nav-link"><%=t1019;%></a></li>
+			        	    <li><a data-href="pages/game_manage/activity" class="nav-link"><%=t1698;%></a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i3">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con3" aria-expanded="false" aria-controls="con3">
+				          <span class="iconfont">&#xe602;</span>
+				          <span><%=t1020;%></span>
+				        </a>
+					</div>
+			        <div id="con3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i3">
+			        	<ul>  
+			        	    <li><a data-href="pages/operate/orders" class="nav-link"><%=t1021;%></a></li>
+			        	    <li><a data-href="pages/operate/rel_data" class="nav-link"><%=t1022;%></a></li>
+			        	    <li><a data-href="pages/operate/player_account" class="nav-link"><%=t1023;%></a></li>
+			        	    <li><a data-href="pages/operate/fire_data" class="nav-link"><%=t1024;%></a></li>
+			        	</ul> 
+			        </div>
+				</li>
+				<li class="panel">
+					<div role="tab" id="i4">
+						<a class="title collapsed" role="button" data-toggle="collapse" data-parent="#tt" href="#con4" aria-expanded="false" aria-controls="con4">
+				          <span class="iconfont">&#xe631;</span>
+				          <span><%=t1025;%></span>
+				        </a>
+					</div>
+			        <div id="con4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="i4">
+			        	<ul>  
+			        	    <li><a data-href="pages/backstage/backstage_users" class="nav-link"><%=t1026;%></a></li>
+			        	    <li><a data-href="pages/backstage/special_use" class="nav-link"><%=t1683;%></a></li>
+			        	</ul> 
+			        </div>
+				</li>
+			</ul>
+		</div>
+		<!-- 内容 -->
+		<div class="fl contentbox">
+			<div class="topinfobox row marginLR0">
+				<div class="col-xs-6 textleft">
+					<img src="img/head.png" class="user-img">
+					<span class="marginR30" id="username"></span>
+				</div>
+				<div class="col-xs-6">
+					<!-- <span>语言：</span>
+					<select class="form-control" style="display: inline-block;width: 100px;">
+						<option value="ch">中文</option>
+						<option value="en">English</option>
+					</select> -->
+					<a class="btn btn-danger marginL10 signout" onclick="events.myalert('<%=t1632;%>',function(){window.location.href = 'login.html'+window.location.search})"><%=t1615;%></a>
+					
+				</div>
+			</div>
+			
+			<iframe name="mainbox" id="mainbox" src="pages/count/rel_time_data" scrolling="auto" frameborder="0" width="100%" allowtransparency="true"></iframe>
+		</div>
+	</div>
+</div>
+<!-- 公用弹窗 -->
+<div id="modal"></div>
+<!-- 加载 -->
+<div id="mask"><img src="img/oval.svg"><p>Loading...</p></div>
+<script type="text/javascript">
+	var p_namebox = {
+		'modal_title':'<%=t1625;%>',
+		'modal_sure':'<%=t1628;%>',
+		'firstpage':'<%=t1558;%>',
+		'endpage':'<%=t1559;%>',
+		'prevpage':'<%=t1556;%>',
+		'nextpage':'<%=t1557;%>',
+		'totalpage':'<%=t1688;%>'
+	}
+	var lang = events.getCookie('lang');
+	var account = events.getCookie('account');
+	$('#username').html(account);
+</script>
+</body>
+</html>  

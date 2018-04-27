@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1013;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat"><%=t1115;%><p class="fr"><%=t1688;%>：<span id="pages"></span>，<%=t1689;%>：<span id="rows"></span></p></div>
+			  <div class="panel-body tab-content">
+			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			  	    	<div class="tablebox">
+			  				<!-- 搜索框 -->
+			  				<div class="formbox marginB30 marginT15">
+			  					<form class="form-inline">
+			  					  <div class="form-group marginR15">
+			  				          	<div class="form-group marginL10">
+			  				          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1084;%>：</label>
+			  				      	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+			  				      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="<%=t1084;%>" name="start_time">
+			  				      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  				      	        </div>
+			  				      			<input type="hidden" id="s_date" value=""/>
+			  				          	</div>
+			  				          	<div class="form-group">
+			  				          	    <label for="e_date" class="control-label textright lineheight34 fn">－</label>
+			  				      	        <div class="input-group date e_date width200" data-date="" data-link-field="e_date">
+			  				      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="<%=t1084;%>" name="end_time">
+			  				      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  				      	        </div>
+			  				      			<input type="hidden" id="e_date" value=""/>
+			  				          	</div>
+			  					  </div>
+			  					  <div class="form-group marginR15">
+			  					    <label class="fn"><%=t1622;%>：</label>
+			  					   	<input type="text" name="" class="form-control" placeholder='<%=t1623;%>' id="uid_box"> 
+			  					   </div>
+			  					   <div class="form-group">
+			  					     <label class="fn"><%=t1654;%>：</label>
+			  					    	<input type="text" name="" class="form-control" placeholder='<%=t1655;%>' id="sceneId">
+			  					    </div>
+			  					  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  				</form>
+			  				</div>
+			  				<table class="table table-bordered table-striped">
+			  				  <thead class="bgf5">
+			  				  	<tr>
+			  				  		<th><%=t1186;%></th>
+			  				  		<th><%=t1187;%></th>
+			  				  		<th>UID</th>
+			  				  		<th><%=t1188;%></th>
+			  				  		<th><%=t1189;%></th>
+			  				  		<th><%=t1190;%></th>
+			  				  		<th><%=t1191;%></th>
+			  				  		<th><%=t1192;%></th>
+			  				  		<th><%=t1193;%></th>
+			  				  		<th><%=t1194;%></th>
+			  				  		<th><%=t1195;%></th>
+			  				  		<th><%=t1196;%></th>
+			  				  	</tr>
+			  				  </thead>
+			  				  <tbody id="gold_body">
+			  				  </tbody>
+			  				</table>
+			  				<!-- 分页 -->
+			  				<div class="clearfloat">
+			  					<nav aria-label="Page navigation" class="fr textright define-pagination">
+			  					    <input type="hidden" name="" id="pagecount" value=""><!--输出总页数-->
+			  					    <input type="hidden" name="" id="nowpage" value=""><!--输出当前页数-->
+			  					    <input type="hidden" name="" value="" id="pageurl"><!--跳转地址-->
+			  					    <ul class="pagination"></ul>
+			  					</nav>
+			  				</div>
+			  				<script type="text/html" id="gold_box">
+			  				    {{each chart as val}}
+			  				    	<tr>
+				  				  		<td>{{val.time}}</td>
+				  				  		<td>{{val.id}}</td>
+				  				  		<td>{{val.uid}}</td>
+				  				  		<td>{{val.gain}}</td>
+				  				  		<td>{{val.cost}}</td>
+				  				  		<td>{{val.profit}}</td>
+				  				  		<td>{{val.left}}</td>
+				  				  		<td>{{val.scene}}</td>
+				  				  		<td>{{val.playerLevel}}</td>
+				  				  		<td>{{val.fire}}</td>
+				  				  		<td>{{val.recharge}}</td>
+				  				  		<td>{{val.cash}}</td>
+				  				  	</tr>
+			  				    {{/each}}
+			  				 </script>
+			  			</div>
+			  	    </div>
+			  	 
+			  </div>
+			 
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var namebox = {
+			'alertTip':'<%=t1621;%>'
+		}
+	</script>
+<script type="text/javascript" src="./../../js/manage/game_data/player_gold_log.js"></script>
+</body>
+</html>

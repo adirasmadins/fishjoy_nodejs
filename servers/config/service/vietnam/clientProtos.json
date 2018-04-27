@@ -1,0 +1,162 @@
+{
+    "gate.gateHandler.c_query_entry": {
+        "required string token": 1,
+        "optional string roomId": 2
+    },
+
+    "game.fishHandler.c_login": {
+        "required string token": 1
+    },
+
+    "game.fishHandler.c_enter_room": {
+        "required sInt32 roomType": 1,
+        "required string sceneId": 2,
+        "optional string roomId": 3
+    },
+
+    "game.fishHandler.c_fire": {
+        "required string wp_bk": 1,
+        "message FirePoint": {
+            "optional sInt32 x": 1,
+            "optional sInt32 y": 2
+        },
+        "required FirePoint fire_point": 2,
+        "optional string fire_fish": 3,
+        "optional uInt32 clone": 4
+    },
+
+    "game.fishHandler.c_catch_fish": {
+        "message B_fishes":{
+            "required string wp_bk": 1,
+            "repeated string fishes": 2,
+            "repeated sInt32 skill_ing": 3
+        },
+        "repeated B_fishes b_fishes":1
+    },
+
+    "game.fishHandler.c_use_skill": {
+        "required int32 skill": 1,
+        "required int32 wp_level": 2,
+        "message SkillCall": {
+            "required string fish": 1,
+            "required string path": 2,
+            "required int32 dt": 3
+        },
+        "optional SkillCall call": 3
+    },
+
+    "game.fishHandler.c_use_skill_lock_fish": {
+        "required string tfish": 1
+    },
+
+    "game.fishHandler.c_use_skill_call_fish": {
+        "required string tfish": 1,
+        "required string path": 2
+    },
+
+    "game.fishHandler.c_use_skill_sure": {
+        "required int32 skill": 1,
+        "message FirePoint": {
+            "optional sInt32 x": 1,
+            "optional sInt32 y": 2
+        },
+        "required FirePoint fire_point": 2,
+        "required string wp_bk": 3,
+        "optional uInt32 invite": 4
+    },
+
+    "game.fishHandler.c_fighting_notify": {
+        "required uInt32 event": 1,
+        "message EvtData": {
+            "optional uInt32 wp_level": 1,
+            "optional uInt32 wp_skin": 2,
+
+            "message Mini": {
+                "optional uInt32 type": 1,
+                "optional sInt32 gold": 2
+            },
+            "optional Mini mini": 3,
+
+            "message Drop": {
+                "message Item": {
+                    "optional string item_id": 1,
+                    "optional uInt32 item_num": 2,
+                    "optional uInt32 drop_count": 3
+                },
+                "repeated Item items": 1,
+
+                "message Point": {
+                    "optional sInt32 x": 1,
+                    "optional sInt32 y": 2
+                },
+                "optional Point deadPos": 2,
+                "optional uInt32 isPirateReward": 3
+            },
+            "optional Drop drop": 4,
+
+            "message TurnDrawItem": {
+                "optional string item_id": 1,
+                "optional uInt32 item_num": 2
+            },
+            "repeated TurnDrawItem turnDraw": 5,
+
+            "optional uInt32 rmatch_nb": 6,
+            "optional uInt32 rmatch_over": 7,
+
+            "message RmatchReady": {
+                "optional string roomId": 1,
+                "optional string serverId": 2,
+                "optional uInt32 isContinue": 3
+            },
+            "optional RmatchReady rmatch_ready": 8
+        },
+        "required EvtData event_data": 2
+    },
+
+    "game.fishHandler.c_fire_clone": {
+        "required string src": 1,
+        "repeated string clones": 2
+    },
+
+    "game.fishHandler.c_god_ready": {
+        "required uInt32 godIdx": 1
+    },
+
+    "game.fishHandler.c_god_hurt": {
+        "required uInt32 godIdx": 1,
+        "required string fishKey": 2,
+        "optional uInt32 isInGroup": 3
+    },
+
+    "game.fishHandler.c_god_pause": {
+        "required uInt32 godIdx": 1
+    },
+
+    "game.fishHandler.c_god_continue": {
+        "required uInt32 godIdx": 1
+    },
+
+    "game.fishHandler.c_continue_rmatch": {
+        "required string serverId": 1,
+        "required string roomId": 2
+    },
+
+    "game.fishHandler.c_room_chat": {
+        "optional uInt32 uid": 1,
+        "optional uInt32 type": 2,
+        "optional uInt32 idx": 3,
+        "optional uInt32 matchFlag": 4
+    },
+
+    "game.fishHandler.c_world_barrage": {
+        "optional uInt32 uid": 1,
+        "optional uInt32 type": 2,
+        "optional uInt32 idx": 3,
+        "optional uInt32 content": 4
+    },
+
+    "game.fishHandler.c_pirate_reward": {
+        "optional uInt32 task_id": 1
+    }
+
+}

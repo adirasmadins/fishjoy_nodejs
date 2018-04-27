@@ -1,0 +1,283 @@
+{
+  "development": {
+    "gate": [
+      {
+        "id": "gate",
+        "host": "10.8.166.27",
+        "clientPort": 3001,
+        "frontend": true,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13001"
+      }
+    ],
+    "loadManager": [
+      {
+        "id": "loadManager",
+        "host": "10.8.166.27",
+        "port": 3201,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13201"
+      }
+    ],
+    "eventSync": [
+      {
+        "id": "eventSync",
+        "host": "10.8.166.27",
+        "port": 3301,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13301"
+      }
+    ],
+    "matching": [
+      {
+        "id": "matching",
+        "host": "10.8.166.27",
+        "port": 3401,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13401"
+      }
+    ],
+    "resource": [
+      {
+        "id": "resource",
+        "host": "10.8.166.27",
+        "port": 3501,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13501"
+      }
+    ],
+    "hall": [
+      {
+        "id": "hall-1-1",
+        "host": "10.8.166.27",
+        "port": 3601,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13601"
+      }
+    ],
+    "chat": [
+      {
+        "id": "chat",
+        "host": "10.8.166.27",
+        "port": 3701,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13701"
+      }
+    ],
+    "admin": [
+      {
+        "id": "admin",
+        "host": "10.8.166.27",
+        "port": 3801,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13801"
+      }
+    ],
+    "r2mSync": [
+      {
+        "id": "r2mSync",
+        "host": "10.8.166.27",
+        "port": 3901,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:13901"
+      }
+    ],
+    "ranking": [
+      {
+        "id": "ranking",
+        "host": "10.8.166.27",
+        "port": 4101,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:14101"
+      }
+    ],
+    "pay": [
+      {
+        "id": "pay",
+        "host": "10.8.166.27",
+        "port": 4201,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:14201"
+      }
+    ],
+    "logManager": [
+      {
+        "id": "logManager",
+        "host": "10.8.166.27",
+        "port": 4301,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:14301"
+      }
+    ],
+    "rankMatch": [
+      {
+        "id": "rankMatch-1-1",
+        "host": "10.8.166.27",
+        "port": 5001,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:15001"
+      }
+    ],
+    "game": [
+      {
+        "id": "game-1-1",
+        "host": "10.8.166.27",
+        "port": 4001,
+        "clientHost": "gatehk.torebacn.com",
+        "clientPort": 4003,
+        "frontend": true,
+        "auto-restart": false,
+        "args": " --inspect=10.8.166.27:14001",
+        "maxLoad": 250
+      }
+    ]
+  },
+  "production": {
+    "gate": [
+      {
+        "id": "gate",
+        "host": "10.8.166.27",
+        "clientPort": 3001,
+        "frontend": true,
+        "auto-restart": true
+      }
+    ],
+    "loadManager": [
+      {
+        "id": "loadManager",
+        "host": "10.8.166.27",
+        "port": 3201,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": true
+      }
+    ],
+    "eventSync": [
+      {
+        "id": "eventSync",
+        "host": "10.8.166.27",
+        "port": 3301,
+        "auto-restart": true
+      }
+    ],
+    "matching": [
+      {
+        "id": "matching",
+        "host": "10.8.166.27",
+        "port": 3401,
+        "auto-restart": true
+      }
+    ],
+    "resource": [
+      {
+        "id": "resource",
+        "host": "10.8.166.27",
+        "port": 3501,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": true
+      }
+    ],
+    "hall": [
+      {
+        "id": "hall-1-1",
+        "host": "10.8.166.27",
+        "port": 3601,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": true
+      },
+      {
+        "id": "hall-1-2",
+        "host": "10.8.166.27",
+        "port": 3603,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": true
+      }
+    ],
+    "chat": [
+      {
+        "id": "chat",
+        "host": "10.8.166.27",
+        "port": 3701,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": true
+      }
+    ],
+    "admin": [
+      {
+        "id": "admin",
+        "host": "10.8.166.27",
+        "port": 3801,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": true
+      }
+    ],
+    "r2mSync": [
+      {
+        "id": "r2mSync",
+        "host": "10.8.166.27",
+        "port": 3901,
+        "auto-restart": true
+      }
+    ],
+    "ranking": [
+      {
+        "id": "ranking",
+        "host": "10.8.166.27",
+        "port": 4101,
+        "auto-restart": true
+      }
+    ],
+    "pay": [
+      {
+        "id": "pay",
+        "host": "10.8.166.27",
+        "port": 4201,
+        "publicHost": "gatehk.torebacn.com",
+        "auto-restart": true
+      }
+    ],
+    "logManager": [
+      {
+        "id": "logManager",
+        "host": "10.8.166.27",
+        "port": 4301,
+        "auto-restart": true
+      }
+    ],
+    "rankMatch": [
+      {
+        "id": "rankMatch-1-1",
+        "host": "10.8.166.27",
+        "port": 5001,
+        "auto-restart": true
+      }
+    ],
+    "game": [
+      {
+        "id": "game-1-1",
+        "host": "10.8.166.27",
+        "port": 4001,
+        "clientHost": "gatehk.torebacn.com",
+        "clientPort": 4003,
+        "frontend": true,
+        "auto-restart": true,
+        "maxLoad": 250
+      },
+      {
+        "id": "game-1-2",
+        "host": "10.8.166.27",
+        "port": 4005,
+        "clientHost": "gatehk.torebacn.com",
+        "clientPort": 4007,
+        "frontend": true,
+        "auto-restart": true,
+        "maxLoad": 250
+      }
+    ]
+  }
+}

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1022;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1102;%></div>
+			  <div class="panel-body tab-content">
+	  	       	<div class="tablebox row">
+	  	       		<div class="col-xs-5">
+		  	       		<p class="ft16 marginB10"><%=t1102;%>：</p>
+		  	   			<table class="table table-bordered">
+		  	   			  <tbody id="query_body" data-box="query_data"> </tbody>
+		  	   			</table>
+		 				<script type="text/html" id="query_data">
+		 				    <tr>
+		 				    	<td width="40%" class="bgD9"><%=t1128;%></td>
+		 				    	<td>{{data.rechargeTotal}}</td>
+		 				    </tr>
+    	  	   			  	<tr>
+    	  	   			  		<td class="bgD9"><%=t1211;%></td>
+    	  	   			  		<td>{{data.cashTotal}}</td>
+    	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9"><%=t1230;%></td>
+      	  	   			  		<td>{{data.rechargeRecentWeek}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9"><%=t1260;%></td>
+      	  	   			  		<td>{{data.cashRecentWeek}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9"><%=t1293;%></td>
+      	  	   			  		<td>{{data.playerFireRecentHour}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9"><%=t1314;%></td>
+      	  	   			  		<td>{{data.playerProfitRecentHour}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9"><%=t1332;%></td>
+      	  	   			  		<td> {{data.cashRateCorrection}} </td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9"><%=t1347;%></td>
+      	  	   			  		<td>{{data.cashRate}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9"><%=t1362;%></td>
+      	  	   			  		<td rowspan="2">
+      	  	   			  			<table class="edit-mainbox">
+      	  	   			  				<tbody>
+      	  	   			  					<tr>
+      	  	   			  						<td class="rateshow">{{data.serverCatchRate}}</td>
+      	  	   			  						<td><input type="text" name="" class="form-control eidt-input hide rateinput" value=""></td>
+      	  	   			  						<td rowspan="2" class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btn" data-type="1" value="{{data.serverCatchRate}}"><%=t1631;%></a></td>
+      	  	   			  					</tr>
+      	  	   			  					<tr>
+      	  	   			  						<td class="timeshow">{{data.serverCatchRateExpire}}</td>
+      	  	   			  						<td><input type="number" name="" class="form-control eidt-input hide timeinput" value="{{data.serverCatchRateExpire}}"></td>
+      	  	   			  					</tr>
+      	  	   			  				</tbody>
+      	  	   			  			</table>
+      	  	   			  		</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr class="bgD9">
+      	  	   			  		<td><%=t1363;%></td>
+      	  	   			  	</tr>
+		 				 </script>
+	  	       		</div>
+	  	       		<div class="col-xs-5 col-xs-offset-1">
+		  	       		<p class="ft16 marginB10"><%=t1399;%>：</p>
+		  	   			<table class="table table-bordered">
+		  	   			  <tbody id="period_body" data-box="period_data"></tbody>
+		  	   			</table>
+		  	   			<script type="text/html" id="period_data">
+		  	   				<tr>				
+		  	   					<td width="40%" class="bgD9"><%=t1413;%></td>
+		  	   					<td>{{data.currentPeriod}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9"><%=t1422;%></td>
+		  	   					<td>{{data.startTime}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9"><%=t1431;%></td>
+		  	   					<td>{{data.duration}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9"><%=t1443;%></td>
+		  	   					<td>{{data.catchRate}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9"><%=t1460;%></td>
+		  	   					<td>{{data.extractRecentDay}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF"><%=t1469;%></td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.extractExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="extractExpect"><%=t1631;%></a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF"><%=t1478;%></td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.durationExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="durationExpect"><%=t1631;%></a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF"><%=t1487;%></td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.giveCatchRateExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="giveCatchRateExpect"><%=t1631;%></a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF"><%=t1496;%></td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.giveDurationExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="giveDurationExpect"><%=t1631;%></a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF"><%=t1502;%></td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.gainCatchRateExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="gainCatchRateExpect"><%=t1631;%></a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF"><%=t1508;%></td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.gainDurationExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="gainDurationExpect"><%=t1631;%></a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   			</script>
+	  	       		</div>
+	  	   		</div>
+			  </div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="panel panel-default" style="height:716px;">
+					  <div class="panel-heading"><%=t1103;%></div>
+					  <div class="panel-body tab-content">
+			  	       	<div class="tablebox">
+			  	       		<div class="formbox marginB30 marginT15">
+			  	       			<form class="form-inline">
+			  	       				<div class="form-group">
+			  	       				  <label class="fn"><%=t1622;%>：</label>
+			  	       				 	<input type="text" name="" class="form-control" placeholder='<%=t1623;%>' id="uidsbox"> 
+			  	       				 </div>
+			  	       			  <a href="javascript:;" class="btn greenbtn marginL10 " id="search_player"><%=t1555;%></a>
+			  	       			</form>
+			  	       		</div>
+			  	   			<table class="table table-bordered">
+			  	   			  <tbody id="player_body" data-box="player_data">						
+			  	   			  	
+			  	   			  </tbody>
+			  	   			</table>
+			  	   			<script type="text/html" id="player_data">
+			  	   			  	<tr>
+			  	   			  		<td width="40%" class="bgD9"><%=t1231;%></td>
+			  	   			  		<td>{{data.nickname}}</td>
+			  	   			  	</tr>
+			  	   			  	<tr>
+			  	   			  		<td class="bgD9"><%=t1261;%></td>
+			  	   			  		<td>{{data.uid}}</td>
+			  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1294;%></td>
+		  	  	   			  		<td>{{data.recharge}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1315;%></td>
+		  	  	   			  		<td>{{data.cash}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1333;%></td>
+		  	  	   			  		<td>{{data.credit}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1348;%></td>
+		  	  	   			  		<td>{{data.gold}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1364;%></td>
+		  	  	   			  		<td>{{data.profit}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1374;%></td>
+		  	  	   			  		<td>{{data.fireRecentHour}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1388;%></td>
+		  	  	   			  		<td>{{data.profitRecentHour}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1400;%></td>
+		  	  	   			  		<td>{{data.profitRateRecentHour}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1414;%></td>
+		  	  	   			  		<td>{{data.profitHistory}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1423;%></td>
+		  	  	   			  		<td>{{data.profitRateHistory}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1432;%></td>
+		  	  	   			  		<td rowspan="2">
+		  	  	   			  			<table class="edit-mainbox">
+		  	  	   			  				<tbody>
+		  	  	   			  					<tr>
+		  	  	   			  						<td class="rateshow">{{data.catchRate}}</td>
+		  	  	   			  						<td><input type="text" name="" class="form-control eidt-input hide rateinput" value="{{data.catchRate}}"></td>
+		  	  	   			  						<td rowspan="2" class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btn" data-type="2" data-uid="{{data.uid}}"><%=t1631;%></a></td>
+		  	  	   			  					</tr>
+		  	  	   			  					<tr>
+		  	  	   			  						<td class="timeshow">{{data.catchRateExpire}}</td>
+		  	  	   			  						<td><input type="number" name="" class="form-control eidt-input hide timeinput" value="{{data.catchRateExpire}}"></td>
+		  	  	   			  					</tr>
+		  	  	   			  				</tbody>
+		  	  	   			  			</table>
+		  	  	   			  		</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9"><%=t1433;%></td>
+		  	  	   			  	</tr>
+			  	   			</script>
+			  	   		</div>
+					  </div>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="panel panel-default" style="height:716px;">
+					  <div class="panel-heading clearfloat">
+					  		<span class="fl"><%=t1676;%></span>
+					  		<a href="javascript:;" class="btn f_greenbtn marginL10 fr" id="fresh_btn">
+					  			<img src="../../img/refresh.png" width="20px">
+					  		</a>
+					  	</div>
+					  <div class="panel-body tab-content">
+			  	       	<div class="tablebox">
+							<table class="table table-bordered" >
+							  <tbody id="scene_body" data-box="scene_data">
+							  </tbody>
+							</table>
+							<script type="text/html" id="scene_data">
+								{{each data.sceneCatchRate as val}}
+								<tr>
+									<td class="bgDF" width="40%">{{val.name}}</td>
+									<td>
+										<table class="edit-mainbox">
+											<tbody>
+												<tr>
+													<td class="val-show">{{val.value}}</td>
+													<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+													<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btns" data-key="{{val.key}}" data-name="{{val.name}}" data-value="{{val.value}}"><%=t1631;%></a></td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								{{/each}}
+								<tr>
+									<td class="bgDF" width="40%">{{data.fightServerPlayerCount.name}}</td>
+									<td>
+										<table class="edit-mainbox">
+											<tbody>
+												<tr>
+													<td class="val-show">{{data.fightServerPlayerCount.value}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td class="bgDF" width="40%">{{data.fightServerRoomCount.name}}</td>
+									<td>
+										<table class="edit-mainbox">
+											<tbody>
+												<tr>
+													<td class="val-show">{{data.fightServerRoomCount.value}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td class="bgDF" width="40%">{{data.rankMatchPlayerCount.name}}</td>
+									<td>
+										<table class="edit-mainbox">
+											<tbody>
+												<tr>
+													<td class="val-show">{{data.rankMatchPlayerCount.value}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td class="bgDF" width="40%">{{data.rankMatchRoomCount.name}}</td>
+									<td>
+										<table class="edit-mainbox">
+											<tbody>
+												<tr>
+													<td class="val-show">{{data.rankMatchRoomCount.value}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</script>
+			  	   		</div>
+					  </div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="panel panel-default">
+					  <div class="panel-heading"><%=t1104;%></div>
+					  <div class="panel-body tab-content">
+			  	       	<div class="tablebox">
+			  	   			<table class="table table-bordered">
+			  	   				<thead>
+			  	   					<tr class="bgD9">
+			  	   						<th><%=t1677;%></th>
+			  	   						<th><%=t1129;%></th>
+			  	   						<th><%=t1678;%></th>
+			  	   						<th><%=t1130;%></th>
+			  	   						<th><%=t1131;%></th>
+			  	   					</tr>
+			  	   				</thead>
+			  	   			  <tbody id="cash_body" data-box="cash_data">
+			  	   			  </tbody>
+			  	   			</table>
+			  	   			<script type="text/html" id="cash_data">
+			  	   				{{each data.chart as val}}
+				  	   				<tr>
+				  	   					<td>{{val.date}}</td>
+				  	   					<td>{{val.cashCount}}</td>
+				  	   					<td>{{val.cashAccount}}</td>
+				  	   					<td>{{val.cashVndSum}}</td>
+				  	   					<td>{{val.cashVndAvg}}</td>
+				  	   				</tr>
+			  	   				{{/each}}
+			  	   			</script>
+			  	   		</div>
+			  	   		<!-- 分页 -->
+			  	   		<div class="clearfloat paddingR10">
+			  	   			<nav aria-label="Page navigation" class="fr textright define-pagination">
+			  	   			    <ul class="pagination cash-pagination"></ul>
+			  	   			</nav>
+			  	   		</div>
+					  </div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1521;%></div>
+			  <div class="panel-body tab-content">
+	  	       	<div class="tablebox">
+	  	   			<table class="table table-bordered">
+	  	   				<thead>
+	  	   					<tr class="bgD9">
+	  	   						<th><%=t1526;%></th>
+	  	   						<th><%=t1527;%></th>
+	  	   						<th><%=t1528;%></th>
+	  	   						<th><%=t1529;%></th>
+	  	   						<th><%=t1530;%></th>
+	  	   						<th><%=t1531;%></th>
+	  	   						<th class="sort-type" data-type="1">
+		  	   						<span class="sortbtn"><%=t1532;%></span>
+		  	   						<img src="../../img/sort.png" class="sortbtn">
+		  	   					</th>
+	  	   						<th><%=t1533;%></th>
+	  	   						<th><%=t1534;%></th>
+	  	   						<th><%=t1535;%></th>
+	  	   						<th><%=t1536;%></th>
+	  	   						<th><%=t1537;%></th>
+	  	   					</tr>
+	  	   				</thead>
+	  	   			  <tbody id="profit_body" data-box="profit_data">						
+	  	   			  </tbody>
+	  	   			</table>
+	  	   			<script type="text/html" id="profit_data">
+	  	   				{{each data.chart as val}}
+		  	   				<tr>
+		  	   					<td>{{val.nickname}}</td>
+		  	   					<td>{{val.uid}}</td>
+		  	   					<td>{{val.recharge}}</td>
+		  	   					<td>{{val.cash}}</td>
+		  	   					<td>{{val.gold}}</td>
+		  	   					<td>{{val.otherCost}}</td>
+		  	   					<td>{{val.profitHistory}}</td>
+		  	   					<td>{{val.profitRateHistory}}</td>
+		  	   					<td>{{val.profitRecentHour}}</td>
+		  	   					<td>{{val.profitRateRecentHour}}</td>
+		  	   					<td>{{val.isFreeze == true ? '' : '<%=t1679;%>'}}</td>
+		  	   					<td>{{val.catchRate}}</td>
+		  	   				</tr>
+	  	   				{{/each}}
+	  	   			</script>
+	  	   		</div>
+	  	   		<!-- 分页 -->
+	  	   		<div class="clearfloat">
+	  	   			<nav aria-label="Page navigation" class="fr textright define-pagination">
+	  	   			    <ul class="pagination profit-pagination"></ul>
+	  	   			</nav>
+	  	   		</div>
+			  </div>
+			</div>
+
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'succ':'<%=t1617;%>',
+		'filluid':'<%=t1598;%>', 
+		'filltip':'<%=t1616;%>',
+		'rangtip':'<%=t1680;%>',
+		'btnedit':'<%=t1631;%>',
+		'btnsure':'<%=t1628;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/operate/rel_data.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+module.exports = {
+    cashRequire: require('./cashRequire'),
+    cashRequireQuery: require('./cashRequireQuery'),
+    genGiftCode: require('./genGiftCode'),
+    getGiftCodeConfig: require('./getGiftCodeConfig'),
+    getGiftCodeData: require('./getGiftCodeData'),
+    getGiftCodeList: require('./getGiftCodeList'),
+    downloadGiftCodeList: require('./downloadGiftCodeList'),
+    addBroadcast: require('./addBroadcast'),
+    getBroadcast: require('./getBroadcast'),
+    cancelBroadcast: require('./cancelBroadcast'),
+    sendMail: require('./sendMail'),
+    sendMailCompensation: require('./sendMailCompensation'),
+    getMailData: require('./getMailData'),
+    delMail: require('./delMail'),
+};

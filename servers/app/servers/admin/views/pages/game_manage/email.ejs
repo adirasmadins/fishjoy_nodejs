@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1019;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat">
+			  	<span class="lineheight34"><%=t1441;%></span> 
+			  	<a class="btn greenbtn fr" id="add_email"><%=t1099;%></a>
+			  </div>
+			  <div class="panel-body tab-content">
+		  		<!-- 搜索框 -->
+		  		<div class="formbox padding20 bgfff">
+		  			<form class="form-inline">
+		  			  <div class="form-group">
+		  		          	<div class="form-group marginL10">
+		  		          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1420;%>：</label>
+		  		      	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+		  		      	            <input class="form-control" size="16" type="text" value="" readonly name="start_time">
+		  		      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+		  		      	        </div>
+		  		      			<input type="hidden" id="s_date" value=""/>
+		  		          	</div>
+		  		          	<div class="form-group">
+		  		          	    <label for="e_date" class="control-label textright lineheight34 fn">－</label>
+		  		      	        <div class="input-group date e_date width200" data-date="" data-link-field="e_date">
+		  		      	            <input class="form-control" size="16" type="text" value="" readonly name="end_time">
+		  		      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+		  		      	        </div>
+		  		      			<input type="hidden" id="e_date" value=""/>
+		  		          	</div>
+		  			  </div>
+		  			  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+		  	    	</form>
+		  		</div>
+	  	       <table class="table table-bordered table-striped textcenter">
+	  	       	<thead class="bgf5">
+	  	       		<tr>
+	  	       			<th><%=t1575;%></th>
+	  	       			<th><%=t1452;%></th>
+	  	       			<th><%=t1453;%></th>
+	  	       			<th><%=t1454;%></th>
+	  	       			<th><%=t1455;%></th>
+	  	       			<th><%=t1456;%></th>
+	  	       			<th><%=t1457;%></th>
+	  	       			<th><%=t1458;%></th>
+	  	       		</tr>
+	  	       	</thead>
+	  	         <tbody id="email_body">
+	  	         </tbody>
+	  	       </table>
+ 				<script type="text/html" id="email_data">
+ 				    {{each data as val}}
+ 				    	<tr>
+	  				  		<td>{{arrbox(val.reward)}}</td>
+	  				  		<td>{{val.title}}</td>
+	  				  		<td>{{val.typeText}}</td>
+	  				  		<td>{{val.time}}</td>
+	  				  		<td>{{val.valid == 0 ? '<%=t1465;%>' : val.valid}}</td>
+	  				  		<td>{{val.addByWho}}</td>
+	  				  		<td  class="textleft ft12">
+	  				  			{{if ifarry(val.received)}}
+	  				  			<p><%=t1576;%>：{{joinstring(val.received)}}</p>
+	  				  			{{else}}
+	  				  			<p><%=t1578;%>：{{val.received}}</p>
+	  				  			{{/if}}
+	  				  			{{if ifarry(val.notReceived)}}
+	  				  			<p class="cred"><%=t1577;%>：{{joinstring(val.notReceived)}}</p>
+	  				  			{{else}}
+	  				  			<p class="cred"><%=t1579;%>：{{val.notReceived}}</p>
+	  				  			{{/if}}
+
+	  				  		</td>
+	  				  		<td>
+	  				  			{{if val.status == 'valid'}}
+	  				  			<span><%=t1580;%></span>
+	  				  			{{else if val.status == 'cancel'}}
+	  				  			<a href="javascript:;" class="btn btn-sm btn-warning cancel-btn" data-id="{{val.id}}"><%=t1467;%></a>
+	  				  			{{/if}}
+	  				  	</td>
+	  				  	</tr>
+ 				    {{/each}}
+ 				 </script>
+	  	       <!-- 分页 -->
+	  	       <div class="clearfloat">
+	  	       	<nav aria-label="Page navigation" class="fr textright define-pagination">
+	  	       	    <input type="hidden" name="" id="pagecount" value=""><!--输出总页数-->
+	  	       	    <input type="hidden" name="" id="nowpage" value=""><!--输出当前页数-->
+	  	       	    <input type="hidden" name="" value="" id="pageurl"><!--跳转地址-->
+	  	       	    <ul class="pagination"></ul>
+	  	       	</nav>
+	  	       </div>
+			  </div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'succ':'<%=t1617;%>',
+		'fail':'<%=t1618;%>',
+		'cancel':'<%=t1620;%>',
+		'filltip':'<%=t1616;%>',
+		'alertTip':'<%=t1621;%>',
+		'canceled':'<%=t1580;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/game_manage/email.js"></script>
+</body>
+</html>

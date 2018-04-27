@@ -1,0 +1,18 @@
+{
+    "enable": true,
+    "server": {
+        "host": "10.25.0.141",
+        "port": 3306,
+        "auth":true,
+        "user": "root",
+        "password": "adDO2UAOLxl6",
+        "database": "fishjoy",
+        "charset": "utf8"
+    },
+    "ext": {
+        "poolSize": 4,
+        "max":8,
+        "min":1
+    }
+}
+

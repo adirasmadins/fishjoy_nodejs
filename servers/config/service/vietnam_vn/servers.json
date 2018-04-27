@@ -1,0 +1,545 @@
+{
+  "development": {
+    "gate": [{
+      "id": "gate",
+      "host": "103.90.220.2",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.2:13001"
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "221.132.27.154",
+      "port": 3201,
+      "publicHost": "221.132.27.154",
+      "auto-restart": false,
+      "args": " --inspect=221.132.27.154:13201"
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "103.90.220.66",
+      "port": 3301,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.66:13301"
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "103.90.220.67",
+      "port": 3401,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.67:13401"
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "103.90.220.68",
+      "port": 3501,
+      "publicHost": "thosanca.vn",
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.68:13501"
+    }],
+    "hall": [{
+        "id": "hall-1-1",
+        "host": "103.90.220.67",
+        "port": 3601,
+        "publicHost": "hall.thosanca.vn",
+        "auto-restart": false,
+        "args": " --inspect=103.90.220.67:13601"
+      },
+      {
+        "id": "hall-1-2",
+        "host": "103.90.220.67",
+        "port": 3603,
+        "publicHost": "hall.thosanca.vn",
+        "auto-restart": false,
+        "args": " --inspect=103.90.220.67:13603"
+      }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "103.90.220.7",
+      "port": 3701,
+      "publicHost": "chat.thosanca.vn",
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.7:13701"
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "103.90.220.66",
+      "port": 3801,
+      "publicHost": "admin.thosanca.vn",
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.66:13801"
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "103.90.220.9",
+      "port": 3901,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.9:13901"
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "103.90.220.9",
+      "port": 4101,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.9:14101"
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "221.132.27.154",
+      "port": 4201,
+      "publicHost": "pay.thosanca.vn",
+      "auto-restart": false,
+      "args": " --inspect=221.132.27.154:14201"
+    }],
+    "logManager": [{
+      "id": "logManager",
+      "host": "103.90.220.9",
+      "port": 4301,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.9:14301"
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1-1",
+      "host": "221.132.27.154",
+      "port": 5001,
+      "auto-restart": false,
+      "args": " --inspect=221.132.27.154:15001"
+    },{
+      "id": "rankMatch-2-1",
+      "host": "103.90.220.3",
+      "port": 5001,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.3:15001"
+    },{
+      "id": "rankMatch-3-1",
+      "host": "103.90.220.4",
+      "port": 5001,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.4:15001"
+    },{
+      "id": "rankMatch-4-1",
+      "host": "103.90.220.5",
+      "port": 5001,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.5:15001"
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "103.90.220.3",
+      "port": 4001,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.3:14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "103.90.220.3",
+      "port": 4005,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.3:14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-3",
+      "host": "103.90.220.3",
+      "port": 4009,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.3:14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-4",
+      "host": "103.90.220.3",
+      "port": 4013,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.3:14013",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-1",
+      "host": "103.90.220.4",
+      "port": 4001,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.4:14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-2",
+      "host": "103.90.220.4",
+      "port": 4005,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.4:14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-3",
+      "host": "103.90.220.4",
+      "port": 4009,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.4:14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-2-4",
+      "host": "103.90.220.4",
+      "port": 4013,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.4:14013",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-1",
+      "host": "103.90.220.5",
+      "port": 4001,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.5:14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-2",
+      "host": "103.90.220.5",
+      "port": 4005,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.5:14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-3",
+      "host": "103.90.220.5",
+      "port": 4009,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.5:14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-3-4",
+      "host": "103.90.220.5",
+      "port": 4013,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.5:14013",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-1",
+      "host": "103.90.220.6",
+      "port": 4001,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.6:14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-2",
+      "host": "103.90.220.6",
+      "port": 4005,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.6:14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-3",
+      "host": "103.90.220.6",
+      "port": 4009,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.6:14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-4-4",
+      "host": "103.90.220.6",
+      "port": 4013,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=103.90.220.6:14013",
+      "maxLoad": 250
+    }]
+  },
+  "production": {
+    "gate": [{
+      "id": "gate",
+      "host": "103.90.220.2",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": true
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "221.132.27.154",
+      "port": 3201,
+      "publicHost": "221.132.27.154",
+      "auto-restart": true
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "103.90.220.66",
+      "port": 3301,
+      "auto-restart": true
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "103.90.220.67",
+      "port": 3401,
+      "auto-restart": true
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "103.90.220.68",
+      "port": 3501,
+      "publicHost": "thosanca.vn",
+      "auto-restart": true
+    }],
+    "hall": [{
+        "id": "hall-1-1",
+        "host": "103.90.220.67",
+        "port": 3601,
+        "publicHost": "hall.thosanca.vn",
+        "auto-restart": true
+      },
+      {
+        "id": "hall-1-2",
+        "host": "103.90.220.67",
+        "port": 3603,
+        "publicHost": "hall.thosanca.vn",
+        "auto-restart": true
+      }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "103.90.220.7",
+      "port": 3701,
+      "publicHost": "chat.thosanca.vn",
+      "auto-restart": true
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "103.90.220.66",
+      "port": 3801,
+      "publicHost": "admin.thosanca.vn",
+      "auto-restart": true
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "103.90.220.9",
+      "port": 3901,
+      "auto-restart": true
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "103.90.220.9",
+      "port": 4101,
+      "auto-restart": true
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "221.132.27.154",
+      "port": 4201,
+      "publicHost": "pay.thosanca.vn",
+      "auto-restart": true
+    }],
+    "logManager": [{
+      "id": "logManager",
+      "host": "103.90.220.9",
+      "port": 4301,
+      "auto-restart": true
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1-1",
+      "host": "221.132.27.154",
+      "port": 5001,
+      "auto-restart": true
+    },{
+      "id": "rankMatch-2-1",
+      "host": "103.90.220.3",
+      "port": 5001,
+      "auto-restart": true
+    },{
+      "id": "rankMatch-3-1",
+      "host": "103.90.220.4",
+      "port": 5001,
+      "auto-restart": true
+    },{
+      "id": "rankMatch-4-1",
+      "host": "103.90.220.5",
+      "port": 5001,
+      "auto-restart": true
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "103.90.220.3",
+      "port": 4001,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "103.90.220.3",
+      "port": 4005,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-3",
+      "host": "103.90.220.3",
+      "port": 4009,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-4",
+      "host": "103.90.220.3",
+      "port": 4013,
+      "clientHost": "room1.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-1",
+      "host": "103.90.220.4",
+      "port": 4001,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-2",
+      "host": "103.90.220.4",
+      "port": 4005,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-3",
+      "host": "103.90.220.4",
+      "port": 4009,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-2-4",
+      "host": "103.90.220.4",
+      "port": 4013,
+      "clientHost": "room2.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-1",
+      "host": "103.90.220.5",
+      "port": 4001,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-2",
+      "host": "103.90.220.5",
+      "port": 4005,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-3",
+      "host": "103.90.220.5",
+      "port": 4009,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-3-4",
+      "host": "103.90.220.5",
+      "port": 4013,
+      "clientHost": "room3.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-1",
+      "host": "103.90.220.6",
+      "port": 4001,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-2",
+      "host": "103.90.220.6",
+      "port": 4005,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-3",
+      "host": "103.90.220.6",
+      "port": 4009,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-4-4",
+      "host": "103.90.220.6",
+      "port": 4013,
+      "clientHost": "room4.thosanca.vn",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }]
+  }
+}

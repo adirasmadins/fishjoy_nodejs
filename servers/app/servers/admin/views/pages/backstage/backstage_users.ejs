@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1026;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat">
+			  	<span class="lineheight34"><%=t1026;%></span> 
+			  	<a class="btn greenbtn fr" id="add_user"><%=t1380;%></a>
+			  </div>
+			  <div class="panel-body tab-content">
+  				<table class="table table-bordered table-striped textcenter">
+  					<thead class="bgf5">
+  						<tr>
+  							<th><%=t1132;%></th>
+  							<th><%=t1133;%></th>
+  							<th><%=t1134;%></th>
+  							<th><%=t1214;%></th>
+  						</tr>
+  					</thead>
+  				  <tbody id="user_body">
+  				  </tbody>
+  				</table>
+  				<script type="text/html" id="user_data">
+  				    {{each data as val}}
+  				    	<tr>
+	  				  		<td class="uname">{{val.usrname}}</td>
+	  				  		<td>{{val.password}}</td>
+  					  		<td>
+  					  			<label class="radio-inline">
+  		   			  			  <input type="radio" name="auth{{val.id}}" value="true" {{val.auth == true ? 'checked' : ''}}> <%=t1215;%>
+  		   			  			</label>
+  		   			  			<label class="radio-inline">
+  		   			  			  <input type="radio" name="auth{{val.id}}" value="false" {{val.auth == true ? '' : 'checked'}}> <%=t1216;%>
+  		   			  			</label>
+  					  		</td>
+  					  		<td>
+  					  			<a href="javascript:;" class="btn btn-sm btn-warning change-psd" data-id="{{val.id}}"><%=t1214;%></a>
+  					  		</td>
+	  				  	</tr>
+  				    {{/each}}
+  				 </script>
+			  </div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 修改密码 -->
+	<div class="modal fade" id="nes_psd" tabindex="-1" role="dialog" aria-labelledby="nes_psdLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="nes_psdLabel"><%=t1214;%></h4>
+	      </div>
+	      <div class="modal-body">
+	      	<form class="form-horizontal">
+	      		<div class="form-group">
+	      		  <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1132;%></label>
+	      		  <div class="col-xs-8">
+	      		    <input type="text" class="form-control" placeholder="" id="username" disabled="disabled">
+	      		  </div>
+	      		</div>
+	      	  <div class="form-group">
+	      	    <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1213;%></label>
+	      	    <div class="col-xs-8">
+	      	      <input type="password" class="form-control" placeholder="<%=t1213;%>" id="newpasd">
+	      	    </div>
+	      	  </div>
+	      	</form>
+	      </div>
+	      <div class="modal-footer">
+	      	<span class="cred modal-tip marginR30"></span>
+	      	<a href="javascript:;" class="btn greenbtn update-btn"><%=t1605;%></a>
+	        <button type="button" class="btn btn-default" data-dismiss="modal"><%=t1606;%></button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 新增用户 -->
+	<div class="modal fade" id="adduser" tabindex="-1" role="dialog" aria-labelledby="adduserLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="adduserLabel"><%=t1380;%></h4>
+	      </div>
+	      <div class="modal-body">
+	      	<form class="form-horizontal">
+		  		<div class="form-group">
+		  		  <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1132;%></label>
+		  		  <div class="col-xs-8">
+		  		    <input type="text" class="form-control" placeholder="<%=t1132;%>" id="name">
+		  		  </div>
+		  		</div>
+	      	  <div class="form-group">
+	      	    <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1213;%></label>
+	      	    <div class="col-xs-8">
+	      	      <input type="password" class="form-control" placeholder="<%=t1213;%>" id="pasd">
+	      	    </div>
+	      	  </div>
+	      	  <div class="form-group">
+	      	    <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1563;%></label>
+	      	    <div class="col-xs-8">
+	      	      <input type="password" class="form-control" placeholder="<%=t1563;%>" id="repasd">
+	      	    </div>
+	      	  </div>
+	      	</form>
+	      </div>
+	      <div class="modal-footer ">
+	      	<span class="cred modal-tip marginR30"></span>
+	      	<a href="javascript:;" class="btn greenbtn add-suerbtn"><%=t1605;%></a>
+	        <button type="button" class="btn btn-default" data-dismiss="modal"><%=t1606;%></button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'succ':'<%=t1617;%>',
+		'filltip':'<%=t1616;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/backstage/backstage_users.js"></script>
+</body>
+</html>

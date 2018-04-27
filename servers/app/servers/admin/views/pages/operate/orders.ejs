@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1021;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat"><%=t1229;%><p class="fr"><%=t1688;%>：<span id="pages"></span>，<%=t1689;%>：<span id="rows"></span></p></div>
+			  <div class="panel-body tab-content">
+			  	<!-- 搜索框 -->
+			  	<div class="formbox marginB30 marginT15">
+			  		<div class="marginB10 widthcheck-box">
+			  			<span class="marginR15"><%=t1585;%>：</span>
+			  			<label class="checkbox-inline">
+			  			  <input type="checkbox" value="1" class="orderCatalog" checked="checked"> <%=t1587;%>
+			  			</label>
+			  			<label class="checkbox-inline">
+			  			  <input type="checkbox" value="2" class="orderCatalog" checked="checked"> <%=t1588;%>
+			  			</label>
+			  			<label class="checkbox-inline">
+			  			  <input type="checkbox" value="3" class="orderCatalog" checked="checked"> <%=t1589;%>
+			  			</label>
+			  		</div>
+			  		<div class="marginB30 widthcheck-box">
+			  			<span class="marginR15"><%=t1586;%>：</span>
+			  			<label class="checkbox-inline">
+			  			  <input type="checkbox" value="0" class="orderStatus" checked="checked"> <%=t1590;%>
+			  			</label>
+			  			<label class="checkbox-inline">
+			  			  <input type="checkbox" value="1" class="orderStatus" checked="checked"> <%=t1591;%>
+			  			</label>
+			  			<label class="checkbox-inline">
+			  			  <input type="checkbox" value="2" class="orderStatus" checked="checked"> <%=t1592;%>
+			  			</label>
+			  			<label class="checkbox-inline">
+			  			  <input type="checkbox" value="3" class="orderStatus" checked="checked"> <%=t1593;%>
+			  			</label>
+			  		</div>
+			  		<form class="form-inline marginB10">
+			  			<div class="form-group">
+			  			  <label class="fn"><%=t1622;%>：</label>
+			  			 	<input type="text" name="" class="form-control" placeholder='<%=t1603;%>' id="uid_box"> 
+			  			 </div>
+			  		 	  <div class="form-group">
+			  		           	<div class="form-group marginL10">
+			  		           	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1086;%>：</label>
+			  		       	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+			  		       	            <input class="form-control" size="16" type="text" value="" readonly name="start_time">
+			  		       	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  		       	        </div>
+			  		       			<input type="hidden" id="s_date" value=""/>
+			  		           	</div>
+			  		           	<div class="form-group">
+			  		           	    <label for="e_date" class="control-label textright lineheight34 fn">－</label>
+			  		       	        <div class="input-group date e_date width200" data-date="" data-link-field="e_date">
+			  		       	            <input class="form-control" size="16" type="text" value="" readonly name="end_time">
+			  		       	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  		       	        </div>
+			  		       			<input type="hidden" id="e_date" value=""/>
+			  		           	</div>
+			  		 	  </div>
+			  		 	  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  		</form> 
+
+			  	</div>
+			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			  	    	<div class="tablebox">
+			  				<table class="table table-bordered table-striped">
+			  				  <thead class="bgf5">
+			  				  	<tr>
+			  				  		<th><%=t1246;%></th>
+			  				  		<th><%=t1247;%></th>
+			  				  		<th><%=t1248;%></th>
+			  				  		<th><%=t1249;%></th>
+			  				  		<th><%=t1675;%></th>
+			  				  		<th><%=t1250;%></th>
+			  				  		<th><%=t1251;%></th>
+			  				  		<th><%=t1252;%></th>
+			  				  		<th><%=t1253;%></th>
+			  				  		<th><%=t1254;%></th>
+			  				  		<th><%=t1255;%></th>
+			  				  		<th><%=t1256;%></th>
+			  				  		<th><%=t1257;%></th>
+			  				  		<th><%=t1258;%></th>
+			  				  		<th><%=t1259;%></th>
+			  				  	</tr>
+			  				  </thead>
+			  				  <tbody id="order_body"></tbody>
+			  				</table>
+			  				<!-- 分页 -->
+			  				<div class="clearfloat">
+			  					<nav aria-label="Page navigation" class="fr textright define-pagination">
+			  					    <input type="hidden" name="" id="pagecount" value=""><!--输出总页数-->
+			  					    <input type="hidden" name="" id="nowpage" value=""><!--输出当前页数-->
+			  					    <input type="hidden" name="" value="" id="pageurl"><!--跳转地址-->
+			  					    <ul class="pagination"></ul>
+			  					</nav>
+			  				</div>
+			  	   			<script type="text/html" id="order_data">
+			  	   				{{each data.chart as val}}
+				  	   				<tr>
+				  	   					<td>{{val.orderId}}</td>
+				  	   					<td>{{val.createTime}}</td>
+				  	   					<td>{{val.uid}}</td>
+				  	   					<td>{{val.phoneNumber}}</td>
+				  	   					<td>{{val.changeId}}</td>
+				  	   					<td>{{val.itemId}}</td>
+				  	   					<td>{{val.receiver}}</td>
+				  	   					<td>{{val.address}}</td>
+				  	   					<td class="serial-box">
+				  	   						{{if val.catalog == 1}}
+				  	   							{{if val.status == 0}}
+				  	   							  <input type="text" class="form-control infobox serial" name="" value="{{val.serial}}" {{data.editable == 1 ?'':'disabled'}} data-id="{{val.orderId}}" data-catalog="{{val.catalog}}">
+				  	   							{{else}}
+				  	   							  {{val.serial}}
+				  	   							{{/if}}
+				  	   						{{/if}}
+				  	   						{{if val.catalog == 2}}
+				  	   							{{if val.status == 0}}
+				  	   							  <input type="text" class="form-control infobox serial" name="" value="{{val.way}}" {{data.editable == 1 ?'':'disabled'}} data-id="{{val.orderId}}" data-catalog="{{val.catalog}}">
+				  	   							{{else}}
+				  	   							  {{val.way}}
+				  	   							{{/if}}
+				  	   						{{/if}}
+				  	   					</td>
+				  	   					<td class="password-box">
+				  	   						{{if val.catalog == 1}}
+				  	   							{{if val.status == 0}}
+				  	   							  <input type="text" class="form-control infobox password" name="" value="{{val.password}}" {{data.editable == 1 ?'':'disabled'}} data-id="{{val.orderId}}" data-catalog="{{val.catalog}}">
+				  	   							{{else}}
+				  	   							  {{val.password}}
+				  	   							{{/if}}
+				  	   						{{/if}}
+				  	   						{{if val.catalog == 2}}
+				  	   							{{if val.status == 0}}
+				  	   							  <input type="text" class="form-control infobox password" name="" value="{{val.thingnum}}" {{data.editable == 1 ?'':'disabled'}} data-id="{{val.orderId}}" data-catalog="{{val.catalog}}">
+				  	   							{{else}}
+				  	   							  {{val.thingnum}}
+				  	   							{{/if}}
+				  	   						{{/if}}
+					  	   				</td>
+				  	   					<td>{{val.status}}</td>
+				  	   					<td>{{val.confirmBy}}</td>
+				  	   					<td>{{val.confirmTime}}</td>
+				  	   					<td>{{val.isCheater == true ? '<%=t1385;%>' : '<%=t1421;%>'}}</td>
+				  	   					<td>
+				  	   						{{if (val.catalog == 1 && val.status == 0) || (val.catalog == 2 && val.status == 0)}}
+				  	   						<a href="javascript:;" class="btn btn-xs btn-success ok-btn marginB5" data-id="{{val.orderId}}" data-catalog="{{val.catalog}}"><%=t1386;%></a>
+				  	   						<a href="javascript:;" class="btn btn-xs btn-warning cancel-btn" data-id="{{val.orderId}}"><%=t1398;%></a>
+				  	   						{{/if}}
+				  	   					</td>
+				  	   				</tr>
+			  	   				{{/each}}
+			  	   			</script>
+			  			</div>
+			  	    </div>
+			  	    <div role="tabpanel" class="tab-pane tablebox" id="tubox">
+			  	    	
+			  	    	<div id="goods_source" style="width:1000px;height:300px;"></div>
+			  	    </div>
+			  </div>
+			  <!-- <div class="panel-footer ">
+			  	<ul class="nav clearfloat">
+			  		<li role="presentation" class="active fl"><a href="#tablebox" aria-controls="tablebox" role="tab" data-toggle="tab">表格</a></li>
+			  		<li role="presentation" class="fl"><a href="#tubox" aria-controls="tubox" role="tab" data-toggle="tab">图表</a></li>
+			  	</ul>
+			  </div> -->
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'succ':'<%=t1617;%>',
+		'ifsure':'<%=t1619;%>',
+		'cancel':'<%=t1620;%>',
+		'filltip':'<%=t1616;%>',
+		'alertTip':'<%=t1621;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/operate/orders.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+    "enable": true,
+    "server": {
+        "host": "172.16.2.14",
+        "port": 6379,
+        "auth": true,
+        "password": "Bolin123456",
+        "db": 0,
+        "prefix": ""
+    },
+    "ext": {}
+}

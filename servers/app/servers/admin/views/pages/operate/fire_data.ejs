@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1024;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="padding20">
+		<div class="row marginB30">
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/yk1.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1681;%></p>
+						   <p class="showdata-num cgreen" id="profitRateToday"></p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/yk2.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1682;%></p>
+						   <p class="showdata-num corange" id="profitRateHistory"></p>
+					  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="content">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1267;%></div>
+			  <div class="panel-body tab-content">
+			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			  	    	<div class="formbox marginT15">
+			  	    		<form class="form-inline">
+			  	    	 	  <div class="form-group">
+			  	    	           	<div class="form-group marginL10">
+			  	    	           	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1087;%>：</label>
+			  	    	       	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+			  	    	       	            <input class="form-control" size="16" type="text" value="" readonly name="start_time">
+			  	    	       	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  	    	       	        </div>
+			  	    	       			<input type="hidden" id="s_date" value=""/>
+			  	    	           	</div>
+			  	    	 	  </div>
+			  	    		  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  	    		</form>
+			  	    	</div>
+			  	    	<div class="tablebox marginT30">
+			  				<table class="table table-bordered table-striped">
+			  				  <thead class="bgf5">
+			  				  	<tr>
+			  				  		<th><%=t1300;%></th>
+			  				  		<th><%=t1301;%></th>
+			  				  		<th><%=t1302;%></th>
+			  				  		<th><%=t1303;%></th>
+			  				  		<th><%=t1304;%></th>
+			  				  	</tr>
+			  				  </thead>
+			  				  <tbody id="fire_body">
+			  				  </tbody>
+			  				</table>
+			  				<script type="text/html" id="fire_data">
+			  				    {{each chart as val}}
+			  				    	<tr>
+				  				  		<td>{{val.time}}</td>
+				  				  		<td>{{val.fire}}</td>
+				  				  		<td>{{val.cost}}</td>
+				  				  		<td>{{val.gain}}</td>
+				  				  		<td>{{val.profitRate}}</td>
+				  				  	</tr>
+			  				    {{/each}}
+			  				 </script>
+			  			</div>
+			  	    </div>
+			  	    <div role="tabpanel" class="tab-pane tablebox" id="tubox">
+			  	    	
+			  	    	<div id="goods_source" style="width:1000px;height:300px;"></div>
+			  	    </div>
+			  </div>
+			  <div class="panel-footer ">
+			  	<ul class="nav clearfloat">
+			  		<li role="presentation" class="active fl"><a href="#tablebox" aria-controls="tablebox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe66d;</span></a></li>
+			  		<li role="presentation" class="fl"><a href="#tubox" aria-controls="tubox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe6a3;</span></a></li>
+			  	</ul>
+			  </div>
+			</div>  
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'chart':['<%=t1301;%>','<%=t1302;%>','<%=t1303;%>','<%=t1304;%>'] ,
+		'filltip':'<%=t1621;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/operate/fire_data.js"></script>
+</body>
+</html>

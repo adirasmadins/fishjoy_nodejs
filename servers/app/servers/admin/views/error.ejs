@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>error</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/commonPC.css">
+    <link rel="stylesheet" href="css/definePC.css">
+	 <!--[if lt IE 9]>
+	   <script src="js/html5shiv.min.js"></script>
+	   <script src="js/respond.min.js"></script>
+	 <![endif]-->
+	 <script src="js/jquery-1.11.3.js"></script>
+	 <script src="js/bootstrap.js"></script>
+	 <script src="js/arttemplate.js"></script>
+	 <script src="js/lang.js"></script>
+	 <script src="js/definePC.js"></script>
+</head>
+<body>
+<div class="container textcenter" style="padding-top:10%">
+	<h2 class="textcenter">Session expired, please relogin.</h2>
+	<a href="javascript:;" class="btn btn-warning marginT30 btn-lg" onclick="window.parent.location.href = 'login.html'+window.parent.location.search">Press to login</a>
+	<p class="marginT30 ft18">Switch to login after <span class="second_show">5</span> seconds</p>
+
+</div>
+<script type="text/javascript">
+	var intDiff = parseInt(5); //倒计时总秒数量
+	function timer(intDiff) {
+	  var open = window.setInterval(function () {
+	    var day = 0,
+	      hour = 0,
+	      minute = 0,
+	      second = 0; //时间默认值
+	    if (intDiff > 0) {
+	      day = Math.floor(intDiff / (60 * 60 * 24));
+	      hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
+	      minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
+	      second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+	    }
+	    if (second <= 9) second =second;
+	    $('.second_show').html(second);
+	    intDiff--;
+	    if(second == 0){
+	    	clearInterval(open);
+	    	window.parent.location.href = 'login.html'+window.parent.location.search;
+	    }
+	  }, 1000);
+	}
+	$(function () {
+	  timer(intDiff);
+	});
+</script>
+</body>
+</html>  

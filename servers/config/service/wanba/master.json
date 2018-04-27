@@ -1,0 +1,8 @@
+{
+  "development": {
+    "id": "master", "host": "10.163.56.148", "port": 3005
+  },
+  "production": {
+    "id": "master", "host": "10.163.56.148", "port": 3005
+  }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1023;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1105;%></div>
+			  <div class="panel-body tab-content">
+			  	<!-- 搜索框 -->
+			  	<div class="formbox padding20 bgfff">
+			  		<form class="form-inline">
+			  			<div class="form-group">
+			  			  <label class="fn"><%=t1622;%>：</label>
+			  			 	<input type="text" name="" class="form-control" placeholder='<%=t1623;%>' id="uidbox"> 
+			  			 </div>
+			  		  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  		</form>
+			  	</div>
+	  	       	<div class="tablebox">
+	  	   			<table class="table table-bordered table-striped" style="width: 800px">
+	  	   	<!-- 			<thead class="bgf5">
+	  	   					<tr>
+	  	   						<th>提现总开关</th>
+	  	   						<th width="200">开关</th>
+	  	   					</tr>
+	  	   				</thead> -->
+	  	   			  <tbody id="player_body">
+
+	  	   			  </tbody>
+	  	   			</table>
+              <script type="text/html" id="player_data">
+                <input type="hidden" name="" id="truid" value="{{data.uid}}">
+                <tr>
+                  <td><%=t1233;%></td>
+                  <td>{{data.nickname}}</td>
+                </tr>
+                <tr>
+                  <td><%=t1262;%></td>
+                  <td>{{data.uid}}</td>
+                </tr>
+                  <tr>
+                    <td><%=t1295;%></td>
+                    <td>{{data.accountType}}</td>
+                  </tr>
+                  <tr>
+                    <td><%=t1316;%></td>
+                    <td>{{data.recharge}}</td>
+                  </tr>
+                  <tr>
+                    <td><%=t1334;%></td>
+                    <td>{{data.cash}}</td>
+                  </tr>
+                  <tr>
+                    <td><%=t1349;%></td>
+                    <td>{{data.profitRateHistory}}</td>
+                  </tr>
+                  <tr>
+                    <td><%=t1365;%></td>
+                    <td>
+                      <table class="edit-mainbox">
+                        <tbody>
+                          <tr>
+                            <td class="val-show">{{data.password.value}}</td>
+                            <td><input type="text" name="" class="form-control eidt-input hide" value="" placeholder="<%=t1366;%>"></td>
+                            <td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btn" data-key="{{data.password.key}}"><%=t1367;%></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><%=t1375;%></td>
+                    <td>
+                      <table class="edit-mainbox">
+                        <tbody>
+                          <tr>
+                            <td class="val-show">{{data.gold.value}}</td>
+                            <td><input type="text" name="" class="form-control eidt-input hide" value="" placeholder="<%=t1376;%>"></td>
+                            <td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btn" data-key="{{data.gold.key}}"><%=t1377;%></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><%=t1389;%></td>
+                    <td>
+                      <table class="edit-mainbox">
+                        <tbody>
+                          <tr>
+                            <td class="val-show">{{data.pearl.value}}</td>
+                            <td><input type="text" name="" class="form-control eidt-input hide" value="" placeholder="<%=t1390;%>"></td>
+                            <td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btn" data-key="{{data.pearl.key}}"><%=t1391;%></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><%=t1401;%></td>
+                    <td>
+                      <table class="edit-mainbox">
+                        <tbody>
+                          <tr>
+                            <td class="val-show"><textarea class="form-control eidt-input" disabled="disabled" rows="3" style="width: 90%;">{{data.item.value}}</textarea></td>
+                            <td><!-- <input type="text" name="" class="form-control eidt-input hide" value="" placeholder="<%=t1402;%>"> --></td>
+                            <td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btny" data-key="{{data.item.key}}"><%=t1403;%></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><%=t1415;%></td>
+                    <td>{{data.itemUsed}}</td>
+                  </tr>
+                  <tr>
+                    <td><%=t1424;%></td>
+                    <td>
+                      <label class="radio-inline">
+                        <input type="radio" name="{{data.isBlocked.key}}" value="true" {{data.isBlocked.value == true ? 'checked' : ''}}> <%=t1426;%>
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="{{data.isBlocked.key}}" value="false" {{data.isBlocked.value == true ? '' : 'checked'}}> <%=t1425;%>
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><%=t1435;%></td>
+                    <td><span class="ban-state" data-state="{{data.isFreeze.value}}">{{data.isFreeze.value == true ? '<%=t1599;%>' : '<%=t1600;%>'}}</span> <a href="javascript:;" class="btn btn-sm btn-warning fr ban-btn" data-key="{{data.isFreeze.key}}" data-uid="{{data.uid}}" data-op="{{data.isFreeze.value == true ? 'unfreeze' : 'freeze'}}">{{data.isFreeze.value == true ? '<%=t1425;%>' : '<%=t1436;%>'}} </a></td>
+                  </tr>
+              </script>
+	  	   		</div>
+			  </div>
+			</div>
+		</div> 
+	</div>
+<script type="text/javascript">
+  var namebox = {
+    'succ':'<%=t1617;%>',
+    'fail':'<%=t1618;%>',
+    'freezetip':'<%=t1616;%>',
+    'filltip':'<%=t1623;%>',
+    'btnedit':'<%=t1631;%>',
+    'btnsure':'<%=t1628;%>'
+  }
+</script>
+<script type="text/javascript" src="./../../js/manage/operate/player_account.js"></script>
+
+</body>
+</html>

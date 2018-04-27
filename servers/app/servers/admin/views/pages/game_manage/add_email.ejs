@@ -1,0 +1,135 @@
+<!-- 添加邮件 -->
+<div class="modal fade" id="addemail" tabindex="-1" role="dialog" aria-labelledby="addemailLabel">
+  <div class="modal-dialog" role="document" style="width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="addemailLabel"><%=t1099;%></h4>
+      </div>
+      <div class="modal-body">
+        <div>
+
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active" data-type="1"><a href="#type1" aria-controls="type1" role="tab" data-toggle="tab"><%=t1667;%></a></li>
+            <li role="presentation" data-type="2"><a href="#type2" aria-controls="type2" role="tab" data-toggle="tab"><%=t1668;%></a></li>
+            <li role="presentation" data-type="3"><a href="#type3" aria-controls="type3" role="tab" data-toggle="tab"><%=t1669;%></a></li>
+          </ul>
+
+          <!-- Tab panes -->
+          <div class="tab-content marginT15">
+            <div role="tabpanel" class="tab-pane active" id="type1">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label class="col-xs-3 control-label paddingT0"><%=t1121;%></label>
+                    <div class="col-xs-8">
+                      <input type="text" class="form-control formtitle" placeholder="<%=t1208;%>">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-xs-3 control-label paddingT0"><%=t1226;%></label>
+                    <div class="col-xs-8">
+                      <textarea class="form-control content" placeholder="<%=t1226;%>" style="height:100px;"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-xs-3 control-label paddingT0"><%=t1289;%> <!-- <br><span class="ft12 fn">（[["i001",10],["i002",10]]）</span> --></label>
+                    <div class="col-xs-8">
+                      <input type="text" class="form-control reward" placeholder="<%=t1310;%>">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-xs-3 control-label paddingT0"><%=t1359;%> <!-- <br><span class="ft12 fn">（秒）</span> --></label>
+                    <div class="col-xs-8">
+                      <input type="number" class="form-control delay" placeholder="<%=t1359;%>">
+                    </div>
+                  </div>
+                </form>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="type2">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1121;%></label>
+                  <div class="col-xs-8">
+                    <input type="text" class="form-control formtitle" placeholder="<%=t1208;%>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1226;%></label>
+                  <div class="col-xs-8">
+                    <textarea class="form-control content" placeholder="<%=t1226;%>" style="height:100px;"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1289;%> <!-- <br><span class="ft12 fn">（[["i001",10],["i002",10]]）</span> --></label>
+                  <div class="col-xs-8">
+                    <input type="text" class="form-control reward" placeholder="<%=t1310;%>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1328;%><!-- <br><span class="ft12 fn">（“,”分割多个UID）</span> --></label>
+                  <div class="col-xs-8">
+                    <input type="text" class="form-control uid" placeholder="<%=t1328;%>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1359;%> <!-- <br><span class="ft12 fn">（秒）</span> --></label>
+                  <div class="col-xs-8">
+                    <input type="number" class="form-control delay" placeholder="<%=t1359;%>">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="type3">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1670;%></label>
+                  <div class="col-xs-8">
+                    <input type="text" class="form-control" placeholder="" id="serial">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1671;%></label>
+                  <div class="col-xs-8">
+                    <input type="text" class="form-control" placeholder="" id="code">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1672;%></label>
+                  <div class="col-xs-8">
+                    <input type="number" class="form-control" placeholder="" id="money">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1673;%></label>
+                  <div class="col-xs-8">
+                    <input type="number" class="form-control" placeholder="" id="gold">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1674;%></label>
+                  <div class="col-xs-8">
+                    <input type="number" class="form-control uid" placeholder="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-xs-3 control-label paddingT0"><%=t1359;%></label>
+                  <div class="col-xs-8">
+                    <input type="number" class="form-control delay" placeholder="<%=t1359;%>">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+      	<span class="cred modal-tip marginR30"></span>
+      	<a href="javascript:;" class="btn greenbtn add-surebtn"><%=t1628;%></a>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><%=t1630;%></button>
+      </div>
+    </div>
+  </div>
+</div>

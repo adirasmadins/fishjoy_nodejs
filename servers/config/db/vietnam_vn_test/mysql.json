@@ -1,0 +1,17 @@
+{
+    "enable": true,
+    "server": {
+        "host": "103.90.220.76",
+        "port": 3030,
+        "auth":true,
+        "user": "mysqlremote",
+        "password": "Vnet@9999",
+        "database": "fishjoy",
+        "charset": "utf8"
+    },
+    "ext": {
+        "poolSize": 4,
+        "max":8,
+        "min":1
+    }
+}

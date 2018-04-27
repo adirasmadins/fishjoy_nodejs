@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1009;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="padding20 bgfff">
+		<span class="lineheight34 ft18 marginB10 marginR15"><%=t1109;%></span>
+		<span class="marginR15 corange"><%=t1110;%> <span id="costTotal"></span></span>
+		<span class="marginR15 corange"><%=t1111;%><span id="gainTotal"></span></span>
+	</div>
+	<!-- 搜索框 -->
+	<div class="formbox marginB30 marginT15">
+		<form class="form-inline">
+		  <div class="form-group">
+	          	<div class="form-group marginL10">
+	          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1081;%>：</label>
+	      	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+	      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="<%=t1081;%>" name="start_time">
+	      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+	      	        </div>
+	      			<input type="hidden" id="s_date" value=""/>
+	          	</div>
+		  </div>
+		  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+		</form>
+	</div>
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div>
+				
+			  <!-- Nav tabs -->
+			  <ul class="nav nav-tabs borderB0 mytabs" role="tablist">
+			  	<!-- <li role="presentation" class="lineheight34 ft18 marginR15">金币数据（默认当天）</li> -->
+			    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Output</a></li>
+			    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Input</a></li>
+			  </ul>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="home">
+			    	<div class="panel panel-default">
+			    	  <!-- <div class="panel-heading"> -->
+			    	  	<!-- <span class="marginR15">今日Output 545687</span>
+			    	  	<span class="marginR15">今日Input 545687</span> -->
+			    	  <!-- </div> -->
+			    	  <div class="panel-body tab-content marginT15">
+			    	  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			    	  	    	<div class="tablebox">
+			    	  				<table class="table table-bordered table-striped">
+			    	  				  <thead class="bgf5">
+			    	  				  	<tr>
+			    	  				  		<!-- <th>Period</th> 
+			    	  				  		<th>Total Input</th>
+			    	  				  		<th>Total Output</th>
+			    	  				  		<th>Cash</th>
+			    	  				  		<th>BuySkin</th>
+			    	  				  		<th>BuySkill</th>
+			    	  				  		<th>Nuclear</th>
+			    	  				  		<th>Active</th>
+			    	  				  		<th>BuyRuby</th>
+			    	  				  		<th>BuyCard</th>
+			    	  				  		<th>BuyVIPGift</th>
+			    	  				  		<th>Give</th>
+			    	  				  		<th>Draw</th>
+			    	  				  		<th>Other</th> -->
+			    	  				  		<th><%=t1153;%></th>
+			    	  				  		<th><%=t1041;%></th>
+			    	  				  		<th><%=t1042;%></th>
+			    	  				  		<th><%=t1043;%></th>
+			    	  				  		<th><%=t1649;%></th>
+			    	  				  		<th><%=t1044;%></th>
+			    	  				  		<th><%=t1045;%></th>
+			    	  				  		<th><%=t1046;%></th>
+			    	  				  		<th><%=t1047;%></th>
+			    	  				  		<th><%=t1048;%></th>
+			    	  				  		<th><%=t1050;%></th>
+			    	  				  		<th><%=t1049;%></th>
+			    	  				  		<th><%=t1051;%></th>
+			    	  				  		<th><%=t1053;%></th>
+			    	  				  		<th><%=t1054;%></th>
+			    	  				  	</tr>
+			    	  				  </thead>
+			    	  				  <tbody id="output_body"> </tbody>
+			    	  				</table>
+	  				  				<script type="text/html" id="output_data">
+	  				  				    {{each cost as val}}
+	  				  				    <tr>
+	  				  				    	<tr>
+	  					  				  		<td>{{val.time}}</td>
+	  					  				  		<td>{{val.totalCost}}</td>
+	  					  				  		<td>{{val.totalGain}}</td>
+	  					  				  		<td>{{val.cash}}</td>
+	  					  				  		<td>{{val.fishingCost}}</td>
+	  					  				  		<td>{{val.buySkin}}</td>
+	  					  				  		<td>{{val.buySkill}}</td>
+	  					  				  		<td>{{val.nuclear}}</td>
+	  					  				  		<td>{{val.active}}</td>
+	  					  				  		<td>{{val.buyRuby}}</td>
+	  					  				  		<td>{{val.buyCard}}</td>
+	  					  				  		<td>{{val.buyVipGift}}</td>
+	  					  				  		<td>{{val.give}}</td>
+	  					  				  		<td>{{val.draw}}</td>
+	  					  				  		<td>{{val.other}}</td>
+	  					  				  	</tr>
+	  				  				    </tr>
+	  				  				    {{/each}}
+	  				  				 </script>
+			    	  			</div>
+			    	  	    </div>
+			    	  	    <div role="tabpanel" class="tab-pane tablebox" id="tubox">
+			    	  	    	<div id="goods_source" style="width:1000px;height:300px;"></div>
+			    	  	    </div>
+			    	  </div>
+			    	  <div class="panel-footer ">
+			    	  	<ul class="nav clearfloat">
+			    	  		<li role="presentation" class="active fl"><a href="#tablebox" aria-controls="tablebox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe66d;</span></a></li>
+			    	  		<li role="presentation" class="fl"><a href="#tubox" aria-controls="tubox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe6a3;</span></a></li>
+			    	  	</ul>
+			    	  </div>
+			    	</div>
+			    </div>
+			    <div role="tabpanel" class="tab-pane" id="profile">
+			    	<div class="panel panel-default">
+			    	  <div class="panel-body tab-content marginT15">
+			    	  	    <div role="tabpanel" class="tab-pane tablebox active" id="input_tablebox">
+			    	  	    	<div class="tablebox">
+			    	  				<table class="table table-bordered table-striped">
+			    	  				  <thead class="bgf5">
+			    	  				  	<tr>
+		<!-- 	    	  				  		<th>Period</th> 
+			    	  				  		<th>Total Output</th>
+			    	  				  		<th>Total Input</th>
+			    	  				  		<th>Topup</th>
+			    	  				  		<th>Gift</th>
+			    	  				  		<th>Fishing win</th>
+			    	  				  		<th>Nuclear</th>
+			    	  				  		<th>Active</th>
+			    	  				  		<th>Mail</th>
+			    	  				  		<th>Benefit</th>
+			    	  				  		<th>Month Card</th>
+			    	  				  		<th>First Topup</th>
+			    	  				  		<th>Draw</th>
+			    	  				  		<th>Golden Fish</th> -->
+
+			    	  				  		<th><%=t1153;%></th> 
+			    	  				  		<th><%=t1027;%></th>
+			    	  				  		<th><%=t1028;%></th>
+			    	  				  		<th><%=t1029;%></th>
+			    	  				  		<th><%=t1030;%></th>
+			    	  				  		<th><%=t1031;%></th>
+			    	  				  		<th><%=t1032;%></th>
+			    	  				  		<th><%=t1033;%></th>
+			    	  				  		<th><%=t1034;%></th>
+			    	  				  		<th><%=t1035;%></th>
+			    	  				  		<th><%=t1036;%></th>
+			    	  				  		<th><%=t1038;%></th>
+			    	  				  		<th><%=t1039;%></th>
+			    	  				  		<th><%=t1040;%></th>
+			    	  				  	</tr>
+			    	  				  </thead>
+			    	  				  <tbody id="input_body"> </tbody>
+			    	  				</table>
+	  				  				<script type="text/html" id="input_data">
+	  				  				    {{each gain as val}}
+	  				  				    	<tr>
+	  					  				  		<td>{{val.time}}</td>
+	  					  				  		<td>{{val.totalCost}}</td>
+	  					  				  		<td>{{val.totalGain}}</td>
+	  					  				  		<td>{{val.topup}}</td>
+	  					  				  		<td>{{val.gift}}</td>
+	  					  				  		<td>{{val.fishingWin}}</td>
+	  					  				  		<td>{{val.nuclear}}</td>
+	  					  				  		<td>{{val.active}}</td>
+	  					  				  		<td>{{val.mail}}</td>
+	  					  				  		<td>{{val.benefit}}</td>
+	  					  				  		<td>{{val.monthCard}}</td>
+	  					  				  		<td>{{val.firstTopup}}</td>
+	  					  				  		<td>{{val.draw}}</td>
+	  					  				  		<td>{{val.goldenFish}}</td>
+	  					  				  	</tr>
+	  				  				    {{/each}}
+	  				  				 </script>
+			    	  			</div>
+			    	  	    </div>
+			    	  	    <div role="tabpanel" class="tab-pane tablebox" id="input_tubox">
+			    	  	    	<div id="input_goods_source" style="width:1000px;height:500px;"></div>
+			    	  	    </div>
+			    	  </div>
+			    	  <div class="panel-footer ">
+			    	  	<ul class="nav clearfloat">
+			    	  		<li role="presentation" class="active fl"><a href="#input_tablebox" aria-controls="tablebox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe66d;</span></a></li>
+			    	  		<li role="presentation" class="fl"><a href="#input_tubox" aria-controls="tubox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe6a3;</span></a></li>
+			    	  	</ul>
+			    	  </div>
+			    	</div>
+			    </div>
+			  </div>
+			</div>
+
+		</div>
+	</div>
+<script type="text/javascript">
+	
+	var namebox = {
+		'input':['<%=t1153;%>', '<%=t1027;%>', '<%=t1028;%>', '<%=t1029;%>', '<%=t1030;%>', '<%=t1031;%>', '<%=t1032;%>', '<%=t1033;%>', '<%=t1034;%>', '<%=t1035;%>', '<%=t1036;%>', '<%=t1038;%>', '<%=t1039;%>', '<%=t1040;%>'],
+		'cost':['<%=t1153;%>', '<%=t1041;%>', '<%=t1042;%>', '<%=t1043;%>', '<%=t1649;%>','<%=t1044;%>', '<%=t1045;%>', '<%=t1046;%>', '<%=t1047;%>', '<%=t1048;%>', '<%=t1050;%>', '<%=t1049;%>', '<%=t1051;%>', '<%=t1053;%>', '<%=t1054;%>'],
+		'alertTip':'<%=t1621;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/game_data/gold.js"></script>
+</body>
+</html>

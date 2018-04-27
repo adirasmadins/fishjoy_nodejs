@@ -1,0 +1,87 @@
+<div class="modal fade" id="addnotice" tabindex="-1" role="dialog" aria-labelledby="addnoticeLabel">
+  <div class="modal-dialog" role="document" style="width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="addnoticeLabel"><%=t1100;%></h4>
+      </div>
+      <div class="modal-body">
+      	<form class="form-horizontal">
+      	  <div class="form-group">
+      	    <label class="col-xs-3 control-label paddingT0"><%=t1122;%></label>
+      	    <div class="col-xs-8">
+      	      <textarea class="form-control" rows="3" placeholder="<%=t1122;%>" id="content"></textarea>
+      	    </div>
+      	  </div>
+      	  <div class="form-group">
+      	    <label class="col-xs-3 control-label paddingT0"><%=t1227;%></label>
+      	    <div class="col-xs-8">
+      	      <input type="number" class="form-control" placeholder="<%=t1227;%>" id="gap">
+      	    </div>
+      	  </div>
+      	  <div class="form-group">
+      	    <label class="col-xs-3 control-label paddingT0"><%=t1290;%></label>
+      	    <div class="col-xs-8">
+      	      <input type="number" class="form-control" placeholder="<%=t1311;%>" id="repeat">
+      	    </div>
+      	  </div>
+      	  <div class="form-group">
+      	    <label class="col-xs-3 control-label paddingT0"><%=t1329;%><!--  <br><span class="ft12 fn">（格式2018-2-2 14:09:31）</span> --></label>
+      	    <div class="col-xs-8">
+      	        <div class="input-group date s_date" data-date="" data-link-field="s_date">
+      	            <input class="form-control" size="16" type="text" value="" readonly name="start_time">
+      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+      	        </div>
+      			<input type="hidden" id="s_date" value=""/>
+      	    </div>
+      	  </div>
+      	  <div class="form-group">
+      	    <label class="col-xs-3 control-label paddingT0"><%=t1243;%> <!-- <br><span class="ft12 fn">（格式2018-2-2 14:09:31）</span> --></label>
+      	    <div class="col-xs-8">
+	             <div class="input-group date e_date" data-date="" data-link-field="e_date">
+	                 <input class="form-control" size="16" type="text" value="" readonly name="end_time">
+	                 <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+	             </div>
+	     		<input type="hidden" id="e_date" value=""/>
+      	    </div>
+      	  </div>
+      	</form>
+      </div>
+      <div class="modal-footer">
+      	<span class="cred modal-tip marginR30"></span>
+      	<a href="javascript:;" class="btn greenbtn add-surebtn"><%=t1628;%></a>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><%=t1630;%></button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+	// 时间选择
+	$('.s_date').datetimepicker({
+	    todayBtn:  1,
+	    autoclose: 1,
+	    todayHighlight: 1,
+	    startView: 2,
+	    minView: 0,
+	    format: 'yyyy-mm-dd hh:ii:ss',
+	    forceParse: 0,
+	    pickerPosition:'bottom-left'
+	}).on('changeDate',function(event){ 
+	    var starttime=$('[name="start_time"]').val();
+	    $('.e_date').datetimepicker('setStartDate',starttime);
+
+	});
+	$('.e_date').datetimepicker({
+	    todayBtn:  1,
+	    autoclose: 1,
+	    todayHighlight: 1,
+	    startView: 2,
+	    minView: 0,
+	    format: 'yyyy-mm-dd hh:ii:ss',
+	    forceParse: 0,
+	    pickerPosition:'bottom-left'
+	}).on('changeDate',function(event){
+	    var endtime=$('[name="end_time"]').val();
+	    $('.s_date').datetimepicker('setEndDate',endtime);
+	});
+</script>

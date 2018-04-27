@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title>数据实时监控</title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading">数据总览</div>
+			  <div class="panel-body tab-content">
+	  	       	<div class="tablebox row">
+	  	       		<div class="col-xs-5">
+		  	       		<p class="ft16 marginB10">全服捕获率控制：</p>
+		  	   			<table class="table table-bordered">
+		  	   			  <tbody id="query_body"> </tbody>
+		  	   			</table>
+		 				<script type="text/html" id="query_data">
+		 				    <tr>
+		 				    	<td width="40%" class="bgD9">全服累积充值VND</td>
+		 				    	<td>{{data.rechargeTotal}}</td>
+		 				    </tr>
+    	  	   			  	<tr>
+    	  	   			  		<td class="bgD9">全服累积提现VND</td>
+    	  	   			  		<td>{{data.cashTotal}}</td>
+    	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9">最近一周充值VND</td>
+      	  	   			  		<td>{{data.rechargeRecentWeek}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9">最近一周提现VND</td>
+      	  	   			  		<td>{{data.cashRecentWeek}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9">近一小时玩家开火</td>
+      	  	   			  		<td>{{data.playerFireRecentHour}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9">近一小时玩家盈亏</td>
+      	  	   			  		<td>{{data.playerProfitRecentHour}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9">全服提现修正</td>
+      	  	   			  		<td> {{data.cashRateCorrection}} </td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9">提现比例，近一周超出后全服命中降低</td>
+      	  	   			  		<td>{{data.cashRate*100+'%'}}</td>
+      	  	   			  	</tr>
+      	  	   			  	<tr>
+      	  	   			  		<td class="bgD9">全服捕获率</td>
+      	  	   			  		<td rowspan="2">
+      	  	   			  			<table class="edit-mainbox">
+      	  	   			  				<tbody>
+      	  	   			  					<tr>
+      	  	   			  						<td class="rateshow">{{data.serverCatchRate*100+'%'}}</td>
+      	  	   			  						<td><input type="text" name="" class="form-control eidt-input hide rateinput" value=""></td>
+      	  	   			  						<td rowspan="2" class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btn" data-type="1" value="{{data.serverCatchRate*100+'%'}}">修改</a></td>
+      	  	   			  					</tr>
+      	  	   			  					<tr>
+      	  	   			  						<td class="timeshow">{{data.serverCatchRateExpire}}</td>
+      	  	   			  						<td><input type="number" name="" class="form-control eidt-input hide timeinput" value="{{data.serverCatchRateExpire}}"></td>
+      	  	   			  					</tr>
+      	  	   			  				</tbody>
+      	  	   			  			</table>
+      	  	   			  		</td>
+      	  	   			  	</tr>
+		 				 </script>
+	  	       		</div>
+	  	       		<div class="col-xs-5 col-xs-offset-1">
+		  	       		<p class="ft16 marginB10">服务器周期控制：</p>
+		  	   			<table class="table table-bordered">
+		  	   			  <tbody id="period_body"></tbody>
+		  	   			</table>
+		  	   			<script type="text/html" id="period_data">
+		  	   				<tr>				
+		  	   					<td width="40%" class="bgD9">当前周期</td>
+		  	   					<td>{{data.currentPeriod}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9">本次周期开始时间</td>
+		  	   					<td>{{data.startTime}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9">本次周期持续时间：秒</td>
+		  	   					<td>{{data.durationExpect}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9">当前命中加成</td>
+		  	   					<td>{{data.catchRate}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgD9">近一天服务器抽水</td>
+		  	   					<td>{{data.extractRecentDay}}</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF">期望抽水</td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.extractExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="extractExpect">修改</a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF">周期总时长</td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.duration}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="duration">修改</a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF">出分周期命中</td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.giveCatchRateExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="giveCatchRateExpect">修改</a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF">出分周期时长（小于总时长）</td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.giveDurationExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="giveDurationExpect">修改</a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF">吃分周期命中</td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.gainCatchRateExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="gainCatchRateExpect">修改</a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   				<tr>
+		  	   					<td class="bgDF">吃分周期时长（小于总时长）</td>
+		  	   					<td>
+		  	   						<table class="edit-mainbox">
+		  	   							<tbody>
+		  	   								<tr>
+		  	   									<td class="val-show">{{data.gainDurationExpect}}</td>
+		  	   									<td><input type="text" name="" class="form-control eidt-input hide" value=""></td>
+		  	   									<td class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btnq" data-key="gainDurationExpect">修改</a></td>
+		  	   								</tr>
+		  	   							</tbody>
+		  	   						</table>
+		  	   					</td>
+		  	   				</tr>
+		  	   			</script>
+	  	       		</div>
+	  	   		</div>
+			  </div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="panel panel-default" style="height:716px;">
+					  <div class="panel-heading">快速查询玩家</div>
+					  <div class="panel-body tab-content">
+			  	       	<div class="tablebox">
+			  	       		<div class="formbox marginB30 marginT15">
+			  	       			<form class="form-inline">
+			  	       				<div class="form-group">
+			  	       				  <label class="fn">UID/昵称：</label>
+			  	       				 	<input type="text" name="" class="form-control" placeholder='输入UID或玩家昵称' id="uidsbox"> 
+			  	       				 </div>
+			  	       			  <a href="javascript:;" class="btn greenbtn marginL10 " id="search_player">查询</a>
+			  	       			</form>
+			  	       		</div>
+			  	   			<table class="table table-bordered">
+			  	   			  <tbody id="player_body">						
+			  	   			  	
+			  	   			  </tbody>
+			  	   			</table>
+			  	   			<script type="text/html" id="player_data">
+			  	   			  	<tr>
+			  	   			  		<td width="40%" class="bgD9">玩家昵称</td>
+			  	   			  		<td>{{data.nickname}}</td>
+			  	   			  	</tr>
+			  	   			  	<tr>
+			  	   			  		<td class="bgD9">玩家UID</td>
+			  	   			  		<td>{{data.uid}}</td>
+			  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">已充值VND</td>
+		  	  	   			  		<td>{{data.recharge}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">已提现VND</td>
+		  	  	   			  		<td>{{data.cash}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">信用额度</td>
+		  	  	   			  		<td>{{data.credit}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">持有金币</td>
+		  	  	   			  		<td>{{data.gold}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">盈亏（越南盾）</td>
+		  	  	   			  		<td>{{data.profit}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">最近一小时开火</td>
+		  	  	   			  		<td>{{data.fireRecentHour}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">最近一小时盈亏</td>
+		  	  	   			  		<td>{{data.profitRecentHour}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">最近一小时盈亏率</td>
+		  	  	   			  		<td>{{data.profitRateRecentHour}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">历史盈亏</td>
+		  	  	   			  		<td>{{data.profitHistory}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">历史盈亏比</td>
+		  	  	   			  		<td>{{data.profitRateHistory}}</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">玩家捕获率</td>
+		  	  	   			  		<td rowspan="2">
+		  	  	   			  			<table class="edit-mainbox">
+		  	  	   			  				<tbody>
+		  	  	   			  					<tr>
+		  	  	   			  						<td class="rateshow">{{data.catchRate*100+'%'}}</td>
+		  	  	   			  						<td><input type="text" name="" class="form-control eidt-input hide rateinput" value="{{data.catchRate*100+'%'}}"></td>
+		  	  	   			  						<td rowspan="2" class="textright"><a href="javascript:;" class="btn btn-sm btn-warning eidts-btn" data-type="2">修改</a></td>
+		  	  	   			  					</tr>
+		  	  	   			  					<tr>
+		  	  	   			  						<td class="timeshow">{{data.catchRateExpire}}</td>
+		  	  	   			  						<td><input type="number" name="" class="form-control eidt-input hide timeinput" value="{{data.catchRateExpire}}"></td>
+		  	  	   			  					</tr>
+		  	  	   			  				</tbody>
+		  	  	   			  			</table>
+		  	  	   			  		</td>
+		  	  	   			  	</tr>
+		  	  	   			  	<tr>
+		  	  	   			  		<td class="bgD9">失效时间（秒）</td>
+		  	  	   			  	</tr>
+			  	   			</script>
+			  	   		</div>
+					  </div>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="panel panel-default" style="height:716px;">
+					  <div class="panel-heading">提现数据预览（默认把当日显示在中间）</div>
+					  <div class="panel-body tab-content">
+			  	       	<div class="tablebox">
+			  	   			<table class="table table-bordered">
+			  	   				<thead>
+			  	   					<tr class="bgD9">
+			  	   						<th>日期</th>
+			  	   						<th>总提现次数</th>
+			  	   						<th>总提现额</th>
+			  	   						<th>人均提现额</th>
+			  	   					</tr>
+			  	   				</thead>
+			  	   			  <tbody id="cash_body">						
+			  	   			  </tbody>
+			  	   			</table>
+			  	   			<!-- 分页 -->
+			  	   			<div class="clearfloat">
+			  	   				<nav aria-label="Page navigation" class="fr textright define-pagination">
+			  	   				    <ul class="pagination cash-pagination"></ul>
+			  	   				</nav>
+			  	   			</div>
+			  	   			<script type="text/html" id="cash_data">
+			  	   				{{each data.chart as val}}
+				  	   				<tr>
+				  	   					<td>{{val.date}}</td>
+				  	   					<td>{{val.cashCount}}</td>
+				  	   					<td>{{val.cashAccount}}</td>
+				  	   					<td>{{val.cashVndAvg}}</td>
+				  	   				</tr>
+			  	   				{{/each}}
+			  	   			</script>
+			  	   		</div>
+					  </div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading">盈利排名（每页100条，点击标题切换排序方式）</div>
+			  <div class="panel-body tab-content">
+	  	       	<div class="tablebox">
+	  	   			<table class="table table-bordered">
+	  	   				<thead>
+	  	   					<tr class="bgD9">
+	  	   						<th>玩家名称</th>
+	  	   						<th>玩家ID</th>
+	  	   						<th>充值额度</th>
+	  	   						<th>提现额度</th>
+	  	   						<th>持有金币</th>
+	  	   						<th>其他消耗金币</th>
+	  	   						<th class="sort-type" data-type="1">
+		  	   						<span class="sortbtn">历史盈亏</span>
+		  	   						<img src="../../img/sort.png" class="sortbtn">
+		  	   					</th>
+	  	   						<th>历史盈亏率</th>
+	  	   						<th>近1小时盈亏</th>
+	  	   						<th>近1小时盈亏率</th>
+	  	   						<th>账号被锁</th>
+	  	   						<th>捕获率</th>
+	  	   					</tr>
+	  	   				</thead>
+	  	   			  <tbody id="profit_body">						
+	  	   			  </tbody>
+	  	   			</table>
+	  	   			<!-- 分页 -->
+	  	   			<div class="clearfloat">
+	  	   				<nav aria-label="Page navigation" class="fr textright define-pagination">
+	  	   				    <ul class="pagination profit-pagination"></ul>
+	  	   				</nav>
+	  	   			</div>
+	  	   			<script type="text/html" id="profit_data">
+	  	   				{{each data.chart as val}}
+		  	   				<tr>
+		  	   					<td>{{val.nickname}}</td>
+		  	   					<td>{{val.uid}}</td>
+		  	   					<td>{{val.recharge}}</td>
+		  	   					<td>{{val.cash}}</td>
+		  	   					<td>{{val.gold}}</td>
+		  	   					<td>{{val.otherCost}}</td>
+		  	   					<td>{{val.profitHistory}}</td>
+		  	   					<td>{{val.profitRateHistory}}</td>
+		  	   					<td>{{val.profitRecentHour}}</td>
+		  	   					<td>{{val.profitRateRecentHour}}</td>
+		  	   					<td>{{val.isFreeze == true ? '' : '已被锁'}}</td>
+		  	   					<td>{{val.catchRate}}</td>
+		  	   				</tr>
+	  	   				{{/each}}
+	  	   			</script>
+	  	   		</div>
+			  </div>
+			</div>
+		</div>
+	</div>
+
+<script type="text/javascript">
+	$(function(){
+		// 封号
+		$('body').on('click','.ban-btn',function(){
+			var val = $(this).prev('.ban-state').attr('data-state');
+			if(val == 0 || val == '0'){
+				parent.$("#ban").modal('show');
+			}
+		});
+		// 全服
+		get_list('queryJackpot',{},$('#query_body'),'query_data');
+		// 修改输入框
+		$('body').on('click','.eidts-btn,.eidts-btnq',function(){
+		  var data;
+		  if($(this).hasClass('eidts-btn')){
+		  	var box = $(this).parents('.edit-mainbox');
+		  	var type = $(this).attr('data-type');
+		  	var rate =box.find('.rateinput').val();
+		  	var leftSecond = box.find('.timeinput').val();
+		  	data = {
+		  		'data':{'type':type,'rate':rate,'leftSecond':leftSecond},
+		  		'url':'changeCatchRate',
+		  		'obj':$(this),
+		  		'changenum':2
+		  	}
+		  }else{
+		  	var key = $(this).attr('data-key');
+		  	var value = $(this).parents('tr').find('.eidt-input').val();
+		  	data = {
+		  		'data':{'key':key,'value':value},
+		  		'url':'changeQueryServerPeriod',
+		  		'obj':$(this),
+		  		'changenum':1
+		  	}
+		  }
+		  events.eidtchange($(this),eidts,data);
+		}) ;
+		// 服务器周期控制
+		get_list('queryServerPeriod',{},$('#period_body'),'period_data');
+		// 快速查询玩家
+		$('body').on('click','#search_player',function(){
+			var uid = $('#uidsbox').val();
+			if(uid){
+				get_list('queryPlayer',{'uid':uid},$('#player_body'),'player_data');
+			}else{
+				events.myalert('请输入正确uid！')
+			}
+		});
+		var listnum = 10,profit_num = 100;//默认每页10条
+		// 体现数据预览
+		get_list('getCashData',{'start':0,'length':listnum},$('#cash_body'),'cash_data');
+		// 点击分页
+		$('body').on('click','.cash-pagination a[data-page]',function(){
+			var data = events.clickPage($(this));
+			get_list('getCashData',{'start':data.startpage,'length':listnum},$('#cash_body'),'cash_data');
+		});
+		// 盈亏排名
+		get_list('getProfitChart',{'start':0,'length':profit_num,'type':$('.sort-type').attr('data-type')},$('#profit_body'),'profit_data');
+		// 排序
+		$('body').on('click','.sortbtn',function(){
+			var typenum;
+			if($('.sort-type').attr('data-type') == 1){
+				typenum = 2;
+			}else{
+				typenum = 1
+			}
+			$('.sort-type').attr('data-type',typenum);
+			get_list('getProfitChart',{'start':0,'length':profit_num,'type':typenum},$('#profit_body'),'profit_data');
+		})
+		// 点击分页
+		$('body').on('click','.profit-pagination a[data-page]',function(){
+			var data = events.clickPage($(this));
+			get_list('getProfitChart',{'start':data.startpage,'length':profit_num,'type':1},$('#profit_body'),'profit_data');
+		});
+	});
+	// 获取列表数据
+	function get_list(url,d,objbox,objdata){
+		parent.$('#mask').show();
+		$.ajax({
+		    url:events.ajax_url+"/admin/"+url,
+		    async: true,
+		    type: 'POST',
+		    dataType: 'json',
+		    xhrFields: {withCredentials: true},
+		    crossDomain: true,
+		    data: {data:d},
+		    success: function (data) {
+		      console.log(data);
+		      if(data.data.pages){
+		      	pagination(d.start?d.start : 1,data.data.pages,objbox.parent('table').next('div').find('ul.pagination'));
+		      };
+		      objbox.html(template(objdata, data));
+		      parent.$('#mask').hide();
+		    },
+		    error:function(e){
+		      console.log(e);
+		    }
+		});
+	}
+	// 修改全服
+	function eidts(d){
+	  // if(d.rate){
+	    parent.$('#mask').show();
+	    $.ajax({
+	        url:events.ajax_url+"/admin/"+d.url,
+	        async: true,
+	        type: 'POST',
+	        dataType: 'json',
+	        xhrFields: {withCredentials: true},
+	        crossDomain: true,
+	        data: {data:d.data},
+	        success: function (data) {
+	          console.log(data);
+	          parent.$('#mask').hide();
+	          if(data.data.result == true){
+	            events.myalert('操作成功');
+	            console.log(d.data.value);
+	            if(d.changenum == 1){
+	            	d.obj.parents('tr').find('.eidt-input').val(d.data.value);
+	            	d.obj.parents('tr').find('.val-show').html(d.data.value);
+	            }else{
+	            	var mainbox = d.obj.parents('.edit-mainbox');
+	            	mainbox.find('.rateinput').val(d.data.rate);
+	            	mainbox.find('.timeinput').val(d.data.leftSecond);
+	            	mainbox.find('.rateshow').html(d.data.rate);
+	            	mainbox.find('.timeshow').html(d.data.leftSecond);
+	            }
+	          }else{
+	            events.myalert('操作失败');
+	          }
+	        },
+	        error:function(e){
+	          console.log(e);
+	        }
+	    });
+	  // }
+	}
+</script>
+</body>
+</html>

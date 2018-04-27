@@ -1,0 +1,1 @@
+INSERT INTO `tbl_admin_user` VALUES (1, 'admin', 'c9ebea80c20dbf1897f0c72097fd16f3df3f7dc03f895886', 'O4qdZ95vQdhXmE3G4a4M/KZ0SAaq4on+oBhLlCU6iwR82Vh6Bd290SHpu8k70ath20Goq0jmMl0mjLHFBlkSsg==', '1_f9c3005d27fe7280beb978d4ec1018d229e7ea621692efeb', '2016-11-10 13:03:14', '2016-11-10 13:03:14', 2, 1);

@@ -1,0 +1,26 @@
+exports.fake1 = [
+    {
+        time: '2018-02-20',
+        avgHourOnline: 2668,
+        maxHourOnline: 9000,
+        activeAccount: 10000,
+        newAccount: 900,
+        retention1: '30 %',
+        retention3: '30 %',
+        retention7: '30 %',
+        retention14: '30 %',
+        retention30: '30 %',
+    },
+    {
+        time: '2018-02-21',
+        avgHourOnline: 3900,
+        maxHourOnline: 10000,
+        activeAccount: 10020,
+        newAccount: 900,
+        retention1: '20 %',
+        retention3: '25 %',
+        retention7: '31 %',
+        retention14: '20 %',
+        retention30: '7 %',
+    },
+];

@@ -1,0 +1,12 @@
+{
+    "enable": true,
+    "server": {
+        "host": "10.66.232.136",
+        "port": 6379,
+        "auth": true,
+        "password": "crs-cwxtb7al:pwd1234@^@",
+        "db": 0,
+        "prefix": ""
+    },
+    "ext": {}
+}

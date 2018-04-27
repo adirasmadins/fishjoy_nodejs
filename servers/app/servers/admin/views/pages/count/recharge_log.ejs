@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1006;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat"><%=t1108;%><p class="fr"><%=t1688;%>：<span id="pages"></span>，<%=t1689;%>：<span id="rows"></span></p></div>
+			  <div class="panel-body tab-content">
+			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			  	    	<div class="tablebox">
+			  				<!-- 搜索框 -->
+			  				<div class="formbox marginB30 marginT15">
+			  					<form class="form-inline">
+			  					  <div class="form-group marginR15">
+			  				          	<div class="form-group marginL10">
+			  				          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1079;%>：</label>
+			  				      	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+			  				      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="" name="start_time">
+			  				      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  				      	        </div>
+			  				      			<input type="hidden" id="s_date" value=""/>
+			  				          	</div>
+			  				          	<div class="form-group">
+			  				          	    <label for="e_date" class="control-label textright lineheight34 fn">－</label>
+			  				      	        <div class="input-group date e_date width200" data-date="" data-link-field="e_date">
+			  				      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="" name="end_time">
+			  				      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  				      	        </div>
+			  				      			<input type="hidden" id="e_date" value=""/>
+			  				          	</div>
+			  					  </div>
+			  					  <div class="form-group marginR30">
+			  					  	<span class="marginR15"><%=t1690;%>：</span>
+			  					  	<label class="checkbox-inline">
+			  					  	  <input type="checkbox" value="0" class="status" checked="checked"> Succ
+			  					  	</label>
+			  					  	<label class="checkbox-inline">
+			  					  	  <input type="checkbox" value="1" class="status"> Fail
+			  					  	</label>
+			  					  </div>
+			  					  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  				</form>
+			  				</div>
+			  				<table class="table table-bordered table-striped">
+			  				  <thead class="bgf5">
+			  				  	<tr>
+			  				  		<th><%=t1691;%></th>
+			  				  		<th><%=t1692;%></th>
+			  				  		<th><%=t1144;%></th>
+			  				  		<th><%=t1145;%></th>
+			  				  		<th><%=t1146;%></th>
+			  				  		<th><%=t1147;%></th>
+			  				  		<th><%=t1148;%></th>
+			  				  		<th><%=t1149;%></th>
+			  				  		<th><%=t1150;%></th>
+			  				  		<th><%=t1151;%></th>
+			  				  		<th><%=t1152;%></th>
+			  				  		<th><%=t1693;%></th>
+			  				  	</tr>
+			  				  </thead>
+			  				  <tbody id="topup_body">
+<!-- 			  				  	<tr>
+			  				  		<td>00:00~00:59</td>
+			  				  		<td>10</td>
+			  				  		<td>1</td>
+			  				  		<td>125</td>
+			  				  		<td>895</td>
+			  				  		<td>987</td>
+			  				  		<td>456</td>
+			  				  		<td>vip 0</td>
+			  				  		<td>693</td>
+			  				  		<td>889</td>
+			  				  	</tr> -->
+			  				  </tbody>
+			  				</table>
+			  				<!-- 分页 -->
+			  				<div class="clearfloat">
+			  					<nav aria-label="Page navigation" class="fr textright define-pagination">
+			  					    <input type="hidden" name="" id="pagecount" value=""><!--输出总页数-->
+			  					    <input type="hidden" name="" id="nowpage" value=""><!--输出当前页数-->
+			  					    <input type="hidden" name="" value="" id="pageurl"><!--跳转地址-->
+			  					    <ul class="pagination"></ul>
+			  					</nav>
+			  				</div>
+			  				<script type="text/html" id="topup_data">
+			  				    {{each chart as val}}
+			  				    	<tr>
+				  				  		<td>{{val.date}}</td>
+				  				  		<td>{{val.status}}</td>
+				  				  		<td>{{val.time}}</td>
+				  				  		<td>{{val.uid}}</td>
+				  				  		<td>{{val.nickname}}</td>
+				  				  		<td>{{val.orderId}}</td>
+				  				  		<td>{{val.platformId}}</td>
+				  				  		<td>{{val.platformOrder}}</td>
+				  				  		<td>{{val.itemId}}</td>
+				  				  		<td>{{val.itemName}}</td>
+				  				  		<td>{{val.itemPrice}}</td>
+				  				  		<td>{{val.detail}}</td>
+				  				  	</tr>
+			  				    {{/each}}
+			  				 </script>
+			  			</div>
+			  	    </div>
+
+			  </div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var namebox = {
+			'alertTip':'<%=t1621;%>'
+		}
+	</script>
+<script type="text/javascript" src="./../../js/manage/count/recharge_log.js"></script>
+
+</body>
+</html>

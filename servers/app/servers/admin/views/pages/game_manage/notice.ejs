@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1018;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat">
+			  	<span class="lineheight34"><%=t1101;%></span> 
+			  	<a class="btn greenbtn fr" id="add_notice"><%=t1100;%></a>
+			  </div>
+			  <div class="panel-body tab-content">
+	  	       <table class="table table-bordered table-striped textcenter">
+	  	       	<thead class="bgf5">
+	  	       		<tr>
+	  	       			<th><%=t1123;%></th>
+	  	       			<th><%=t1124;%></th>
+	  	       			<th><%=t1125;%></th>
+	  	       			<th><%=t1126;%></th>
+	  	       			<th><%=t1127;%></th>
+	  	       		</tr>
+	  	       	</thead>
+	  	         <tbody id="notice_body">
+	  	         </tbody>
+	  	       </table>
+ 				<script type="text/html" id="notice_box">
+ 				    {{each data as val}}
+ 				    	<tr>
+	  				  		<td>{{val.content}}</td>
+	  				  		<td>{{val.endTime}}</td>
+	  				  		<td>{{val.gap}}</td>
+	  				  		<td>{{val.repeat}}</td>
+	  				  		<td><a href="javascript:;" class="btn btn-sm btn-warning cancel-btn" data-id="{{val.id}}"><%=t1128;%></a></td>
+	  				  	</tr>
+ 				    {{/each}}
+ 				 </script>
+			  </div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'succ':'<%=t1617;%>',
+		'fail':'<%=t1618;%>',
+		'cancel':'<%=t1620;%>',
+		'filltip':'<%=t1616;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/game_manage/notice.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "enable": true,
+    "server": {
+        "host": "sql.thosanca.com",
+        "port": 3306,
+        "auth":true,
+        "user": "fishjoy",
+        "password": "TDYPxJYvdwEvwFkyVUZr",
+        "database": "fishjoy",
+        "charset": "utf8"
+    },
+    "ext": {
+        "poolSize": 4,
+        "max":8,
+        "min":1
+    }
+}

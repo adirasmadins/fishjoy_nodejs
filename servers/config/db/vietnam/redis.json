@@ -1,0 +1,13 @@
+{
+    "enable": true,
+    "server": {
+        "host": "redis.thosanca.com",
+        "port": 6379,
+        "auth":true,
+        "password": "EvwFkyVYvdwUZrTDYPxJ",
+        "db": 0,
+        "prefix":""
+    },
+    "ext": {
+    }
+}

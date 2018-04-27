@@ -1,0 +1,231 @@
+{
+  "development": {
+    "gate": [{
+      "id": "gate",
+      "host": "192.168.35.211",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13001"
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "192.168.35.211",
+      "port": 3201,
+      "publicHost": "192.168.35.211",
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13201"
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "192.168.35.211",
+      "port": 3301,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13301"
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "192.168.35.211",
+      "port": 3401,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13401"
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "192.168.35.211",
+      "port": 3501,
+      "publicHost": "192.168.35.211",
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13501"
+    }],
+    "hall": [{
+      "id": "hall-1",
+      "host": "192.168.35.211",
+      "port": 3601,
+      "publicHost": "192.168.35.211",
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13601"
+    }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "192.168.35.211",
+      "port": 3701,
+      "publicHost": "192.168.35.211",
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13701"
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "192.168.35.211",
+      "port": 3801,
+      "publicHost": "192.168.35.211",
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13801"
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "192.168.35.211",
+      "port": 3901,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:13901"
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "192.168.35.211",
+      "port": 4101,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:14101"
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "192.168.35.211",
+      "port": 4201,
+      "publicHost": "192.168.35.211",
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:14201"
+    }],
+    "logManager": [{
+      "id": "logManager",
+      "host": "192.168.35.211",
+      "port": 4301,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:14301"
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1",
+      "host": "192.168.35.211",
+      "port": 5001,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:15001"
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "192.168.35.211",
+      "port": 4001,
+      "clientHost": "192.168.35.211",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "192.168.35.211",
+      "port": 4005,
+      "clientHost": "192.168.35.211",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=192.168.35.211:14005",
+      "maxLoad": 250
+    }]
+  },
+  "production": {
+    "gate": [{
+      "id": "gate",
+      "host": "192.168.35.211",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": true
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "192.168.35.211",
+      "port": 3201,
+      "publicHost": "192.168.35.211",
+      "auto-restart": true
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "192.168.35.211",
+      "port": 3301,
+      "auto-restart": true
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "192.168.35.211",
+      "port": 3401,
+      "auto-restart": true
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "192.168.35.211",
+      "port": 3501,
+      "publicHost": "192.168.35.211",
+      "auto-restart": true
+    }],
+    "hall": [{
+      "id": "hall-1",
+      "host": "192.168.35.211",
+      "port": 3601,
+      "publicHost": "192.168.35.211",
+      "auto-restart": true
+    }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "192.168.35.211",
+      "port": 3701,
+      "publicHost": "192.168.35.211",
+      "auto-restart": true
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "192.168.35.211",
+      "port": 3801,
+      "publicHost": "192.168.35.211",
+      "auto-restart": true
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "192.168.35.211",
+      "port": 3901,
+      "auto-restart": true
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "192.168.35.211",
+      "port": 4101,
+      "auto-restart": true
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "192.168.35.211",
+      "port": 4201,
+      "publicHost": "192.168.35.211",
+      "auto-restart": true
+    }],
+    "logManager": [{
+      "id": "logManager",
+      "host": "192.168.35.211",
+      "port": 4301,
+      "auto-restart": true
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1",
+      "host": "192.168.35.211",
+      "port": 5001,
+      "auto-restart": true
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "192.168.35.211",
+      "port": 4001,
+      "clientHost": "192.168.35.211",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "192.168.35.211",
+      "port": 4005,
+      "clientHost": "192.168.35.211",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }]
+  }
+}

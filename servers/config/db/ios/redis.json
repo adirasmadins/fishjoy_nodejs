@@ -1,0 +1,12 @@
+{
+    "enable": true,
+    "server": {
+        "host": "10.25.209.184",
+        "port": 6379,
+        "auth": true,
+        "password": "adDO2UAOLxl6",
+        "db": 0,
+        "prefix": ""
+    },
+    "ext": {}
+}

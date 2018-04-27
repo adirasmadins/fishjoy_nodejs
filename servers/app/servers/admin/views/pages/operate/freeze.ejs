@@ -1,0 +1,59 @@
+  <!-- 封号 -->
+  <div class="modal fade" id="ban" tabindex="-1" role="dialog" aria-labelledby="banLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="banLabel"><%=t1435;%></h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1445;%></label>
+            <div class="col-xs-8">
+              <input type="text" class="form-control" id="reason">
+            </div>
+          </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1446;%></label>
+              <div class="col-xs-8">
+                  <div class="input-group date s_date" data-date="" data-link-field="s_date">
+                      <input class="form-control" size="16" type="text" value="" readonly name="start_time" id="time">
+                      <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                  </div>
+              <input type="hidden" id="s_date" value=""/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label paddingT0 lineheight34"><%=t1447;%></label>
+              <div class="col-xs-8">
+                <select class="form-control" id="type">
+                  <!-- <option value="1">账号+IP</option> -->
+                </select>
+              </div>
+            </div>
+            <input type="hidden" id="uid">
+            <input type="hidden" id="op">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <span class="cred modal-tip marginR30"></span>
+          <a href="javascript:;" class="btn greenbtn add-surebtn"><%=t1628;%></a>
+          <button type="button" class="btn btn-default" data-dismiss="modal"><%=t1630;%></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  	// 时间选择
+  	$('.s_date').datetimepicker({
+  	    todayBtn:  1,
+  	    autoclose: 1,
+  	    todayHighlight: 1,
+  	    startView: 2,
+  	    minView: 0,
+  	    format: 'yyyy-mm-dd hh:ii:ss',
+  	    forceParse: 0,
+  	    pickerPosition:'bottom-left'
+  	});
+  </script>

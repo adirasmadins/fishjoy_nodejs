@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1003;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="row marginB30">
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/add.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1634;%></p>
+						   <p class="showdata-num cgreen" id="newAccount"></p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/state.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1635;%></p>
+						   <p class="showdata-num corange" id="activeAccount"></p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/add.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1636;%></p>
+						   <p class="showdata-num cgreen" id="newAccountMax"></p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/state.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1637;%></p>
+						   <p class="showdata-num corange" id="activeAccountMax"></p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/add.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1638;%></p>
+						   <p class="showdata-num cgreen" id="newAccountAvg"></p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="data-showdata media">
+					  <div class="media-left">
+					  	<img src="./../../img/icon/state.png" class="media-object">
+					  </div>
+					  <div class="media-body textright">
+						   <p class="showdata-title"><%=t1639;%></p>
+						   <p class="showdata-num corange" id="activeAccountAvg"></p>
+					  </div>
+				</div>
+			</div>
+		</div>
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1267;%></div>
+			  <div class="panel-body tab-content">
+			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			  	    	<!-- 搜索框 -->
+			  	    	<div class="formbox marginB30 marginT15">
+			  	    		<form class="form-inline">
+			  	    		  <div class="form-group">
+			  	    	          	<div class="form-group marginL10">
+			  	    	          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1076;%>：</label>
+			  	    	      	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+			  	    	      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="<%=t1076;%>" name="start_time">
+			  	    	      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  	    	      	        </div>
+			  	    	      			<input type="hidden" id="s_date" value=""/>
+			  	    	          	</div>
+			  	    	          	<!-- <div class="form-group">
+			  	    	          	    <label for="e_date" class="control-label textright lineheight34 fn">－</label>
+			  	    	      	        <div class="input-group date e_date width200" data-date="" data-link-field="e_date">
+			  	    	      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="请选择时间" name="end_time">
+			  	    	      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  	    	      	        </div>
+			  	    	      			<input type="hidden" id="e_date" value=""/>
+			  	    	          	</div> -->
+			  	    		  </div>
+			  	    		  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  	    		</form>
+			  	    	</div>
+			  	    	<div class="tablebox">
+			  				<table class="table table-bordered table-striped">
+			  				  <thead class="bgf5">
+			  				  	<tr>
+			  		<!-- 		  		<th>时段</th>
+			  				  		<th>0~10分在线</th>
+			  				  		<th>11~20分在线</th>
+			  				  		<th>11~20分在线</th>
+			  				  		<th>11~20分在线</th>
+			  				  		<th>11~20分在线</th>
+			  				  		<th>11~20分在线</th>
+			  				  		<th>活跃设备数</th>
+			  				  		<th>活跃用户数</th>
+			  				  		<th>新注册设备</th>
+			  				  		<th>新注册用户</th> -->
+			  				  		<th><%=t1268;%></th>
+			  				  		<th><%=t1269;%></th>
+			  				  		<th><%=t1270;%></th>
+			  				  		<th><%=t1271;%></th>
+			  				  		<th><%=t1272;%></th>
+			  				  		<th><%=t1273;%></th>
+			  				  		<th><%=t1274;%></th>
+			  				  		<th><%=t1275;%></th>
+			  				  		<th><%=t1276;%></th>
+			  				  		<th><%=t1277;%></th>
+			  				  		<th><%=t1278;%></th>
+			  				  	</tr>
+			  				  </thead>
+			  				  <tbody id="rel_body">
+			  				  </tbody>
+			  				</table>
+			  				<script type="text/html" id="rel_data">
+			  				    {{each chart as val}}
+			  				    <tr>
+			  				    	<td>{{val.time}}</td>
+			  				    	<td>{{val['0~10']}}</td>
+			  				    	<td>{{val['11~20']}}</td>
+			  				    	<td>{{val['21~30']}}</td>
+			  				    	<td>{{val['31~40']}}</td>
+			  				    	<td>{{val['41~50']}}</td>
+			  				    	<td>{{val['51~60']}}</td>
+			  				    	<td>{{val.activeDevice}}</td>
+			  				    	<td>{{val.activeAccount}}</td> 
+			  				    	<td>{{val.newDevice}}</td>
+			  				    	<td>{{val.newAccount}}</td>
+			  				    </tr>
+			  				    {{/each}}
+			  				 </script>
+			  			</div>
+			  	    </div>
+			  	    <div role="tabpanel" class="tab-pane tablebox" id="tubox">
+			  	    	
+			  	    	<div id="goods_source" style="width:1100px;height:500px;"></div>
+			  	    </div>
+			  </div>
+			  <div class="panel-footer ">
+			  	<ul class="nav clearfloat">
+			  		<li role="presentation" class="active fl">
+			  			<a href="#tablebox" aria-controls="tablebox" role="tab" data-toggle="tab">
+			  				<span class="iconfont ft25">&#xe66d;</span>
+			  			</a>
+			  		</li>
+			  		<li role="presentation" class="fl">
+			  			<a href="#tubox" aria-controls="tubox" role="tab" data-toggle="tab">
+			  				<span class="iconfont ft25">&#xe6a3;</span>
+			  			</a>
+			  		</li>
+			  	</ul>
+			  </div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'chart':['<%=t1269%>','<%=t1270%>','<%=t1271%>','<%=t1272%>','<%=t1273%>','<%=t1274%>','<%=t1275%>','<%=t1276%>','<%=t1277%>','<%=t1278%>'],
+		'alertTip':'<%=t1621;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/count/rel_time_data.js"></script>
+
+</body>
+</html>

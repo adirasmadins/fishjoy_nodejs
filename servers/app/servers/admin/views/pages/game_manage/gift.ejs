@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1017;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+				<div class="panel-heading clearfloat"><%=t1703;%></div>
+				<div class="panel-body">
+					<!-- 搜索框 -->
+					<div class="formbox marginB30 marginT15">
+						<form class="form-inline">
+						  <div class="form-group open-close">
+					          <label class="radio-inline">
+					          	<input type="radio" name="closeCode" value="0" class="radio_close"> <%=t1705;%>
+	                          </label>
+	                          <label class="radio-inline">
+	                             <input type="radio" name="closeCode" value="1" class="radio_open" checked="checked"> <%=t1704;%> 
+	                          </label>
+						  </div>
+						  <a href="javascript:;" class="btn greenbtn marginL10" id="syetembtn"><%=t1706;%></a>
+					</form>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat"><%=t1097;%> <!-- <a href="javascript:;" class="btn greenbtn fr">下载excel</a> --></div>
+			  <div class="panel-body tab-content">
+	  	       	<div class="tablebox row marginT15">
+	  	       		<div class="col-xs-6">
+	  	       			<!-- <p class="ft16 marginB10">生成礼包：</p> -->
+	  	       			<form class="form-horizontal" style="max-width: 500px;">
+	  	       			  <div class="form-group">
+	  	       			    <label class="col-xs-4 control-label"><%=t1307;%></label>
+	  	       			    <div class="col-xs-8">
+	  	       			      <input type="text" class="form-control" placeholder="<%=t1307;%>" id="prefix">
+	  	       			    </div>
+	  	       			  </div>
+	  	       			  <div class="form-group">
+	  	       			    <label class="col-xs-4 control-label"><%=t1308;%></label>
+	  	       			    <div class="col-xs-8">
+	  	       			      <input type="number" class="form-control" placeholder="<%=t1308;%>" id="num">
+	  	       			    </div>
+	  	       			  </div>
+	  	       			  <div class="form-group">
+	  	       			    <label class="col-xs-4 control-label"><%=t1309;%></label>
+	  	       			    <div class="col-xs-8">
+	  	       			      <input type="number" class="form-control" placeholder="<%=t1309;%>" id="limit">
+	  	       			    </div>
+	  	       			  </div>
+	  	       			  <div class="form-group">
+	  	       			    <div class="col-xs-offset-4 col-xs-8">
+	  	       			      <a href="javascript:;" class="btn greenbtn creat-gift"><%=t1569;%></a>
+	  	       			    </div>
+	  	       			  </div>
+	  	       			</form>
+	  	       		</div>
+	  	       		<div class="col-xs-6">
+	  	       			<!-- <p class="ft16 marginB10">礼包列表：</p> -->
+	  	       			<table class="table table-bordered table-striped textcenter" style="max-width: 600px;">
+	  	       				<thead class="bgf5">
+	  	       					<tr>
+	  	       						<th><%=t1120;%></th>
+	  	       						<td>
+	  	       							<select class="form-control" id="choosegift">
+										 <!--  <option value="newplayer">新手礼包</option>
+										  <option value="newyear">新年礼包</option> -->
+										</select>
+									</td>
+	  	       					</tr>
+	  	       				</thead>
+	  	       			  <tbody id="giftbox_body">
+	  	       			  	<!-- <tr>
+	  	       			  		<th>奖励内容</th>
+	  	       			  		<td>核弹*3、金币*1000</td>
+	  	       			  	</tr>
+	  	       			  	<tr>
+	  	       			  		<th>开始时间</th>
+	  	       			  		<td>2018/2/1  18:59:23</td>
+	  	       			  	</tr>
+	  	       			  	<tr>
+	  	       			  		<th>结束时间</th>
+	  	       			  		<td>2018/2/1  18:59:23</td>
+	  	       			  	</tr> -->
+	  	       			  </tbody>
+	  	       			</table>
+		  				<script type="text/html" id="giftbox">
+		  					<tr>
+		  						<th><%=t1207;%></th>
+		  						<td>{{gift.content}}</td>
+		  					</tr>
+		  					<tr>
+		  						<th><%=t1220;%></th>
+		  						<td>{{gift.startTime}}</td>
+		  					</tr>
+		  					<tr>
+		  						<th><%=t1570;%></th>
+		  						<td>{{gift.endTime}}</td>
+		  					</tr>
+		  				 </script>
+	  	       		</div>
+	  	   		</div>
+			  </div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1658;%></div>
+			  <div class="panel-body tab-content">
+			  		<table class="table table-bordered table-striped textcenter">
+			  			<thead class="bgf5">
+			  				<tr>
+			  					<th><%=t1659;%></th>
+			  					<th><%=t1660;%></th>
+			  					<th><%=t1661;%></th>
+			  					<th><%=t1662;%></th>
+			  					<th><%=t1663;%></th>
+			  					<th><%=t1664;%></th>
+			  					<th><%=t1665;%></th>
+			  					<th><%=t1629;%></th>
+			  				</tr>
+			  			</thead>
+			  		  <tbody id="creact_body">
+			  		  </tbody>
+			  		</table>
+	  				<script type="text/html" id="creact_box">
+	  				    {{each data as val}}
+	  				    	<tr>
+		  				  		<td>{{val.time}}</td>
+		  				  		<td>{{val.title}}</td>
+		  				  		<td>{{val.num}}</td>
+		  				  		<td>{{val.usedCount}}</td>
+		  				  		<td>{{val.limit}}</td>
+		  				  		<td>{{val.prefix}}</td>
+		  				  		<td>{{val.addByWho}}</td>
+		  				  		<td><a href="javascript:;" class="btn btn-xs btn-success loadbtn" data-time="{{val.time}}"><%=t1568;%></a></td>
+		  				  	</tr>
+	  				    {{/each}}
+	  				 </script>
+			  </div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1098;%></div>
+			  <div class="panel-body tab-content">
+			  		<!-- 搜索框 -->
+			  		<div class="formbox padding20 bgfff">
+			  			<form class="form-inline">
+			  			  <div class="form-group">
+			  			    <label class="fn"><%=t1666;%>：</label>
+			  			   	<input type="text" name="" class="form-control" placeholder='<%=t1571;%>' style="width: 300px;" id="uid_box"> 
+			  			   </div>
+			  			  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+						</form>
+			  		</div>
+			  		<table class="table table-bordered table-striped textcenter">
+			  			<thead class="bgf5">
+			  				<tr>
+			  					<th><%=t1221;%></th>
+			  					<th><%=t1222;%></th>
+			  					<th><%=t1223;%></th>
+			  					<th><%=t1224;%></th>
+			  					<th><%=t1225;%></th>
+			  				</tr>
+			  			</thead>
+			  		  <tbody id="giftcode_body">
+			  		  </tbody>
+			  		</table>
+	  				<script type="text/html" id="giftcode_box">
+	  				    {{each data as val}}
+	  				    	<tr>
+		  				  		<td>{{val.giftCode}}</td>
+		  				  		<td>{{val.giftId}}</td>
+		  				  		<td>{{val.limit}}</td>
+		  				  		<td>{{val.rewardCount}}</td>
+		  				  		<td>{{val.rewardUid}}</td>
+		  				  		
+		  				  	</tr>
+	  				    {{/each}}
+	  				 </script>
+			  </div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var namebox = {
+			'filltip':'<%=t1616;%>',
+			'succ':'<%=t1617;%>'
+		}
+	</script>
+<script type="text/javascript" src="./../../js/manage/game_manage/gift.js"></script>
+</body>
+</html>

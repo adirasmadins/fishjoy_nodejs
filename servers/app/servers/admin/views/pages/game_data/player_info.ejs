@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1011;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script> 
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading clearfloat"><%=t1113;%><p class="fr"><%=t1688;%>：<span id="pages"></span>，<%=t1689;%>：<span id="rows"></span></p></div>
+			  <div class="panel-body tab-content">
+			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			  	    	<div class="tablebox">
+			  				<!-- 搜索框 -->
+			  				<div class="formbox marginB30 marginT15">
+			  					<form class="form-inline">
+			  						<div class="form-group">
+			  						  <label class="fn"><%=t1622;%>：</label>
+			  						 	<input type="text" name="" class="form-control" placeholder='<%=t1623;%>' id="uid_box"> 
+			  						 </div>
+			  					  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  					</form>
+			  				</div>
+			  				<table class="table table-bordered table-striped">
+			  				  <thead class="bgf5">
+			  				  	<tr>
+			  				  		<th><%=t1163;%></th>
+			  				  		<th><%=t1652;%></th>
+			  				  		<th><%=t1164;%></th>
+			  				  		<th><%=t1165;%></th>
+			  				  		<th><%=t1166;%></th>
+			  				  		<th><%=t1167;%></th>
+			  				  		<th><%=t1653;%></th>
+			  				  		<th><%=t1168;%></th>
+			  				  		<th><%=t1169;%></th>
+									<th><%=t1170;%></th>
+			  				  		<th><%=t1171;%></th>
+			  				  		<th><%=t1172;%></th>
+			  				  		<th><%=t1173;%></th>
+			  				  		<th><%=t1174;%></th>
+			  				  		<th><%=t1175;%></th>
+			  				  	</tr>
+			  				  </thead>
+			  				  <tbody id="data_body">
+<!-- 			  				  	<tr>
+			  				  		<td>00:00~00:59</td>
+			  				  		<td>10</td>
+			  				  		<td>1</td>
+			  				  		<td>125</td>
+			  				  		<td>895</td>
+			  				  		<td>987</td>
+			  				  		<td>456</td>
+			  				  		<td>vip 0</td>
+			  				  		<td>693</td>
+			  				  		<td>125</td>
+			  				  		<td>895</td>
+			  				  		<td>987</td>
+			  				  		<td>456</td>
+			  				  		<td>vip 0</td>
+			  				  		<td>是 <a href="javascript:;" class="btn btn-xs btn-success relieve" data-id="1">解除</a></td>
+			  				  	</tr>
+			  				  	<tr>
+			  				  		<td>00:00~00:59</td>
+			  				  		<td>10</td>
+			  				  		<td>1</td>
+			  				  		<td>125</td>
+			  				  		<td>895</td>
+			  				  		<td>987</td>
+			  				  		<td>456</td>
+			  				  		<td>vip 0</td>
+			  				  		<td>693</td>
+			  				  		<td>125</td>
+			  				  		<td>895</td>
+			  				  		<td>987</td>
+			  				  		<td>456</td>
+			  				  		<td>vip 0</td>
+			  				  		<td>是 <a href="javascript:;" class="btn btn-xs btn-warning defriend" data-id="2">拉黑</a></td>
+			  				  	</tr> -->
+			  				  	
+			  				  </tbody>
+			  				</table>
+			  				<!-- 分页 -->
+			  				<div class="clearfloat">
+			  					<nav aria-label="Page navigation" class="fr textright define-pagination">
+			  					    <input type="hidden" name="" id="pagecount" value=""><!--输出总页数-->
+			  					    <input type="hidden" name="" id="nowpage" value=""><!--输出当前页数-->
+			  					    <input type="hidden" name="" value="" id="pageurl"><!--跳转地址-->
+			  					    <ul class="pagination"></ul>
+			  					</nav>
+			  				</div>
+			  				<script type="text/html" id="data_box">
+			  				    {{each chart as val}}
+			  				    	<tr>
+				  				  		<td>{{val.uid}}</td>
+				  				  		<td>{{val.nickname}}</td>
+				  				  		<td>{{val.phoneNumber}}</td>
+				  				  		<td>{{val.signupTime}}</td>
+				  				  		<td>{{val.lastLoginTime}}</td>
+				  				  		<td>{{val.playerLevel}}</td>
+				  				  		<td>{{val.vipLevel}}</td>
+				  				  		<td>{{val.rechargeTotal}}</td>
+				  				  		<td>{{val.cashTotal}}</td>
+				  				  		<td>{{val.gold}}</td>
+				  				  		<td>{{val.profitLastHour}}</td>
+				  				  		<td>{{val.profitRateLastHour}}</td>
+				  				  		<td>{{val.profitTotal}}</td>
+				  				  		<td>{{val.profitRateTotal}}</td>
+				  				  		{{if val.isFreeze == false }}
+				  				  		<td><span><%=t1600;%></span> <a href="javascript:;" class="btn btn-xs btn-warning defriend" data-id="{{val.uid}}"><%=t1241;%></a></td>
+				  				  		{{else}}
+				  				  		<td><span><%=t1599;%></span> <a href="javascript:;" class="btn btn-xs btn-success relieve" data-id="{{val.uid}}"><%=t1339;%></a></td>
+				  				  		{{/if}}
+				  				  	</tr>
+			  				    {{/each}}
+			  				 </script>
+			  			</div>
+			  	    </div>
+			  	   
+			  </div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'defriend':'<%=t1241;%>',
+		'relieve':'<%=t1339;%>',
+		'unfreeze':'<%=t1650;%>',
+		'freeze':'<%=t1651;%>',
+		'yes':'<%=t1599;%>',
+		'no':'<%=t1600;%>',
+		'fail':'<%=t1618;%>',
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/game_data/player_info.js"></script>
+</body>
+</html>

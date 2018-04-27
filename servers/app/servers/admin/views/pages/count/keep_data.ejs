@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title><%=t1004;%></title>
+	    <link rel="stylesheet" href="./../../css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="./../../css/bootstrap-datetimepicker.min.css">
+	    <link rel="stylesheet" href="./../../css/commonPC.css">
+	    <link rel="stylesheet" href="./../../css/definePC.css">
+		 <!--[if lt IE 9]>
+		   <script src="./../../js/html5shiv.min.js"></script>
+		   <script src="./../../js/respond.min.js"></script>
+		 <![endif]-->
+		 <script src="./../../js/jquery-1.11.3.js"></script>
+		 <script src="./../../js/bootstrap.js"></script>
+		 <script src="./../../js/bootstrap-datetimepicker.js"></script>
+		 <script src="./../../js/arttemplate.js"></script>
+		 <script src="./../../js/echarts.common.min.js"></script>
+		 <script src="./../../js/child_define.js"></script>
+</head>
+<body>
+	<div class="content marginT30">
+		<div class="mainbox homebox">
+			<div class="panel panel-default">
+			  <div class="panel-heading"><%=t1107;%></div>
+			  <div class="panel-body tab-content">
+			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
+			  	    	<!-- 搜索框 -->
+			  	    	<div class="formbox marginB30 marginT15">
+			  	    		<form class="form-inline">
+			  	    		  <div class="form-group">
+			  	    	          	<div class="form-group marginL10">
+			  	    	          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1077;%>：</label>
+			  	    	      	        <div class="input-group date s_date width200" data-date="" data-link-field="s_date">
+			  	    	      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="<%=t1077;%>" name="start_time">
+			  	    	      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  	    	      	        </div>
+			  	    	      			<input type="hidden" id="s_date" value=""/>
+			  	    	          	</div>
+			  	    	          	<div class="form-group">
+			  	    	          	    <label for="e_date" class="control-label textright lineheight34 fn">－</label>
+			  	    	      	        <div class="input-group date e_date width200" data-date="" data-link-field="e_date">
+			  	    	      	            <input class="form-control" size="16" type="text" value="" readonly placeholder="<%=t1078;%>" name="end_time">
+			  	    	      	            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+			  	    	      	        </div>
+			  	    	      			<input type="hidden" id="e_date" value=""/>
+			  	    	          	</div>
+			  	    		  </div>
+			  	    		  <a href="javascript:;" class="btn greenbtn marginL10" id="search_btn"><%=t1555;%></a>
+			  	    		</form>
+			  	    	</div>
+			  	    	<div class="tablebox">
+			  				<table class="table table-bordered table-striped">
+			  				  <thead class="bgf5">
+			  				  	<tr>
+<!-- 			  				  		<th>日期</th>
+			  				  		<th>平均每小时在线</th>
+			  				  		<th>当日最高在线</th>
+			  				  		<th>活跃用户</th>
+			  				  		<th>新增用户</th>
+			  				  		<th>战斗玩家峰值</th>
+			  				  		<th>战斗服玩家平均值</th>
+			  				  		<th>比赛玩家峰值</th>
+			  				  		<th>比赛玩家平均值</th>
+			  				  		<th>次日留存</th>
+			  				  		<th>3日留存</th>
+			  				  		<th>7日留存</th>
+			  				  		<th>14日留存</th>
+			  				  		<th>30日留存</th> -->
+			  				  		<th><%=t1153;%></th>
+			  				  		<th><%=t1135;%></th>
+			  				  		<th><%=t1136;%></th>
+			  				  		<th><%=t1137;%></th>
+			  				  		<th><%=t1138;%></th>
+									<th><%=t1694;%></th>
+									<th><%=t1695;%></th>
+									<th><%=t1696;%></th>
+									<th><%=t1697;%></th>
+			  				  		<th><%=t1139;%></th>
+			  				  		<th><%=t1140;%></th>
+			  				  		<th><%=t1141;%></th>
+			  				  		<th><%=t1142;%></th>
+			  				  		<th><%=t1143;%></th>
+			  				  	</tr>
+			  				  </thead>
+			  				  <tbody id="keep_body">
+			  				  </tbody>
+			  				</table>
+			  				<script type="text/html" id="keep_data">
+			  				    {{each data as val}}
+			  				    	<tr>
+				  				  		<td>{{val.time}}</td>
+				  				  		<td>{{val.avgHourOnline}}</td>
+				  				  		<td>{{val.maxHourOnline}}</td>
+				  				  		<td>{{val.activeAccount}}</td>
+				  				  		<td>{{val.newAccount}}</td>
+				  				  		<td>{{val.fightServerPlayerCountMax}}</td>
+				  				  		<td>{{val.fightServerPlayerCountAvg}}</td>
+				  				  		<td>{{val.rankMatchPlayerCountMax}}</td>
+				  				  		<td>{{val.rankMatchPlayerCountAvg}}</td>
+				  				  		<td>{{val.retention1}}</td>
+				  				  		<td>{{val.retention3}}</td>
+				  				  		<td>{{val.retention7}}</td>
+				  				  		<td>{{val.retention14}}</td>
+				  				  		<td>{{val.retention30}}</td>
+				  				  	</tr>
+			  				    {{/each}}
+			  				 </script>
+			  			</div>
+			  	    </div>
+			  	    <div role="tabpanel" class="tab-pane tablebox" id="tubox">
+			  	    	
+			  	    	<div id="goods_source" style="width:1000px;height:300px;"></div>
+			  	    </div>
+			  </div>
+			  <div class="panel-footer ">
+			  	<ul class="nav clearfloat">
+			  		<li role="presentation" class="active fl"><a href="#tablebox" aria-controls="tablebox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe66d;</span></a></li>
+			  		<li role="presentation" class="fl"><a href="#tubox" aria-controls="tubox" role="tab" data-toggle="tab"><span class="iconfont ft25">&#xe6a3;</span></a></li>
+			  	</ul>
+			  </div> 
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	var namebox = {
+		'chart':['<%=t1135;%>','<%=t1136;%>','<%=t1137;%>','<%=t1138;%>','<%=t1694;%>','<%=t1695;%>','<%=t1696;%>','<%=t1697;%>','<%=t1139;%>','<%=t1140;%>','<%=t1141;%>','<%=t1142;%>','<%=t1143;%>'],
+		'peopleNum':'<%=t1640;%>',
+		'percent':'<%=t1641;%>',
+		'alertTip':'<%=t1621;%>'
+	}
+</script>
+<script type="text/javascript" src="./../../js/manage/count/keep_data.js"></script>
+</body>
+</html>
