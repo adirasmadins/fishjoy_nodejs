@@ -1,7 +1,7 @@
-const VER_KEY = require('../versions').VER_KEY;
-const PUB = require('../versions').PUB;
+const versions = require('../versions');
+const VER = versions.DEVELOPMENT ? versions.VER_KEY[versions.GAMEPLAY.LOCAL] : versions.VER_KEY[versions.PUB];
 
 module.exports = {
-    redis:require(`./${VER_KEY[PUB]}/redis.json`),
-    mysql:require(`./${VER_KEY[PUB]}/mysql.json`)
+    redis: require(`./${VER}/redis.json`),
+    mysql: require(`./${VER}/mysql.json`),
 };

@@ -445,6 +445,15 @@ module.exports.AccountDef = {
     "first_turntable_draw": {
         "def": 0,
         "type": "number"
+    },
+    //2018.4.28 dfc
+    "mission_daily_reset_reward": {
+        "def": {},
+        "type": "object"
+    },
+    "mission_only_once_reward": {
+        "def": {},
+        "type": "object"
     }
 };
 
@@ -467,7 +476,7 @@ exports.OtherDef = {
         "type": "number"
     },
     "cdkey_on": {
-        "def": 0,
+        "def": 1,
         "type": "number"
     },
     "msgboard_mgmt": {
@@ -712,6 +721,24 @@ exports.OtherDef = {
         "def": 0,
         "type": "number",
         "name": "talk_forbidden"
+    },
+
+    "flower_receive": {
+        "def": 0,
+        "type": "number",
+        "name": "flower_receive"
+    },
+
+    "horn_used": {
+        "def": 0,
+        "type": "number",
+        "name": "horn_used"
+    },
+
+    "flower_send": {
+        "def": 0,
+        "type": "number",
+        "name": "flower_send"
     },
 };
 

@@ -15,13 +15,13 @@ class ReqHandler {
 
     response(err, result, next) {
         if (err) {
-            utils.invokeCallback(next, null, answer.respNoData(err));
+            utils.invokeCallback(next, null, {error:err});
             return;
         }
         if (result) {
-            utils.invokeCallback(next, null, answer.respData(result, null));
+            utils.invokeCallback(next, null, result);
         } else {
-            utils.invokeCallback(next, null, answer.respNoData(CONSTS.SYS_CODE.OK));
+            utils.invokeCallback(next, null, {error:CONSTS.SYS_CODE.OK});
         }
     }
 }

@@ -46,7 +46,6 @@ exports.resetMonthSign = resetMonthSign;
 
 exports.guideReward = guideReward;
 exports.dailyReward = dailyReward;
-exports.achieveReward = achieveReward;
 exports.missionReward = missionReward;
 exports.activeReward = activeReward;
 exports.onekeyReward = onekeyReward;
@@ -233,25 +232,13 @@ function dailyReward(req, dataObj, cb) {
     }
 }
 
-function achieveReward(req, dataObj, cb) {
-    const FUNC = TAG + "achieveReward() --- ";
-    //----------------------------------
-    if (!lPrepare(dataObj)) return;
-    BuzzUtil.cacheLinkDataApi(dataObj, "achieve_reward");
-
-    _didAchieveReward(req, dataObj, cb);
-
-    function lPrepare(input) {
-        return BuzzUtil.checkParams(input, ['token', 'quest_id'], "buzz_reward", cb);
-    }
-}
-
 function missionReward(dataObj, cb) {
     if (!lPrepare(dataObj)) return;
 
     let uid = dataObj.uid;
     let account = dataObj.account;
     let qid = dataObj.quest_id;
+    logger.error('--------------------------qid:', qid);
     let quest = BuzzUtil.getQuestById(qid);
     if (!_checkMissionReward1()) return;
 
@@ -587,27 +574,6 @@ function _getMonthDailypast(day) {
  */
 function _didDailyReward(req, dataObj, cb) {
     const FUNC = TAG + "_didDailyReward() --- ";
-    let uid = dataObj.uid;
-    let token = dataObj.token;
-    let pool = req.pool;
-
-    DaoCommon.checkAccount(pool, token, function (error, account) {
-        if (error) {
-            cb(error);
-            return;
-        }
-        doNextWithAccount(account);
-    });
-
-    function doNextWithAccount(account) {
-    }
-}
-
-/**
- * desperated
- */
-function _didAchieveReward(req, dataObj, cb) {
-    const FUNC = TAG + "_didAchieveReward() --- ";
     let uid = dataObj.uid;
     let token = dataObj.token;
     let pool = req.pool;

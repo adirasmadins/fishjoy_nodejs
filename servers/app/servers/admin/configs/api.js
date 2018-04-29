@@ -30,7 +30,7 @@ module.exports = {
     },
     topupLog: {
         params: ['status', 'startDate', 'endDate', 'start', 'length'],
-        optParams: [],
+        optParams: ['uid'],
         menu: statistics,
     },
     topupChart: {

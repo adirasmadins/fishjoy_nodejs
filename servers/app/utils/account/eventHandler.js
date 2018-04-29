@@ -155,7 +155,6 @@ class EventHandler {
     }
 
     static playerDataSyncFunc(account) {
-        let self = this;
         return async function () {
                 await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.playerDataChange.route, account.id, {uid: account.id});
         };

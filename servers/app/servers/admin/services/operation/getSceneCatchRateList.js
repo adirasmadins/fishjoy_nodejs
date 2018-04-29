@@ -1,11 +1,9 @@
 const _ = require('underscore');
 const tools = require('../../../../utils/tools');
-const DESIGN_CFG = require('../../../../utils/imports').DESIGN_CFG;
 const REDISKEY = require('../../../../database').dbConsts.REDISKEY;
 const rpcSender = require('../../../../net/rpcSender');
 const loadManagerCmd = require('../../../../cmd/loadManagerCmd')
 const modules = require('../../../../modules')
-
 
 /**
  * 获取场景捕获率(增加战斗服房间个数和玩家个数)
@@ -29,8 +27,8 @@ exports.get = async function (data, ctx) {
 function makeAccount(list) {
     let ret = [];
     for (let key in list) {
-        let nameKey = DESIGN_CFG.scene_scenes_cfg[key].name;
-        let name = DESIGN_CFG.string_strings_cfg[nameKey].cn;
+        let nameKey = tools.CfgUtil.scene.getName(key);
+        let name = tools.CfgUtil.string.get(nameKey, 'Unknown Scene');
         ret.push({
             name: name,
             key: key,

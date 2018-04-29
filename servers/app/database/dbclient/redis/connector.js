@@ -82,6 +82,14 @@ class Connector {
         return this._cmdClient;
     }
 
+    get pubCmd() {
+        return this._pubClient;
+    }
+
+    get subCmd() {
+        return this._subClient;
+    }
+
     pub(event, msg) {
         if (!this._pubClient) {
             this._createPub();
@@ -90,7 +98,7 @@ class Connector {
         msg = this._getDBWriteValue(msg);
 
         this._pubClient.publish(event, msg, function (err, result) {
-            if(err){
+            if (err) {
                 logger.error('消息发布失败, err', event, msg, err);
             }
         });
@@ -106,6 +114,10 @@ class Connector {
     }
 
     async incrP(key) {
+        if (key == null) {
+            return;
+        }
+
         return new Promise(function (resolve, reject) {
             this._cmdClient.incr(key, function (err, res) {
                 if (err) {
@@ -119,7 +131,11 @@ class Connector {
     }
 
     async expireP(key, time) {
-        return new Promise(function(resolve, reject) {
+        if (key == null || time == null) {
+            return;
+        }
+
+        return new Promise(function (resolve, reject) {
             this._cmdClient.expire(key, time, function (err, res) {
                 if (err) {
                     reject(err);
@@ -132,15 +148,19 @@ class Connector {
 
     }
 
-    async get(key){
+    async get(key) {
+        if (key == null) {
+            return;
+        }
+
         let self = this;
-        return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
             self._cmdClient.get(key, function (err, result) {
                 if (err) {
                     reject(err);
                 }
                 else {
-                    if(!result){
+                    if (!result) {
                         resolve(null);
                         return;
                     }
@@ -151,14 +171,14 @@ class Connector {
         });
     }
 
-    async set(key, value){
-        if(!key || !value){
+    async set(key, value) {
+        if (key == null || value == null) {
             return;
         }
 
         value = this._getDBWriteValue(value);
         let self = this;
-        return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
             self._cmdClient.set(key, value, function (err, result) {
                 if (err) {
                     reject(err);
@@ -170,15 +190,35 @@ class Connector {
         });
     }
 
-    async hget(key, member){
+    async del(key){
+        if (key == null) {
+            return;
+        }
         let self = this;
-        return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
+            self._cmdClient.del(key, function (err, result) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    async hget(key, member) {
+        if (key == null || member == null) {
+            return;
+        }
+        let self = this;
+        return new Promise(function (resolve, reject) {
             self._cmdClient.hget(key, member, function (err, result) {
                 if (err) {
                     reject(err);
                 }
                 else {
-                    if(!result){
+                    if (!result) {
                         resolve(null);
                         return;
                     }
@@ -189,15 +229,15 @@ class Connector {
         });
     }
 
-    async hgetall(key){
+    async hgetall(key) {
         let self = this;
-        return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
             self._cmdClient.hgetall(key, function (err, result) {
                 if (err) {
                     reject(err);
                 }
                 else {
-                    if(!result){
+                    if (!result) {
                         resolve(null);
                         return;
                     }
@@ -208,9 +248,10 @@ class Connector {
         });
     }
 
-    async zremrangebyrank(key, start, stop){
+    async zremrangebyrank(key, start, stop) {
+        let self = this;
         return new Promise(function (resolve, reject) {
-            redisConnector.cmd.zremrangebyrank(key, start, stop, function (err, result) {
+            self._cmdClient.zremrangebyrank(key, start, stop, function (err, result) {
                 if (err) {
                     reject(err);
                 }
@@ -221,9 +262,10 @@ class Connector {
         });
     }
 
-    async zcard(key){
+    async zcard(key) {
+        let self = this;
         return new Promise(function (resolve, reject) {
-            redisConnector.cmd.zcard(key, function (err, result) {
+            self._cmdClient.zcard(key, function (err, result) {
                 if (err) {
                     reject(err);
                 }
@@ -234,9 +276,10 @@ class Connector {
         });
     }
 
-    async zrem(key, members){
+    async zrem(key, members) {
+        let self = this;
         return new Promise(function (resolve, reject) {
-            redisConnector.cmd.zrem(key, members, function (err, result) {
+            self._cmdClient.zrem(key, members, function (err, result) {
                 if (err) {
                     reject(err);
                 }
@@ -247,9 +290,10 @@ class Connector {
         });
     }
 
-    async sadd(key, members){
+    async sadd(key, members) {
+        let self = this;
         return new Promise(function (resolve, reject) {
-            redisConnector.cmd.sadd(key, members, function (err, result) {
+            self._cmdClient.sadd(key, members, function (err, result) {
                 if (err) {
                     reject(err);
                 }
@@ -260,9 +304,10 @@ class Connector {
         });
     }
 
-    async srem(key, members){
+    async srem(key, members) {
+        let self = this;
         return new Promise(function (resolve, reject) {
-            redisConnector.cmd.srem(key, members, function (err, result) {
+            self._cmdClient.srem(key, members, function (err, result) {
                 if (err) {
                     reject(err);
                 }
@@ -273,9 +318,10 @@ class Connector {
         });
     }
 
-    async smembers(key){
+    async smembers(key) {
+        let self = this;
         return new Promise(function (resolve, reject) {
-            redisConnector.cmd.smembers(key, function (err, result) {
+            self._cmdClient.smembers(key, function (err, result) {
                 if (err) {
                     reject(err);
                 }
@@ -286,20 +332,34 @@ class Connector {
         });
     }
 
-    _getDBWriteValue(value){
-        if(typeof value == 'object'){
+    async sscan(key, skip, limit) {
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self._cmdClient.sscan(key, skip, 'COUNT', limit, function (err, result) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result[1]);
+                }
+            });
+        });
+    }
+
+    _getDBWriteValue(value) {
+        if (typeof value == 'object') {
             value = JSON.stringify(value);
         }
         return value;
     }
 
-    _getDBReadValue(value){
-        try{
-            if(typeof value == 'string'){
+    _getDBReadValue(value) {
+        try {
+            if (typeof value == 'string') {
                 value = JSON.parse(value);
             }
 
-        }catch(err){
+        } catch (err) {
             err;
         }
         return value;

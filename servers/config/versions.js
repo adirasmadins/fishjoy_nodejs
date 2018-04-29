@@ -13,8 +13,10 @@ module.exports = {
     //游戏发行版本
     //发布时，
     //检查hall buzz_pay.js 64行的支付是否关闭
-    PUB: GAMEPLAY.LOCAL,
+    DEVELOPMENT: true,  //发布时修改为false
+    PUB: GAMEPLAY.VIETNAM_VN,
     SSL: false, //是否启动SSL
+
     //游戏发行版本类型定义
     GAMEPLAY: GAMEPLAY,
     //版本标识KEY
@@ -31,6 +33,7 @@ module.exports = {
 
     CHEAT_BROKEN: [GAMEPLAY.VIETNAM_VN, GAMEPLAY.VIETNAM, GAMEPLAY.VIETNAM_VN_TEST],
     WWW_DOMAIN: [GAMEPLAY.VIETNAM, GAMEPLAY.VIETNAM_VN, GAMEPLAY.IOS],
-    PLATFORM_DIVISION: [GAMEPLAY.WANBA]
+    PLATFORM_DIVISION: [GAMEPLAY.WANBA],
+    REDIRECT_HTTPS:[GAMEPLAY.VIETNAM_VN,GAMEPLAY.VIETNAM]
 
 };

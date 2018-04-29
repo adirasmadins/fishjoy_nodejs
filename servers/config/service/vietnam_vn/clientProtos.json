@@ -17,8 +17,8 @@
     "game.fishHandler.c_fire": {
         "required string wp_bk": 1,
         "message FirePoint": {
-            "optional sInt32 x": 1,
-            "optional sInt32 y": 2
+            "required sInt32 x": 1,
+            "required sInt32 y": 2
         },
         "required FirePoint fire_point": 2,
         "optional string fire_fish": 3,

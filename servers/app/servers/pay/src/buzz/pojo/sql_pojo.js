@@ -1483,7 +1483,7 @@ exports.tbl_switch = {
         "name": "cik_on"
     },
     "cdkey_on": {
-        "def": 0,
+        "def": 1,
         "type": "number",
         "name": "cdkey_on"
     }

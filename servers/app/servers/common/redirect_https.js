@@ -1,6 +1,7 @@
 const http = require('http');
 const omelo = require('omelo');
 const versions = require('../../utils/imports').versions;
+const cluster = require('cluster');
 
 class Redirect {
     genRedirectUrl(protocol, hostname, path) {
@@ -8,34 +9,28 @@ class Redirect {
     }
 
     start() {
-        if(versions.PUB == 0){
+        if (versions.DEVELOPMENT == true || versions.REDIRECT_HTTPS.indexOf(versions.PUB) == -1) {
             return;
         }
-        const httpCfg = omelo.app.get('http');
-        const resource = omelo.app.get('http').resource[0];
-        logger.error(resource);
-        const srv = http.createServer((req, res) => {
-            logger.error(req.url);
 
-            let url = this.genRedirectUrl('https', req.headers.host, req.url);
-            // logger.error(req.connection.remoteAddress);
-            // logger.error(r);
-            // logger.error('req=', util.inspect(req));
-            // logger.error('res=', res);
+        if (cluster.isWorker) {
+            const resource = omelo.app.get('http').resource[0];
+            logger.error(resource);
+            const srv = http.createServer((req, res) => {
+                logger.error(req.url);
 
-            // res.statusCode = 301;
-            // res.redirect()
+                let url = this.genRedirectUrl('https', req.headers.host, req.url);
+                res.writeHead(301, {
+                    'Location': url
+                });
+                res.end();
 
-            res.writeHead(301, {
-                'Location': url
             });
-            res.end();
 
-        });
-
-        srv.listen(80, resource.http.host, () => {
-            logger.error('redirect service running...', resource.http.publicHost);
-        });
+            srv.listen(80, resource.http.host, () => {
+                logger.error('redirect service running...', resource.http.publicHost);
+            });
+        }
 
     }
 }

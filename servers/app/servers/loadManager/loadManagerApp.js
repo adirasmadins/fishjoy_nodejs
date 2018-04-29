@@ -39,7 +39,7 @@ class LoadManagerApp {
      * @param cb
      */
     rpc_allock_server(data, cb) {
-        let [err, serverInfo] = loadSync.alloc_server(data.moduleId, data.serverType);
+        let [err, serverInfo] = loadSync.alloc_server(data.moduleId, data.serverType, data.uid);
         utils.invokeCallback(cb, err, serverInfo);
     }
 

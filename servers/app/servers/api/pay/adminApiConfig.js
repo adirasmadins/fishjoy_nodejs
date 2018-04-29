@@ -1,4 +1,3 @@
-const loadVersionApi = require('../loadVersionApi');
 const admin_operation = require('../../pay/controllers/data/admin_operation');
 
 const api_list = {
@@ -9,8 +8,6 @@ const api_list = {
         accountFields: []
     }
 };
-
-loadVersionApi(api_list, 'adminApiConfig');
 
 module.exports = {
     apiCfgs: api_list,

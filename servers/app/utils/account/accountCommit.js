@@ -1007,6 +1007,30 @@ class AccountCommit {
     set talk_forbidden(value) {
         this._modify('talk_forbidden', value);
     }
+    //添加统计key
+    get horn_used() {
+        return this._value('horn_used');
+    }
+
+    set horn_used(value) {
+        this._modify('horn_used', value);
+    }
+
+    get flower_send() {
+        return this._value('flower_send');
+    }
+
+    set flower_send(value) {
+        this._modify('flower_send', value);
+    }
+
+    get flower_receive() {
+        return this._value('flower_receive');
+    }
+
+    set flower_receive(value) {
+        this._modify('flower_receive', value);
+    }
 
 }
 

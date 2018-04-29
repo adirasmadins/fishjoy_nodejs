@@ -26,7 +26,8 @@ class QueryGameEntry {
                 serverInfo = await rpcSender.invoke(rpcSender.serverType.loadManager, rpcSender.serverModule.loadManager.loadRemote,
                     loadManagerCmd.remote.allock_server.route, {
                         moduleId: modules.game.moduleId,
-                        serverType: rpcSender.serverType.game
+                        serverType: rpcSender.serverType.game,
+                        uid:data.uid
                     });
             }
         }

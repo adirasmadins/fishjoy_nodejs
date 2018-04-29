@@ -2,18 +2,24 @@ const omeloAdmin = require('omelo-admin');
 const omelo = require('omelo');
 const BALANCE_PERIOD = require('../../../utils/imports').sysConfig.BALANCE_PERIOD;
 const modules = require('../../../modules');
-class LoadSync{
-    constructor(){
+
+class LoadSync {
+    constructor() {
         this._timerHandle = null;
         this._adminClient = null;
+        this._cache_servers = new Map();
     }
-    start(){
+
+    start() {
         let adminUser = omelo.app.get('adminUser')[0];
         this._adminClient = new omeloAdmin.adminClient({
             username: adminUser.username,
             password: adminUser.password
         });
 
+        this._adminClient.on('error', function () {
+            
+        })
         let master = omelo.app.getMaster();
         this._adminClient.connect('loadManager-' + Date.now(), master.host, master.port, function (err) {
             if (err) {
@@ -25,20 +31,25 @@ class LoadSync{
         }.bind(this));
     }
 
-    stop(){
+    stop() {
         if (this._timerHandle) {
             clearInterval(this._timerHandle);
         }
     }
 
-    getLoad(moduleId){
-        if(this[`_${moduleId}LoadMap`]){
+    getLoad(moduleId) {
+        if (this[`_${moduleId}LoadMap`]) {
             return [...this[`_${moduleId}LoadMap`]];
         }
         return [];
     }
 
-    alloc_server(moduleId, serverType){
+    alloc_server(moduleId, serverType, uid) {
+
+        let serverInfo = this._getCacheServer(moduleId, serverType, uid);
+        if (serverInfo) {
+            return [null, serverInfo];
+        }
         let gameServers = omelo.app.getServersByType(serverType);
         if (!gameServers || gameServers.length === 0) {
             return [CONSTS.SYS_CODE.SERVER_DEPLOY_ERROR];
@@ -48,7 +59,7 @@ class LoadSync{
         if (!serverMap || serverMap && serverMap.size === 0) {
             return [CONSTS.SYS_CODE.SERVER_NOT_RUNNING];
         }
-        
+
         let _cfgGameMap = new Map();
         gameServers.forEach(function (item) {
             _cfgGameMap.set(item.id, item);
@@ -64,11 +75,41 @@ class LoadSync{
                 return [CONSTS.SYS_CODE.SERVER_RESOURCE_NOT_ENOUGHT];
             }
             serverMap.set(id, load);
-        }else{
+        } else {
             return [CONSTS.SYS_CODE.SERVER_ILLEGAL];
         }
-
+        // this._cache_server.set(this._getCachKey(serverType, uid), item);
+        this._setCacheServer(moduleId, serverType, uid, item);
         return [null, item];
+    }
+
+    _getCacheServer(moduleId, serverType, uid) {
+        let moduleServers = this._cache_servers.get(moduleId);
+        if (moduleServers) {
+            let serverInfo = moduleServers.get(this._getCachKey(serverType, uid));
+            if (serverInfo) {
+                return serverInfo;
+            }
+        }
+    }
+
+    _setCacheServer(moduleId, serverType, uid, item) {
+        let moduleServers = this._cache_servers.get(moduleId);
+        if (!moduleServers) {
+            moduleServers = new Map();
+        }
+        moduleServers.set(this._getCachKey(serverType, uid), item);
+    }
+
+    _clearCacheServer(moduleId) {
+        let moduleServers = this._cache_servers.get(moduleId);
+        if(moduleServers){
+            moduleServers.clear();
+        }
+    }
+
+    _getCachKey(serverType, uid) {
+        return `${serverType}_${uid}`;
     }
 
     _getMinLoadServer(serverMap) {
@@ -80,7 +121,7 @@ class LoadSync{
                 load = v;
             }
 
-            if(load.playerCount > 20 && load.playerCount > v.playerCount){
+            if (load.playerCount > 20 && load.playerCount > v.playerCount) {
                 load = v;
                 id = k;
             }
@@ -91,23 +132,26 @@ class LoadSync{
     _runTick() {
         let self = this;
         this._timerHandle = setInterval(function () {
-            for(let moduleId in modules){
+            for (let moduleId in modules) {
                 self._adminClient.request(moduleId, {}, function (err, data) {
-                    if (!!err || data === undefined) {
+                    if (!!err || data == null) {
                         return;
                     }
-                    if(!self[`_${moduleId}LoadMap`]){
+
+                    if (!self[`_${moduleId}LoadMap`]) {
                         self[`_${moduleId}LoadMap`] = new Map();
-                    }else{
+                    } else {
                         self[`_${moduleId}LoadMap`].clear();
                     }
 
                     for (let id in data) {
                         self[`_${moduleId}LoadMap`].set(id, data[id].load);
+                        logger.error('服务器负载信息:', id, data[id].load);
                     }
-                }.bind(this));
+                    self._clearCacheServer(moduleId);
+                });
             }
-        }.bind(this), BALANCE_PERIOD);
+        }, BALANCE_PERIOD);
     }
 }
 

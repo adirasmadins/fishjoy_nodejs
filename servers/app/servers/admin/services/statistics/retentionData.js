@@ -53,7 +53,6 @@ async function makeChart(list) {
 
 async function getRealMax(key, date) {
     let ret = await tools.RedisUtil.hget(key, date);
-    // logger.error(`ret:\n`, ret);
     if (ret) {
         ret = JSON.parse(ret);
         return ret.value;
@@ -62,7 +61,11 @@ async function getRealMax(key, date) {
 }
 
 async function getRealAvg(key, date) {
-    return await tools.RedisUtil.hget(key, date) || 0;
+    let ret = await tools.RedisUtil.hget(key, date);
+    if (ret) {
+        return Math.round(+ret);
+    }
+    return 0;
 }
 
 /**

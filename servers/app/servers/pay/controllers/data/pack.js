@@ -597,8 +597,10 @@ function exchange(data, costList, gainList, scene) {
         }
     }
 
+    let reward = [];
     for (let i = 0; i < gainList.length; i++) {
         const item = gainList[i];
+        reward.push([item.item_id, item.item_num]);
         switch (item.item_id) {
             case itemDef.GOLD:
                 {
@@ -631,6 +633,7 @@ function exchange(data, costList, gainList, scene) {
                 }
         }
     }
+    buzz_limit_items.setItemGetAt(account, reward);
 
     account.commit();
 

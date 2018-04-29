@@ -244,8 +244,13 @@ class FishPlayer extends Player {
     }
 
 
-    syncData() {
+    async syncData() {
+        let _account = await redisAccountSync.getAccountAsync(this.uid, [ACCOUNTKEY.MISSION_ONLY_ONCE, ACCOUNTKEY.MISSION_DAILY_RESET]);
+        logger.error('',_account.toJSON());
         // logger.info('收到来自数据服的同步通知 ');
+        this.account.mission_only_once = _account.mission_only_once;
+        this.account.mission_daily_reset = _account.mission_daily_reset;
+
         this.account.commit(function () {
             this._regetField();
         }.bind(this));

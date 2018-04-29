@@ -3,6 +3,8 @@ const authSdk = require('./loginAuth/authSdk');
 const platformCtrl = require('./platformCtrl');
 const logger = require('omelo-logger').getLogger('gate', __filename);
 const logicResponse = require('../../common/logicResponse');
+const RedisUtil = require('../../../utils/tools/RedisUtil');
+const REDISKEY = require('../../../database/consts').REDISKEY;
 
 class ThirdPartyAuth {
     async login(data) {
@@ -44,6 +46,13 @@ class ThirdPartyAuth {
             account.is_register = isNew;
             sdkAuthResponse.charm_point = account.charm_point;
             sdkApi.reportUserAchievement(sdkAuthResponse);
+
+            let globalSwitchCdkey = await RedisUtil.get(REDISKEY.SWITCH.CDKEY);
+            globalSwitchCdkey = +globalSwitchCdkey;
+            account.cdkey_on &= globalSwitchCdkey;
+
+            logger.error(`uid${account.id} -- cdkey_on:${account.cdkey_on}`);
+            
             return logicResponse.ask(account.toJSON());
         } catch (err) {
             logger.error(`第三方渠道${data.channel}登录授权失败`,err);

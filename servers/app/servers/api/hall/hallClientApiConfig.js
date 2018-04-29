@@ -1,4 +1,3 @@
-const loadVersionApi = require('../loadVersionApi');
 const data_weapon = require('../../hall/controllers/data/weapon');
 const data_broadcast = require('../../hall/controllers/data/broadcast');
 const data_activity = require('../../hall/controllers/data/activity');
@@ -341,8 +340,6 @@ const api_list = {
         accountFields: []
     }
 };
-
-loadVersionApi(api_list, 'hallClientApiConfig');
 
 module.exports = {
     apiCfgs:api_list,

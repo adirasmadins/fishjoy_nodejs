@@ -1,7 +1,5 @@
 const moment = require('moment');
 const tools = require('../../../../utils/tools');
-
-const DESIGN_CFG = require('../../../../utils/imports').DESIGN_CFG;
 const REDISKEY = require('../../../../database').dbConsts.REDISKEY;
 const SERVER_PERIOD = require('../../../../consts/constDef').SERVER_PERIOD;
 
@@ -31,7 +29,7 @@ async function fetchData() {
     console.log('pumpInfo:', pumpInfo);
     pumpInfo = JSON.parse(pumpInfo);
 
-    let cfgs = DESIGN_CFG.common_mathadjust_const_cfg;
+    let cfgs = tools.CfgUtil.common.getMathAdjustConsts();
 
     let extractExpect = await tools.RedisUtil.get(REDISKEY.PLATFORM_DATA.EXPECT_EXTRACT) || cfgs.extract;
     let durationExpect = await tools.RedisUtil.get(REDISKEY.PLATFORM_DATA.TOTAL_CYCLE) || cfgs.time1;

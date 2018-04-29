@@ -1,4 +1,3 @@
-const loadVersionApi = require('../loadVersionApi');
 const thirdPartyAuth = require('../../gate/controllers/thirdPartyAuth');
 const innerUserAuth = require('../../gate/controllers/innerUserAuth');
 const queryServices = require('../../gate/controllers/queryServices');
@@ -66,7 +65,6 @@ const api_list = {
     }
 };
 
-loadVersionApi(api_list, 'gateClientApiConfig');
 
 module.exports = {
     apiCfgs: api_list,

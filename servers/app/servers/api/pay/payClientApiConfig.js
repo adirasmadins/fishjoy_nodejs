@@ -1,4 +1,3 @@
-const loadVersionApi = require('../loadVersionApi');
 const data_recieve = require('../../pay/controllers/data/recieve');
 const data_cdkey = require('../../pay/controllers/data/cd_key');
 const data_draw = require('../../pay/controllers/data/draw');
@@ -103,8 +102,6 @@ const api_list = {
         accountFields: []
     }
 };
-
-loadVersionApi(api_list, 'payClientApiConfig');
 
 module.exports = {
     apiCfgs: api_list,

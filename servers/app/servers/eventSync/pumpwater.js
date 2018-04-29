@@ -112,14 +112,18 @@ class Pumpwater extends EventEmitter {
     async _queryGainCostValue(params) {
         logger.info('_queryGainCostValue:', params);
         let sql = `SELECT SUM(gain) AS gain, SUM(cost) AS cost FROM 
-        ${params[0]} WHERE level > 15 AND log_at > '${params[1]}' AND scene IN (
-            ${common_log_const_cfg.GAME_FIGHTING},
-            ${common_log_const_cfg.GOLDFISH_GAIN},
-            ${common_log_const_cfg.NUCLER_LASER},
-            ${common_log_const_cfg.NUCLER_DROP},
-            ${common_log_const_cfg.ACTIVE_DRAW},
-            ${common_log_const_cfg.NUCLER_COST},
-            ${common_log_const_cfg.ACTIVE_COST})`;
+            ${params[0]} WHERE level > 15 AND log_at > '${params[1]}' AND scene IN (
+                ${common_log_const_cfg.GAME_FIGHTING},
+                ${common_log_const_cfg.GOLDFISH_GAIN},
+                ${common_log_const_cfg.FISH_BOMB},
+                ${common_log_const_cfg.FISH_LIGHTING},
+                ${common_log_const_cfg.NUCLER_LASER})`;
+        if (tools.BuzzUtil.isVersionGambling()) {
+            sql = `${common_log_const_cfg.NUCLER_DROP},
+                ${common_log_const_cfg.ACTIVE_DRAW},
+                ${common_log_const_cfg.NUCLER_COST},
+                ${common_log_const_cfg.ACTIVE_COST})`;
+        }
 
         let gain = 0;
         let cost = 0;

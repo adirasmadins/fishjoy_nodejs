@@ -1,5 +1,6 @@
 const User = require('./user');
 const http = require('http');
+const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
 
 class CocoUser extends User {
     constructor(config) {
@@ -10,7 +11,7 @@ class CocoUser extends User {
     getUserInfo(data) {
         let token = data.token;
         let url = `${this._config.url}?cmd=checkUserToken&userToken=${token}`;
-        console.log(url);
+        logger.info(url);
         return new Promise(function (resolve, reject) {
             http.get(url, function (resp) {
                 let result = "";
@@ -22,10 +23,10 @@ class CocoUser extends User {
                         reject('网络异常');
                         return;
                     }
-                    console.log('17525 sdk get user info result:', result);
+                    logger.info('17525 sdk get user info result:', result);
                     result = JSON.parse(result);
                     if(result.error) {
-                        console.log("渠道登录错误:",result.error);
+                        logger.error("渠道登录错误:",result.error);
                         reject(result.error);
                     }else {
                         let userInfo = {

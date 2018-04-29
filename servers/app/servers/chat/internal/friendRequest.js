@@ -3,4 +3,4 @@ class FriendRequest{
     getCurrentMsg(data) {}
 }
 
-module.exports = FriendRequest;
+module.exports = new FriendRequest();

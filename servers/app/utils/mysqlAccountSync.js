@@ -94,6 +94,10 @@ async function setAccountSync(accounts) {
  * @param cb
  */
 function setAccount(accounts, cb) {
+    if(!Array.isArray(accounts)){
+        accounts = [accounts];
+    }
+
     const FUNC = TAG + "setAccount() --- ";
     let sqlParams = [];
     for (let i in accounts) {

@@ -2,10 +2,6 @@ const ObjUtil = require('../buzz/ObjUtil');
 const RedisUtil = require('../utils/RedisUtil');
 const ArrayUtil = require('../utils/ArrayUtil');
 const buzz_cst_error = require('../../../../consts/fish_error');
-const JOIN_TYPE = require('../buzz/buzz_social').JOIN_TYPE;
-const SOCIAL_REWARD_TYPE = require('../buzz/buzz_social').SOCIAL_REWARD_TYPE;
-const SHARE_STATUS = require('../buzz/buzz_social').SHARE_STATUS;
-const REPEAT_TYPE = require('../buzz/buzz_social').REPEAT_TYPE;
 const ERROR_OBJ = buzz_cst_error.ERROR_OBJ;
 const DateUtil = require('../utils/DateUtil');
 const dao_reward = require('./dao_reward');
@@ -25,6 +21,57 @@ const RewardModel = require('../../../../utils/account/RewardModel');
 const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 
 const TAG = "【dao_social】";
+
+// 加入的类型
+const JOIN_TYPE = {
+    /** 邀请注册 */
+    INVITE: 100,
+    /** 分享 */
+    SHARE: 101,
+    /** 收藏 */
+    ENSHRINE: 102,
+    /** 自己来的 */
+    SELF: 103,
+    /** 邀请进入游戏 */
+    INVITE_DAILY: 104,
+    /** 首次抽奖分享*/
+    FIST_SHARE: 105
+};
+
+// 社交领奖的类型
+const SOCIAL_REWARD_TYPE = {
+    /** 邀请领奖 */
+    INVITE: 100,
+    /** 分享领奖 */
+    SHARE: 101,
+    /** 收藏领奖 */
+    ENSHRINE: 102,
+    /** 每日邀请领奖 */
+    INVITE_DAILY: 104,
+    /** 首次抽奖分享领奖 */
+    FIST_SHARE: 105
+};
+
+// 分享的状态
+const SHARE_STATUS = {
+    /** 待分享 */
+    SHARE: 0,
+    /** 未领取 */
+    REWARD: 1,
+    /** 已领取 */
+    GOTTEN: 2,
+};
+
+// 分享的重复类型
+const REPEAT_TYPE = {
+    /** 不重置 */
+    NONE: 0,
+    /** 每日重置 */
+    DAILY: 1,
+    /** 每周重置 */
+    WEEKLY: 2,
+};
+
 
 //==============================================================================
 // public

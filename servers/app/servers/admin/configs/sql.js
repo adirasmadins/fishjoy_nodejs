@@ -97,8 +97,10 @@ module.exports =
         // 付费数据
         //--------------------------------------------------------------------------
         // 获取充值成功订单数据
-        getOrderList: "select * from tbl_order where status in (|status|) and created_at>=? and created_at<=? limit ?,?",
-        orderCount: "select COALESCE(count(id), 0) as sum from tbl_order where status in (|status|) and created_at>=? and created_at<=?",
+        getOrderList: "SELECT * FROM tbl_order WHERE status IN (|status|) AND created_at>=? AND created_at<=? LIMIT ?,?",
+        getOrderListForUsers: "SELECT * FROM tbl_order WHERE status IN (|status|) AND game_account_id IN (|uid_list|) AND created_at>=? AND created_at<=? LIMIT ?,?",
+        orderCount: "SELECT COALESCE(count(id), 0) AS sum FROM tbl_order WHERE status IN (|status|) AND created_at>=? AND created_at<=?",
+        orderCountForUsers: "SELECT COALESCE(count(id), 0) AS sum FROM tbl_order WHERE status IN (|status|) AND game_account_id IN (|uid_list|) AND created_at>=? AND created_at<=?",
         getRechargeAll: "select COALESCE(sum(money), 0) as sum from tbl_order where status=0",
         getRechargeUser: "SELECT COALESCE(sum(money), 0) AS sum FROM tbl_order WHERE status=0 AND game_account_id IN (|uid_list|)",
 

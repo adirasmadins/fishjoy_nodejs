@@ -1,7 +1,5 @@
 const CATCH_RATE = require('../../configs/consts/CatchRate');
 const tools = require('../../../../utils/tools');
-
-const DESIGN_CFG = require('../../../../utils/imports').DESIGN_CFG;
 const REDISKEY = require('../../../../database').dbConsts.REDISKEY;
 
 /**

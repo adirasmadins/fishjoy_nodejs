@@ -3,7 +3,7 @@ const utils = require('../../../utils/utils');
 const REDISKEY = require('../../../database/consts').REDISKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const mysqlAccountSync = require('../../../utils/mysqlAccountSync');
-const consts = require('../src/consts');
+const rankRewardCfg = require('../../../utils/designCfg/rankRewardCfg');
 
 /**
  * 用户数据重置
@@ -36,9 +36,9 @@ class RankBuildTask extends Task {
                 }
                 player.ext = account;
                 if (player.ext.match_rank) {
-                    let rankId = consts.getRankIdFromPointsAndRank(player.score, account.match_rank);
+                    let rankId = rankRewardCfg.rankUtils().getRankIdFromPointsAndRank(player.score, account.match_rank);
                     if (0 == rankId) {
-                        rankId = consts.getRankIdFromPoints(player.score);
+                        rankId = rankRewardCfg.rankUtils().getRankIdFromPoints(player.score);
                     }
                     player.ext.match_rank = rankId;
                 }
@@ -53,9 +53,9 @@ class RankBuildTask extends Task {
             if (account) {
                 player.ext = account.toJSON();
                 if (player.ext.match_rank) {
-                    let rankId = consts.getRankIdFromPointsAndRank(player.score, i);
+                    let rankId = rankRewardCfg.rankUtils().getRankIdFromPointsAndRank(player.score, i);
                     if (0 == rankId) {
-                        rankId = consts.getRankIdFromPoints(player.score);
+                        rankId = rankRewardCfg.rankUtils().getRankIdFromPoints(player.score);
                     }
                     player.ext.match_rank = rankId;
                 }

@@ -12,7 +12,6 @@ exports.get_online_time = get_online_time;
 
 exports.guideReward = guideReward;
 exports.dailyReward = dailyReward;
-exports.achieveReward = achieveReward;
 exports.missionReward = missionReward;
 exports.activeReward = activeReward;
 exports.onekeyReward = onekeyReward;
@@ -124,19 +123,6 @@ async function dailyReward(data) {
         buzz_reward.dailyReward(data, function (err, result) {
             if (err) {
                 logger.error('日常领奖 err:', err);
-                reject(err);
-                return;
-            }
-            resolve(logicResponse.ask(result));
-        });
-    });
-}
-
-async function achieveReward(data) {
-    return new Promise(function (resolve, reject) {
-        buzz_reward.achieveReward(data, function (err, result) {
-            if (err) {
-                logger.error('成就领奖 err:', err);
                 reject(err);
                 return;
             }

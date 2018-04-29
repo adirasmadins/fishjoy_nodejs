@@ -1,5 +1,6 @@
 const REDISKEY = require('../../../database/consts').REDISKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
+const rankRewardCfg = require('../../../utils/designCfg/rankRewardCfg');
 const consts = require('./consts');
 
 class RankReward {
@@ -15,7 +16,7 @@ class RankReward {
     _getWeekAward(type, cond) {
         switch (type) {
             case consts.RANK_TYPE.GODDESS:
-                return consts.getWeekAwardGoddess(cond.rank, cond.wave);
+                return rankRewardCfg.rankUtils().getWeekAwardGoddess(cond.rank, cond.wave);
                 break;
         }
     }
@@ -27,7 +28,7 @@ class RankReward {
      * @private
      */
     _getDailyAward(type, rank) {
-        let list = consts.RANK_DAILY_AWARD_CONFIG[type];
+        let list = rankRewardCfg.getAwardCfg(type);
         for (let i = 0; i < list.length; ++i) {
             if (rank >= list[i].interval[0] && rank <= list[i].interval[1]) {
                 return list[i].reward;

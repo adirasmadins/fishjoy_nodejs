@@ -168,7 +168,7 @@ class Feedback {
             if (data.mid == mid) {
                 let like_uids = data.like_uids;
                 if (like_uids.length === 0 || !like_uids.includes(uid)) {
-                    data.like_uids = like_uids.push(uid);
+                    like_uids.push(uid);
                 }
                 break;
             }
@@ -178,7 +178,7 @@ class Feedback {
             if (data.mid == mid) {
                 let like_uids = data.like_uids;
                 if (like_uids.length === 0 || !like_uids.includes(uid)) {
-                    data.like_uids = like_uids.push(uid);
+                    like_uids.push(uid);
                 }
                 break;
             }

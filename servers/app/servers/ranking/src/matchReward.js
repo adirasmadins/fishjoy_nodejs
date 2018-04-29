@@ -1,7 +1,8 @@
 const RankReward = require('./rankReward');
 const REDISKEY = require('../../../database/consts').REDISKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
-const consts = require('./consts');
+const rankRewardCfg = require('../../../utils/designCfg/rankRewardCfg');
+
 class MatchReward extends RankReward {
     constructor() {
         super();
@@ -14,11 +15,11 @@ class MatchReward extends RankReward {
      * @private
      */
     _getMonthAward(rank, score) {
-        let rankId = consts.getRankIdFromPointsAndRank(score, rank - 1);
+        let rankId = rankRewardCfg.rankUtils().getRankIdFromPointsAndRank(score, rank - 1);
         if (0 == rankId) {
-            rankId = consts.getRankIdFromPoints(score);
+            rankId = rankRewardCfg.rankUtils().getRankIdFromPoints(score);
         }
-        return consts.getSeasonRewardFromRankgameCfg(rankId);
+        return rankRewardCfg.rankUtils().getSeasonRewardFromRankgameCfg(rankId);
     }
 
     async _getMatchInfo(uids) {

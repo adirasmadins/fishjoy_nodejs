@@ -240,7 +240,7 @@ function _getItemLimitLeft(itemId, gotAt) {
 
     let now = new Date().getTime();
     let pass = now - gotAt;
-    if (pass >= 0) {
+    if (pass >= -60000) {
         pass = Math.ceil(pass);
         let left = lengthtime - pass;
         if (left <= 0) {

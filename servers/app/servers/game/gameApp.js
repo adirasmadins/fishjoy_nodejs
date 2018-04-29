@@ -167,11 +167,9 @@ class GameApp {
     }
 
     c_leave_room(msg, session, cb) {
-        logger.info(`用户[${msg.uid}]主动退出房间`);
-        this._instance.leaveGame(msg, function (err, result) {
-            logger.info(`用户[${msg.uid}]退出游戏服务`, result);
-            utils.invokeCallback(cb, null, CONSTS.SYS_CODE.OK);
-        });
+        logger.error(`用户[${msg.uid}]主动退出房间`);
+        this._instance.leaveGame(msg);
+        utils.invokeCallback(cb, null, CONSTS.SYS_CODE.OK);
     }
 
     async _reconnectGame(msg) {

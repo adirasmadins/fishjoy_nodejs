@@ -3,7 +3,15 @@ const tools = require('../../../../utils/tools');
 
 /**
  * 获取充值日志接口需要的返回值
- * @param {*} data {startDate:'YYYY-MM-DD', endDate:'YYYY-MM-DD', start:1, length:500} 
+ * @param {*} data 
+ * {
+ * startDate:'YYYY-MM-DD', 
+ * endDate:'YYYY-MM-DD', 
+ * start:1, 
+ * length:500, 
+ * status:0|1,
+ * uid:'123,234,345',
+ * } 
  */
 exports.get = async function (data, ctx) {
     logger.info('data:', data);
@@ -11,10 +19,10 @@ exports.get = async function (data, ctx) {
     let start = (+data.start - 1) * +data.length;
     let length = +data.length;
 
-    const rows = await fetchRows(data.status, data.startDate, data.endDate);
+    const rows = await fetchRows(data.status, data.uid, data.startDate, data.endDate);
     const pages = Math.ceil(rows / length);
 
-    let chart = makeChart(await fetchData(data.status, data.startDate, data.endDate, start, length));
+    let chart = makeChart(await fetchData(data.status, data.uid, data.startDate, data.endDate, start, length));
 
     await fillChart(chart);
 
@@ -114,13 +122,19 @@ function getStatus(status) {
 /**
  * 获取时间段内的数据.
  * @param {Number} status 订单状态: 0-成功, 1-失败
+ * @param {String} uidList 玩家uid列表
  * @param {*} startDate 开始日期, 格式为YYYY-MM-DD
  * @param {*} endDate 结束日期, 格式为YYYY-MM-DD
  * @param {*} start 分页索引
  * @param {*} length 每页显示记录条数
  */
-async function fetchData(status, startDate, endDate, start, length) {
-    let sql = SQL_CONFIG.getOrderList.replace('|status|', status);
+async function fetchData(status, uidList, startDate, endDate, start, length) {
+    let sql = SQL_CONFIG.getOrderList;
+    if (uidList) {
+        sql = SQL_CONFIG.getOrderListForUsers;
+        sql = sql.replace('|uid_list|', uidList);
+    }
+    sql = sql.replace('|status|', status);
     let fields = tools.ObjUtil.makeSqlDataFromTo(startDate, endDate);
     fields.push(start);
     fields.push(length);
@@ -130,11 +144,17 @@ async function fetchData(status, startDate, endDate, start, length) {
 /**
  * 获取日志数量总数.
  * @param {Number} status 订单状态: 0-成功, 1-失败
+ * @param {String} uidList 玩家uid列表
  * @param {*} startDate 开始日期, 格式为YYYY-MM-DD
  * @param {*} endDate 结束日期, 格式为YYYY-MM-DD
  */
-async function fetchRows(status, startDate, endDate) {
-    let sql = SQL_CONFIG.orderCount.replace('|status|', status);
+async function fetchRows(status, uidList, startDate, endDate) {
+    let sql = SQL_CONFIG.orderCount;
+    if (uidList) {
+        sql = SQL_CONFIG.orderCountForUsers;
+        sql = sql.replace('|uid_list|', uidList);
+    }
+    sql = sql.replace('|status|', status);
     let fields = tools.ObjUtil.makeSqlDataFromTo(startDate, endDate);
     let ret = await tools.SqlUtil.query(sql, fields);
     return ret[0].sum;

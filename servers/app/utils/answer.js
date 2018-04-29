@@ -12,10 +12,7 @@ ResponseNoData.prototype.toString = function () {
 };
 
 function ResponseData(data,enc) {
-    let res = {
-        msg:data
-    };
-    return res;
+    return data;
 }
 
 ResponseData.prototype.toString = function () {

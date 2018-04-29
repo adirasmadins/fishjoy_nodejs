@@ -1,6 +1,8 @@
 // 实物兑换表
 const DESIGN_CFG = require('../../../utils/imports').DESIGN_CFG;
 const common_mathadjust_const_cfg = DESIGN_CFG.common_mathadjust_const_cfg;
+const common_log_const_cfg = DESIGN_CFG.common_log_const_cfg;
+const common_const_cfg = DESIGN_CFG.common_const_cfg;
 
 exports.getPumpWater = function (id) {
     return {
@@ -11,4 +13,16 @@ exports.getPumpWater = function (id) {
         catchRateGive: common_mathadjust_const_cfg.addvalue,
         catchRateGain: common_mathadjust_const_cfg.reducevalue,
     };
+}
+
+exports.getMathAdjustConsts = function () {
+    return common_mathadjust_const_cfg;
+}
+
+exports.getLogConsts = function () {
+    return common_log_const_cfg;
+}
+
+exports.getConsts = function () {
+    return common_const_cfg;
 }

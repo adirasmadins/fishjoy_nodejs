@@ -9,4 +9,5 @@ module.exports = {
     daily_dailypast: require('./cfgs/daily_dailypast'),
     vip: require('./cfgs/vip'),
     common: require('./cfgs/common'),
+    scene: require('./cfgs/scene'),
 }

@@ -295,6 +295,7 @@ class FishRoom extends Room{
         this._addPlayerEvent(player);
 
         let players = this.genAllPlayers(uid);
+        players[0].nickname='aaa';
         logger.info('room 玩家加入', player.account.nickname);
         this._broadcast(fishCmd.push.enter_room.route, {
             players: players

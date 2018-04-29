@@ -5,6 +5,7 @@ const LogInsertTask = require('./logInsertTask');
 const logTableDef = require('./logTableDef');
 const item_item_cfg = require('../imports').DESIGN_CFG.item_item_cfg;
 const tools = require('../../utils/tools');
+const itemDef = require('../../consts/itemDef');
 const REDISKEY = require('../../database/consts').REDISKEY;
 
 /**
@@ -24,10 +25,10 @@ class LogBuilder {
     _initItemMap() {
         let map = new Map();
         for (let i in item_item_cfg) {
-            if (i == 'i001') {
+            if (i == itemDef.GOLD) {
                 map.set(i, ['gold']);
                 continue;
-            } else if (i == 'i002') {
+            } else if (i == itemDef.DIAMOND) {
                 map.set(i, ['pearl']);
                 continue;
             }
@@ -159,10 +160,10 @@ class LogBuilder {
             let item = item_list[i];
             let item_id = item.item_id;
             let item_num = item.item_num;
-            if ('i001' == item_id) {
+            if (itemDef.GOLD == item_id) {
                 goldGain += item_num;
             }
-            if ('i002' == item_id) {
+            if (itemDef.DIAMOND == item_id) {
                 diamondGain += item_num;
             }
             if ('i003' == item_id) {
@@ -268,7 +269,7 @@ class LogBuilder {
             let item = item_list[i];
             let item_id = item.item_id;
             let item_num = item.item_num;
-            if (item_id == 'i001') continue;
+            if (item_id == itemDef.GOLD) continue;
             let keyMap = this.itemMap.get(item_id);
             if (!keyMap) continue;
             let size = keyMap.length;
@@ -303,7 +304,7 @@ class LogBuilder {
             let item = item_list[i];
             let item_id = item.item_id;
             let item_num = item.item_num;
-            if (item_id == 'i001') continue;
+            if (item_id == itemDef.GOLD) continue;
             let keyMap = this.itemMap.get(item_id);
             if (!keyMap) continue;
             let size = keyMap.length;
@@ -385,9 +386,9 @@ class LogBuilder {
                 continue;
             }
             let num = item_num * delta;
-            if (item_id == 'i001') {
+            if (item_id == itemDef.GOLD) {
                 let gain = num > 0 ? num : 0;
-                let cost = num > 0 ? 0 : num;
+                let cost = num > 0 ? 0 : -num;
                 this.addGoldLog(account.id, gain, cost, left, scene, account.level, fire);
             } else {
                 this.addItemLog(account.id, item_id, num, left, scene, account.level);

@@ -9,7 +9,8 @@ const sysConfig = require('./config/sysConfig');
 // const masterhaPlugin = require('omelo-masterha-plugin');
 const globalChannel = require('omelo-globalchannel-plugin');
 const status = require('omelo-status-plugin');
-const HotUpdate = require('./hotUpdate');
+const HotUpdate = require('./app/utils/hotUpdate');
+const designCfgUtils = require('./app/utils/designCfg/designCfgUtils');
 // const scale = require('omelo-scale-plugin');
 
 let SSL = null;
@@ -26,8 +27,10 @@ if (sysConfig.SSL_CERT) {
 /**
  * Init app for client.
  */
+
+const VER = versions.DEVELOPMENT ? versions.VER_KEY[versions.GAMEPLAY.LOCAL] : versions.VER_KEY[versions.PUB];
 let app = omelo.createApp({
-    version_key: versions.VER_KEY[versions.PUB]
+    version_key: VER
 });
 
 app.set('name', 'fishjoy');
@@ -48,7 +51,7 @@ app.set('globalErrorHandler', function (err, msg, resp, session, opts, next) {
 app.loadConfig('versions', require('./config/versions'));
 app.loadConfig('redis', require('./app/utils/imports').dbCfg.redis);
 app.loadConfig('mysql', require('./app/utils/imports').dbCfg.mysql);
-app.loadConfig('http', path.join(app.getBase(), `config/service/${versions.VER_KEY[versions.PUB]}/http`));
+app.loadConfig('http', path.join(app.getBase(), `config/service/${VER}/http`));
 app.loadConfig('adminUser', require('./config/adminUser'));
 
 const httpAesFilter = require('./app/servers/common/httpAesFilter');
@@ -75,7 +78,7 @@ app.configure('production|development', function () {
 
     if (typeof app.registerAdmin === 'function') {
         let modules = require('./app/modules');
-        for(let moduleId in modules){
+        for (let moduleId in modules) {
             app.registerAdmin(modules[moduleId], {
                 app: app
             });
@@ -155,22 +158,17 @@ app.configure('production|development', function () {
 app.configure('production|development', 'loadManager|eventSync|matching|rankMatch|r2mSync|ranking|admin|resource|game|gate|hall|chat|logManager|pay', function () {
     global.logger = require('omelo-logger').getLogger(app.getServerId());
 
-    const VER= versions.VER_KEY[versions.PUB];
-    // const WATCH_DIR =[
-    //     `config/design_cfg/${VER}`,
-    //     `config/service/${VER}`,
-    //     `config/db/${VER}`,
-    // ];
-
-    let hotUpdate = new HotUpdate();
+    const VER = versions.VER_KEY[versions.PUB];
+    let hotUpdate = new HotUpdate([/.*?\.js$/, /.*?\.json$/]);
     const GAME_CFG = require('./config/design_cfg');
-    hotUpdate.watch(`config/design_cfg/${VER}`, function(name, value){
+    hotUpdate.watch(`config/design_cfg/${VER}`, function (name, value) {
         GAME_CFG[name] = value;
+        designCfgUtils.updateCfg(name, value);
     });
 
-    setInterval(function(){
-        global.logger.error(GAME_CFG.active_active_cfg[0].id);
-    }, 5000);
+    // setInterval(function () {
+    //     global.logger.error(GAME_CFG.active_active_cfg[0].id);
+    // }, 5000);
 });
 
 //服务http配置
@@ -198,7 +196,7 @@ app.configure('production|development', 'hall|chat|pay', function () {
 
 // 服务器pay配置
 app.configure('production|development', 'pay', function () {
-    httpLockFilter.addRoute("/pay/clientApi",httpLockFilter.matchMode.PART);
+    httpLockFilter.addRoute("/pay/clientApi", httpLockFilter.matchMode.PART);
     omeloHttpPlugin.filter(httpLockFilter);
 });
 

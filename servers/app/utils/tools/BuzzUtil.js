@@ -26,9 +26,6 @@ exports.getProfitInfoRecentHourForPlayer = getProfitInfoRecentHourForPlayer;
 exports.getNameFromItemId = getNameFromItemId;
 exports.getGiftCodeTitleFromId = getGiftCodeTitleFromId;
 exports.getNameOfAdmin = getNameOfAdmin;
-exports.isVersionChina = isVersionChina;
-exports.isVersionVietnam = isVersionVietnam;
-exports.isVersionCikByHand = isVersionCikByHand;
 exports.isSSL = isSSL;
 exports.getRmbTimes = getRmbTimes;
 exports.getShopItemById = getShopItemById;
@@ -169,16 +166,23 @@ function isSSL() {
 /**
  * 是否为大陆版的判断. 用于某些特定的处理.
  */
-function isVersionChina() {
+exports.isVersionChina = () => {
     return versions.PUB == versions.GAMEPLAY.LOCAL
         || versions.PUB == versions.GAMEPLAY.WANBA
         || versions.PUB == versions.GAMEPLAY.IOS;
 }
 
 /**
+ * 是否为赌博版.
+ */
+exports.isVersionGambling = () => {
+    return versions.PUB == versions.GAMEPLAY.VIETNAM;
+}
+
+/**
  * 是否为越南版的判断. 用于某些特定的处理.
  */
-function isVersionVietnam() {
+exports.isVersionVietnam = () => {
     return versions.PUB == versions.GAMEPLAY.VIETNAM
         || versions.PUB == versions.GAMEPLAY.VIETNAM_VN;
 }
@@ -186,7 +190,7 @@ function isVersionVietnam() {
 /**
  * 如果是手动填写订单发货则返回true.
  */
-function isVersionCikByHand() {
+exports.isVersionCikByHand = () => {
     return versions.PUB == versions.GAMEPLAY.WANBA
         || versions.PUB == versions.GAMEPLAY.VIETNAM_VN
         || versions.PUB == versions.GAMEPLAY.LOCAL;

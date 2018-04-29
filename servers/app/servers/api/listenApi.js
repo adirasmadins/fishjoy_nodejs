@@ -1,7 +1,21 @@
 const httpHandler = require('../common/httpHandler');
 const genAccount = require('../common/genAccount');
+const versions = require('../../../config/versions');
+const VER = versions.VER_KEY[versions.PUB];
 
-module.exports = function (router, apiCfgs, PREFIX) {
+function loadApi(list, dir, tag) {
+    try {
+        const ver_api_list = require(`./${dir}/${tag}.${VER}`);
+        for(let key in ver_api_list){
+            list[key] = ver_api_list[key];
+        }
+    } catch (err) {
+        err;
+    }
+}
+
+module.exports = function (router, dir, tag, apiCfgs, PREFIX) {
+    loadApi(apiCfgs, dir, tag);
 
     router.prefix(PREFIX);
     for (let key in apiCfgs) {
