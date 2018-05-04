@@ -1,0 +1,11 @@
+masterGate,103.90.220.2,root,Vnet@9999,22022
+room1,103.90.220.3,root,Vnet@9999,22022
+room1,103.90.220.4,root,Vnet@9999,22022
+room1,103.90.220.5,root,Vnet@9999,22022
+room1,103.90.220.6,root,Vnet@9999,22022
+payRankMatch,221.132.27.154,root,Vnet@9999,22022
+adminEvent,103.90.220.66,root,Vnet@9999,22022
+hall,103.90.220.67,root,Vnet@9999,22022
+chat,103.90.220.7,root,Vnet@9999,22022
+rankR2mSync,103.90.220.9,root,Vnet@9999,22022
+resource,103.90.220.68,root,Vnet@9999,22022

@@ -3,7 +3,7 @@ module.exports = {
         DATA: 0,
         EJS: 1,
         REDIRECT: 2,
-        FILE: 3
+        FILE: 3,
     },
 
     ask: function (data, type = 0) {

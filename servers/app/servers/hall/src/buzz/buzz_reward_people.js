@@ -183,7 +183,7 @@ function costRewardPeople(account, needitem, is_cost_coin, cb) {
             }
         }
         BuzzUtil.removeFromPack( account, item_list, cb);
-        logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.REWARD_PEOPLE, -1);
+        logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.REWARD_PEOPLE, -1);
     }
     //判断是否使用游戏币购买道具打赏
     else if (is_cost_coin) {
@@ -194,7 +194,7 @@ function costRewardPeople(account, needitem, is_cost_coin, cb) {
                 item_num: cost
             }];
             BuzzUtil.removeFromPack( account, item_list, cb);
-            logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.REWARD_PEOPLE, -1);
+            logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.REWARD_PEOPLE, -1);
         } else {
             //钻石不足，返回
             cb(1);

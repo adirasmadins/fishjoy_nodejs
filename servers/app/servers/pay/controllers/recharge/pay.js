@@ -14,26 +14,78 @@ const constDef = require('../../../../consts/constDef');
 const payConsts = require('../consts/payConsts');
 
 class Pay {
-    async buy(data) {
-        let buyType = this.getBuyType(data.itemid);
-        let isRmb = this.checkBuyRmb(buyType, data.itemid);
-        if (isRmb) {
-            if (buyType == Pay.BUY_TYPE.CARD) {
-                let ret = this.isOwnCard(data.itemid, data.account);
-                if (ret != ERROR_OBJ.OK) {
-                    throw ret;
-                }
+    /**
+     * 获取支付订单
+     * @param data
+     * @return {Promise}
+     */
+    async createPayOrder(data) {
+        logger.error('Pay createPayOrder data=', data);
+        try{
+            if (!data.itemid) {
+                throw ERROR_OBJ.PARAM_MISSING;
             }
-            await this.checkOrder(data);
-            return await this.buyByRMB(data);
+
+            let shopItemInfo = this._getShopItemInfo(data.orderInfo.goods_id, data.orderInfo.item_type);
+            if(!shopItemInfo){
+                throw ERROR_OBJ.BUY_WRONG_SHOP_ID;
+            }
+
+            let buyType = this.getBuyType(data.itemid);
+            let isRmb = this.checkBuyRmb(buyType, data.itemid);
+            if (!isRmb) {
+                return {
+                    game_order_id: constDef.GAME_INTER_PAY_ORDER_ID
+                };
+            }
+
+            data.goods_name = this.getGoodsName(data.itemid, buyType);
+            data.goods_id = this.getGoodsId(data.itemid);
+            let game_order_id = await dao_shop.createPayOrderItem(data);
+
+            return {
+                game_order_id: game_order_id
+            };
+        }catch (err){
+            logger.error('支付订单创建失败,err=',err);
+        }
+    }
+
+    /**
+     * 支付
+     * @param data
+     * @return {Promise.<*>}
+     */
+    async buy(data) {
+        logger.error('Pay buy data=', data);
+        try {
+            let orderInfo = await dao_shop.getOrderInfo(data.orderid);
+            data.orderInfo = orderInfo;
+            logger.error('Pay buy orderInfo=', orderInfo);
+            let buyType = this.getBuyType(orderInfo.goods_id);
+            logger.error('Pay buy buyType=', buyType);
+            let isRmb = this.checkBuyRmb(buyType, orderInfo.goods_id);
+            if (isRmb) {
+                if (buyType == Pay.BUY_TYPE.CARD) {
+                    let ret = this.isOwnCard(orderInfo.goods_id, data.account);
+                    if (ret != ERROR_OBJ.OK) {
+                        throw ret;
+                    }
+                }
+                return await this.buyByRMB(data);
+            }
+
+            let func = innerPay[`buy_${buyType}`];
+            if (func) {
+                return await func.apply(innerPay, Array.prototype.slice.call(arguments, 0));
+            } else {
+                throw ERROR_OBJ.BUY_GOODS_ILLEGAL;
+            }
+        } catch (err) {
+            logger.error('订单支付异常，err=', err);
+            throw err;
         }
 
-        let func = innerPay[`buy_${buyType}`];
-        if (func) {
-            return await func.apply(innerPay, Array.prototype.slice.call(arguments, 0));
-        } else {
-            throw ERROR_OBJ.BUY_GOODS_ILLEGAL;
-        }
     }
 
     async buyByRMB(data) {
@@ -86,40 +138,18 @@ class Pay {
         return null;
     }
 
-    /**
-     * 获取支付订单
-     * @param data
-     * @return {Promise}
-     */
-    async createPayOrder(data) {
-        if (!data.itemid) {
-            throw ERROR_OBJ.PARAM_MISSING;
+    _getShopItemInfo(itemid, itemtype) {
+        let cfg = Pay.ITEM_TYPE_CFG_MAP[itemtype];
+        for (let idx in cfg) {
+            if (cfg[idx].id == itemid) {
+                return cfg[idx];
+            }
         }
-
-        let buyType = this.getBuyType(data.itemid);
-        let isRmb = this.checkBuyRmb(buyType, data.itemid);
-        if (!isRmb) {
-            return {
-                game_order_id: constDef.GAME_INTER_PAY_ORDER_ID
-            };
-        }
-
-        data.goods_name = this.getGoodsName(data.itemid,data.itemtype);
-        data.goods_id = this.getGoodsId(data.itemid);
-        let game_order_id = await dao_shop.createPayOrderItem(data);
-
-        logger.info("获取玩家订单成功");
-        logger.info("game_order_id:", game_order_id);
-
-        return {
-            game_order_id: game_order_id
-        };
     }
 
-    getGoodsName(goods_id,itemtype) {
-        logger.info('getGoodsName', goods_id);
-        let shopItemById = tools.BuzzUtil.getShopItemById(goods_id,itemtype);
-        return shopItemById.name;
+    getGoodsName(goods_id, itemtype) {
+        let shopItemInfo = this._getShopItemInfo(goods_id, itemtype);
+        return shopItemInfo.name;
     }
 
     getGoodsId(goods_id) {
@@ -153,7 +183,7 @@ class Pay {
         let buyType = this.getBuyType(shop_id);
         switch (buyType) {
             case Pay.BUY_TYPE.RMB: {
-                if (itemtype == 0) {
+                if (itemtype == 0) {//真实货币购买钻石
                     let shop_pearl = BuzzUtil.getShopPearlById(shop_id);
                     if (null == shop_pearl) {
                         throw ERROR_OBJ.BUY_WRONG_SHOP_ID;
@@ -179,7 +209,7 @@ class Pay {
                         item_id: shop_shop_buy_type_cfg.BUY_RMB.id,
                         item_num: item_amount,
                     }];
-                } else if (itemtype == 1) {
+                } else if (itemtype == 1) {//真实货币购买金币
                     let shop_gold = tools.BuzzUtil.getShopGoldById(shop_id);
                     if (null == shop_gold) {
                         throw ERROR_OBJ.BUY_WRONG_SHOP_ID;
@@ -217,7 +247,7 @@ class Pay {
                 item_type = ITEM_TYPE.IT_CARD;
                 total = account.pearl;
                 item_list = [{
-                    item_id: "i002",
+                    item_id: itemDef.DIAMOND,
                     item_num: shop_card.diamond,
                 }];
                 item_amount = 1; //shop_card.diamond;
@@ -242,7 +272,7 @@ class Pay {
                 item_type = ITEM_TYPE.IT_FUND;
                 total = account.gold;
                 item_list = [{
-                    item_id: "i001",
+                    item_id: itemDef.GOLD,
                     item_num: shop_fund.gold,
                 }];
                 item_amount = shop_fund.gold;
@@ -343,6 +373,7 @@ class Pay {
                 let scene = common_log_const_cfg.TIMEGIFT_BUY;
                 if (ITEM_TYPE.IT_FUND == log_data.item_type) scene = common_log_const_cfg.FUND_BUY;
                 if (ITEM_TYPE.IT_PEARL == log_data.item_type) scene = common_log_const_cfg.STORE;
+                if (ITEM_TYPE.IT_GOLD == log_data.item_type) scene = common_log_const_cfg.GOLD_BUY;
                 if (ITEM_TYPE.IT_CARD == log_data.item_type) scene = common_log_const_cfg.CARD; //TODO DFC error
                 let hint = '商城购买时获取';
 
@@ -352,7 +383,7 @@ class Pay {
                     let item = item_list[i];
                     let item_id = item.item_id;
                     let item_num = item.item_num;
-                    if ('i001' == item_id) {
+                    if (itemDef.GOLD == item_id) {
                         gain += item_num;
                     }
                 }
@@ -366,12 +397,13 @@ class Pay {
                     let item = item_list[i];
                     let item_id = item.item_id;
                     let item_num = item.item_num;
-                    if ('i002' == item_id) {
+                    if (itemDef.DIAMOND == item_id) {
                         diamondGain += item_num;
                     }
                 }
                 if (diamondGain > 0) {
-                    logBuilder.addGameLog(item_list, account, scene, hint);
+                    // logBuilder.addGameLog(item_list, account, scene, hint);
+                    logBuilder.addGoldAndItemLog(item_list, account, scene);// 商城中的钻石变化需要写入物品日志
                     //统计钻石充值dfc
                     let mission = new RewardModel(account);
                     mission.updateProcess(RewardModel.TaskType.CHARG_PEARL, log_data.price, 0);

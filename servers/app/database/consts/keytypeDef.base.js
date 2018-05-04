@@ -433,6 +433,10 @@ module.exports.AccountDef = {
         "def": [],
         "type": "object"
     },
+    "channel_game_friend": {
+        "def": [],
+        "type": "object"
+    },
     "bp": {
         "def": 0,
         "type": "number"
@@ -686,35 +690,29 @@ exports.OtherDef = {
     "flower_receive_weekly": {
         "def": 0,
         "type": "number",
-        "name": "flower_receive_weekly"
     },
     //2018.2.25 add dfc
     "month_sign_extra_reward": {
         "def": {},
         "type": "object",
-        "name": "month_sign_extra_reward"
     },
     //2018.2.28 add dfc
     "social_daily_invite_reward": {
         "def": [],
         "type": "object",
-        "name": "social_daily_invite_reward"
     },
     "social_invite_week": {
         "def": [],
         "type": "object",
-        "name": "social_invite_week"
     },
     "social_invite_month": {
         "def": [],
         "type": "object",
-        "name": "social_invite_month"
     },
     //2018.3.13 add dfc
     "free_bomb": {
         "def": 0,
         "type": "number",
-        "name": "free_bomb"
     },
     //2018.4.23 add dfc 是否禁言
     "talk_forbidden": {
@@ -726,20 +724,22 @@ exports.OtherDef = {
     "flower_receive": {
         "def": 0,
         "type": "number",
-        "name": "flower_receive"
     },
 
     "horn_used": {
         "def": 0,
         "type": "number",
-        "name": "horn_used"
     },
 
     "flower_send": {
         "def": 0,
         "type": "number",
-        "name": "flower_send"
     },
+    //玩家扩展数据
+    "extend":{
+        "def": {},
+        "type": "object",
+    }
 };
 
 

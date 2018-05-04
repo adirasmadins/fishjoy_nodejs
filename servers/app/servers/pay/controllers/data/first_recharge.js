@@ -61,8 +61,8 @@ function _reward(data, cb) {
                 change: change,
             };
             cb(null, ret);
-            logBuilder.addGameLog(item_list, account, common_log_const_cfg.FIRST_BUY, '首充领取');
-            logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.FIRST_BUY);
+            // logBuilder.addGameLog(item_list, account, common_log_const_cfg.FIRST_BUY, '首充领取');
+            logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.FIRST_BUY);
 
             // 发布公告12-领取首充奖励
             let params = [account.nickname];

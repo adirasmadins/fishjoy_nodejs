@@ -19,6 +19,9 @@ const shop_shop_buy_type_cfg = gameConfig.shop_shop_buy_type_cfg;
 const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
 const ItemTypeC = Item.ItemTypeC;
 const RewardModel = require('../../../../utils/account/RewardModel');
+const pack = require('../../../pay/controllers/data/pack');
+const SCENE = require('../../../../utils/tools/BuzzUtil').SCENE;
+const dropManager = require('../../../../utils/DropManager');
 
 const TAG = "【buzz_goddess】";
 
@@ -74,7 +77,7 @@ function getLeftDays() {
 }
 
 function getDefend(data, cb) {
-    let account=data.account;
+    let account = data.account;
     let goddess = account.goddess;
     let goddess_free = account.goddess_free;
     let goddess_ctimes = account.goddess_ctimes;
@@ -100,7 +103,7 @@ function getDefend(data, cb) {
     }
     account.goddess = goddess;
     account.commit();
-    CacheAccount.resetCharmPoint(account, function (chs) {});
+    CacheAccount.resetCharmPoint(account, function (chs) { });
     let response = {
         leftDays: getLeftDays(),
         gods: goddess,
@@ -110,6 +113,76 @@ function getDefend(data, cb) {
     cb(null, response);
 }
 
+const GOD_INTERACT_ID = [
+    2, //解锁微笑表情
+    3, //解锁害羞表情
+    4, //解锁卖萌表情
+    5, //解锁缠绵表情
+];
+
+exports.interractReward = interractReward;
+/**
+ * 女神互动奖励(爱抚女神获取奖励)
+ * @param {*} data 
+ * @param {*} cb 
+ */
+function interractReward(data, cb) {
+    let account = data.account;
+    let godList = account.goddess;
+    let godId = data.godId;
+    let bodyIdx = data.bodyIdx;
+    let interactId = bodyIdx + 1;
+
+    // 获取玩家指定女神的具体信息
+    let goddess = _getGoddessById(godList, godId);
+
+    // 判断该女神是否已经解锁
+    if (!_isGoddessUnlocked(goddess)) {
+        throw ERROR_OBJ.GODDESS_LOCKED;
+    }
+
+    // 判断该等级女神互动区域是否解锁
+    let godLevel = goddess.level;
+    let property = tools.CfgUtil.goddess.findGodProperty(
+        godId, godLevel, GOD_INTERACT_ID[bodyIdx]);
+    if (!property) {
+        throw ERROR_OBJ.GODDESS_LEVEL_NOT_REACHED;
+    }
+
+    // 判断该女神上次互动到现在是否已经超过了CD时间
+    const currentTimestamp = new Date().getTime();
+    let lastInteractTimestamp = goddess.interactReward[bodyIdx];
+    if (common_const_cfg.GODDESS_TIME * 1000 > currentTimestamp - lastInteractTimestamp) {
+        throw ERROR_OBJ.GODDESS_INTERACT_REWARD_ALREADY;
+    }
+
+    let interactInfo = tools.CfgUtil.goddess.getInteractInfo(interactId);
+    const dropid = interactInfo.dropid;
+    // dropManager.try2Drop已经完成了往背包中放入物品的操作
+    // 场景添加后替换语句
+    // let dropRet = dropManager.try2Drop(account, dropid, 1, SCENE.GOD_INTERACT);
+    const dropRet = dropManager.try2Drop(account, dropid, 1, 55);
+    const item_list = dropRet.logItems;
+
+    // goddess.interactReward[bodyIdx]记录每一个互动的时间
+    // 在过去了common_const_cfg.GODDESS_TIME秒后可以进行下一次互动
+    goddess.interactReward[bodyIdx] = new Date().getTime();
+    account.goddess = godList;
+    account.commit();
+
+    // 制作返回值
+    let ret = {
+        item_list: item_list,
+        change: {
+            gold: account.gold,
+            pearl: account.pearl,
+            package: account.package,
+            skill: account.skill,
+            goddess: account.goddess,
+        },
+    };
+    cb(null, ret);
+}
 
 function getUnlocked(account) {
     const FUNC = TAG + "getUnlocked()---";
@@ -155,7 +228,7 @@ function updateLevel(account) {
  */
 function challengeGoddess(data, cb) {
     let FUNC = TAG + "challengeGoddess() --- ";
-    let account=data.account;
+    let account = data.account;
     // 账户数据中原来的女神数据
     let uid = data.uid;
     let goddess_free = account.goddess_free;
@@ -361,7 +434,8 @@ function levelup(dataObj, cb) {
             }
             cb(null, ret);
         });
-        logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.GOD_UPGRADE, -1);
+        // 升级女神可能消耗金币, 需要使用通用日志方法.
+        logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.GOD_UPGRADE, -1);
     });
 
     // 校验方法
@@ -414,7 +488,7 @@ function weekReward(dataObj, cb) {
     buzz_charts.getChartReward(dataObj, function (err, resposne) {
         logger.info('getChartReward:', resposne);
         if (_.keys(resposne).length == 0) {
-            cb({code: 11111, msg: "用户奖励已经领取"});
+            cb({ code: 11111, msg: "用户奖励已经领取" });
         }
         else {
             let ret = {
@@ -733,7 +807,7 @@ function _unlock(req, dataObj, cb) {
                 account.commit();
                 cb(null, ret);
             }
-            logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.GOD_UNLOCK, -1);
+            logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.GOD_UNLOCK, -1);
         });
 
         // 校验方法
@@ -782,6 +856,11 @@ function _getGoddessSum(goddess_list) {
     return count;
 }
 
+/**
+ * 从女神id获取女神数据
+ * @param {*} goddess_list 
+ * @param {*} goddess_id 
+ */
 function _getGoddessById(goddess_list, goddess_id) {
     for (let i = 0; i < goddess_list.length; i++) {
         let goddess = goddess_list[i];
@@ -789,6 +868,7 @@ function _getGoddessById(goddess_list, goddess_id) {
             return goddess;
         }
     }
+    throw ERROR_OBJ.GODDESS_ID_ERROR;
 }
 
 //----------------------------------------------------------
@@ -857,7 +937,7 @@ function _levelup(req, dataObj, cb) {
                 }
                 cb(null, ret);
             });
-            logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.GOD_UPGRADE, -1);
+            logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.GOD_UPGRADE, -1);
         });
 
         // 校验方法
@@ -918,7 +998,7 @@ function _weekReward(dataObj, cb) {
     buzz_charts.getChartReward(dataObj, function (err, resposne) {
         logger.info('getChartReward:', resposne);
         if (_.keys(resposne).length == 0) {
-            cb({code: 11111, msg: "用户奖励已经领取"});
+            cb({ code: 11111, msg: "用户奖励已经领取" });
         }
         else {
             let ret = {

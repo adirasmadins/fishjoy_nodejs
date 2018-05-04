@@ -160,7 +160,7 @@ class DropManager {
             account.commit();
             this._save();
         }
-        logItems.length > 0 && logBuilder.addItemLogByAccount(logItems, account, sFlag);
+        logItems.length > 0 && logBuilder.addGoldAndItemLog(logItems, account, sFlag);
 
         return {
             dpks: dpks,

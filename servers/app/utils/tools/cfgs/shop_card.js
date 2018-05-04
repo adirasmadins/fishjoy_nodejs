@@ -1,7 +1,7 @@
 const DESIGN_CFG = require('../../../utils/imports').DESIGN_CFG;
 const shop_card_cfg = DESIGN_CFG.shop_card_cfg;
 
-exports.getInfo = function (id) {
+exports.getInfo = (id) => {
     for (let i = 0; i < shop_card_cfg.length; i++) {
         if (shop_card_cfg[i].id == id) {
             return shop_card_cfg[i]
@@ -14,7 +14,7 @@ exports.getInfo = function (id) {
  * 获取月卡每日领取的奖励
  * @param {*} id 
  */
-exports.getEverydayItemList = function (id) {
+exports.getEverydayItemList = (id) => {
     // console.log('id:', id);
     let info = this.getInfo(id);
     let item_list = [];

@@ -231,8 +231,8 @@ function _didTurntableDraw(dataObj, cb) {
                 first_share: account.first_turntable_draw
             };
             cb(null, ret);
-            logBuilder.addGameLog(item_list, account, SCENE.GOLDFISH_GAIN, "奖金鱼抽奖抽到");
-            logBuilder.addItemLogByAccount(item_list, account, SCENE.GOLDFISH_GAIN);
+            // logBuilder.addGameLog(item_list, account, SCENE.GOLDFISH_GAIN, "奖金鱼抽奖抽到");
+            logBuilder.addGoldAndItemLog(item_list, account, SCENE.GOLDFISH_GAIN);
         });
     }
 
@@ -983,11 +983,11 @@ function _buyVipGift(dataObj, cb) {
                 _addBroadcast(account);
 
                 logBuilder.addGameLog(item_list, account, SCENE.VIPGIFT_BUY, "购买VIP礼包获取");
-                logBuilder.addItemLogByAccount({
+                logBuilder.addGoldAndItemLog([{
                     item_id: coinId,
                     item_num: giftPrice
-                }, account, SCENE.VIPGIFT_BUY, -1);
-                logBuilder.addItemLogByAccount(item_list, account, SCENE.VIPGIFT_BUY);
+                }], account, SCENE.VIPGIFT_BUY, -1);
+                logBuilder.addGoldAndItemLog(item_list, account, SCENE.VIPGIFT_BUY);
             });
         });
     }
@@ -1038,7 +1038,7 @@ function _vipDailyReward(dataObj, cb) {
                 operator: '=',
                 value: uid
             }]);
-            logBuilder.addItemLogByAccount(item_list, account, SCENE.VIP_WELFARE);
+            logBuilder.addGoldAndItemLog(item_list, account, SCENE.VIP_WELFARE);
         });
     }
 

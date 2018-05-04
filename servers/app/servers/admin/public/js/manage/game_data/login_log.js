@@ -34,7 +34,7 @@ $(function(){
 	// 点击分页
 	$('body').on('click','.pagination a[data-page]',function(){
 		var data = events.clickPage($(this));
-		var uids = $('#uid_box').val();
+		var uids = $('#search_btn').attr('data-uid');
 		events.$ajax(actions.list_url,{'date':data.sday,'uid':uids,'start':data.startpage,'length':actions.listnum},callback.get_list);
 	})
 })

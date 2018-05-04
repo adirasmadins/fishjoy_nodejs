@@ -233,6 +233,11 @@ const api_list = {
         handler: update.updateAccount,
         params: [],
         accountFields: []
+    }, update_channel_friends: {
+        route: '/update_channel_friends', //更新渠道好友列表
+        handler: data_social.updateChannelFriends,
+        params: [],
+        accountFields: []
     }, get_friends_ranking: {
         route: '/get_friends_ranking', //获取好友排行榜
         handler: data_social.getFriendsCharts,

@@ -33,7 +33,9 @@ $(function(){
 	$('body').on('click','#syetembtn',function(){
 	    var radio_val = $('.open-close [type="radio"]:checked').val();
 	    console.log(radio_val)
-	    events.$ajax(actions.serverSwitch,{'type':4,'value':radio_val},callback.change_back);
+	    events.myalert(namebox.sure_tip,function(){
+	    	events.$ajax(actions.serverSwitch,{'type':4,'value':radio_val},callback.change_back);
+	    })
 	})
 
 })

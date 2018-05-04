@@ -4,7 +4,7 @@ const common_mathadjust_const_cfg = DESIGN_CFG.common_mathadjust_const_cfg;
 const common_log_const_cfg = DESIGN_CFG.common_log_const_cfg;
 const common_const_cfg = DESIGN_CFG.common_const_cfg;
 
-exports.getPumpWater = function (id) {
+exports.getPumpWater = (id) => {
     return {
         durationNormal: common_mathadjust_const_cfg.time1,
         durationGive: common_mathadjust_const_cfg.time2,
@@ -15,14 +15,14 @@ exports.getPumpWater = function (id) {
     };
 }
 
-exports.getMathAdjustConsts = function () {
+exports.getMathAdjustConsts = () => {
     return common_mathadjust_const_cfg;
 }
 
-exports.getLogConsts = function () {
+exports.getLogConsts = () => {
     return common_log_const_cfg;
 }
 
-exports.getConsts = function () {
+exports.getConsts = () => {
     return common_const_cfg;
 }

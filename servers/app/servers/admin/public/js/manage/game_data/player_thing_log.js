@@ -23,8 +23,10 @@ $(function(){
 		var eday = $('.e_date').find('input').val();
 		var uids = $('#uid_box').val();
 		var itemId = $('#itemId').val();
-		$(this).attr({'data-sday':sday,'data-eday':eday,'data-uid':uids,'data-itemid':itemId});
+		var sceneId = $('#sceneId').val();
+		$(this).attr({'data-sday':sday,'data-eday':eday,'data-uid':uids,'data-itemid':itemId,'data-sceneId':sceneId});
 		var data = itemId ? {'startDate':sday,'endDate':eday,'uid':uids,'start':1,'length':actions.listnum,'itemId':itemId} : {'startDate':sday,'endDate':eday,'uid':uids,'start':1,'length':actions.listnum};
+		if(sceneId){data.sceneId = sceneId}
 		if(sday && eday){
 			events.$ajax(actions.list_url,data,callback.get_list);
 		}else{
@@ -36,7 +38,9 @@ $(function(){
 		var data = events.clickPage($(this)); 
 		var uids = $('#search_btn').attr('data-uid');
 		var itemId = $('#search_btn').attr('data-itemid');
+		var sceneId = $('#search_btn').attr('data-sceneId');
 		var parm = itemId ? {'startDate':data.sday,'endDate':data.eday,'uid':uids,'start':data.startpage,'length':actions.listnum,'itemId':itemId} : {'startDate':data.sday,'endDate':data.eday,'uid':uids,'start':data.startpage,'length':actions.listnum};
+		if(sceneId){parm.sceneId = sceneId}
 		events.$ajax(actions.list_url,parm,callback.get_list);
 	})
 })

@@ -196,8 +196,8 @@ function _reward(data, cb) {
                 change: change,
             };
             cb(null, ret);
-            logBuilder.addGameLog(item_list, account, common_log_const_cfg.CARD_REWARD, '月卡每日领取获得');
-            logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.CARD_REWARD);
+            // logBuilder.addGameLog(item_list, account, common_log_const_cfg.CARD_REWARD, '月卡每日领取获得');
+            logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.CARD_REWARD);
         });
     }
 

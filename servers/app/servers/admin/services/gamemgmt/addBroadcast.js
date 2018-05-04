@@ -50,3 +50,29 @@ function addBroadcast(content, gap, repeat, startTime, endTime) {
     // 将历史的服务器公告存储在一个Hash表中
     tools.RedisUtil.hset(REDISKEY.PLATFORM_DATA.SERVER_BROADCAST, data.id, message);
 }
+
+exports.set = async function (count) {
+    // logger.error('data:', data);
+    let broadCastObj = await tools.RedisUtil.hgetall(REDISKEY.PLATFORM_DATA.SERVER_BROADCAST);
+    let ret = [];
+    for (let id in broadCastObj) {
+        ret.push(broadCastObj[id]);
+    }
+
+    if (ret.length > 0) {
+        let idx = count % ret.length;
+        logger.error('------------------idx:', idx);
+        let message = ret[idx];
+        let data = JSON.parse(message);
+        data.timestamp = new Date().getTime();
+        message = JSON.stringify(data);
+        // logger.error('------------------message:', message);
+        // logger.error('typeof message:', typeof message);
+        redisConnector.pub(REDISKEY.CH.BROADCAST_SERVER, message);
+        tools.RedisUtil.hset(REDISKEY.PLATFORM_DATA.SERVER_BROADCAST, data.id, message);
+    }
+    else {
+        logger.error('没有服务器公告');
+    }
+
+}

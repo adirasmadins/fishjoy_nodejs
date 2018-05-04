@@ -2,6 +2,7 @@ const RedisUtil = require('./RedisUtil');
 const _ = require('underscore');
 const API_CFGs = require('../../servers/admin/configs/api');
 const CfgUtil = require('./CfgUtil');
+const ArrayUtil = require('./ArrayUtil');
 const SqlUtil = require('./SqlUtil');
 const MathUtil = require('./MathUtil');
 const ObjUtil = require('./ObjUtil');
@@ -147,10 +148,10 @@ function getShopItemById(id, itemtype = 0) {
  * 获取rmb字段的倍率, 用于解决RMB是分的记录而其他版本是元的配置.
  */
 function getRmbTimes() {
-    if (isVersionChina()) {
+    if (this.isVersionChina()) {
         return 100;
     }
-    if (isVersionVietnam()) {
+    if (this.isVersionVietnam()) {
         return 1;
     }
     return 1;
@@ -167,50 +168,42 @@ function isSSL() {
  * 是否为大陆版的判断. 用于某些特定的处理.
  */
 exports.isVersionChina = () => {
-    return versions.PUB == versions.GAMEPLAY.LOCAL
-        || versions.PUB == versions.GAMEPLAY.WANBA
-        || versions.PUB == versions.GAMEPLAY.IOS;
-}
-
-/**
- * 是否为赌博版.
- */
-exports.isVersionGambling = () => {
-    return versions.PUB == versions.GAMEPLAY.VIETNAM;
+    return ArrayUtil.contain(versions.VERSION_CHINA, versions.PUB);
 }
 
 /**
  * 是否为越南版的判断. 用于某些特定的处理.
  */
 exports.isVersionVietnam = () => {
-    return versions.PUB == versions.GAMEPLAY.VIETNAM
-        || versions.PUB == versions.GAMEPLAY.VIETNAM_VN;
+    return ArrayUtil.contain(versions.VERSION_VIETNAM, versions.PUB);
+}
+
+/**
+ * 是否为赌博版.
+ */
+exports.isVersionGambling = () => {
+    return ArrayUtil.contain(versions.VERSION_GAMBLING, versions.PUB);
 }
 
 /**
  * 如果是手动填写订单发货则返回true.
  */
 exports.isVersionCikByHand = () => {
-    return versions.PUB == versions.GAMEPLAY.WANBA
-        || versions.PUB == versions.GAMEPLAY.VIETNAM_VN
-        || versions.PUB == versions.GAMEPLAY.LOCAL;
+    return ArrayUtil.contain(versions.VERSION_CIK_BY_HAND, versions.PUB);
 }
 
 /**
  * 作弊玩家被阻挡的版本.
  */
 function isCheatBlock() {
-    return versions.PUB == versions.GAMEPLAY.VIETNAM
-        || versions.PUB == versions.GAMEPLAY.VIETNAM_VN;
+    return this.isVersionVietnam();
 }
 
 /**
  * 作弊玩家被隔离的版本.
  */
 function isCheatConfine() {
-    return versions.PUB == versions.GAMEPLAY.LOCAL
-        || versions.PUB == versions.GAMEPLAY.WANBA
-        || versions.PUB == versions.GAMEPLAY.IOS;
+    return this.isVersionChina();
 }
 
 /**

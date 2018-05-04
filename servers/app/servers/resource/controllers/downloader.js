@@ -1,7 +1,6 @@
 const http = require('http');
 const https = require('https');
 const redirect_https = require('../../common/redirect_https');
-const HTTP_CACHE_TIME = require('../../../consts/constDef').HTTP_CACHE_TIME;
 const URL = require('url');
 
 class DownloadRes {

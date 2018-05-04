@@ -17,8 +17,8 @@
     "game.fishHandler.c_fire": {
         "required string wp_bk": 1,
         "message FirePoint": {
-            "optional sInt32 x": 1,
-            "optional sInt32 y": 2
+            "required sInt32 x": 1,
+            "required sInt32 y": 2
         },
         "required FirePoint fire_point": 2,
         "optional string fire_fish": 3,
@@ -68,47 +68,21 @@
     "game.fishHandler.c_fighting_notify": {
         "required uInt32 event": 1,
         "message EvtData": {
-            "optional uInt32 wp_level": 1,
-            "optional uInt32 wp_skin": 2,
+            "optional uInt32 wp_skin": 1,
 
             "message Mini": {
                 "optional uInt32 type": 1,
                 "optional sInt32 gold": 2
             },
-            "optional Mini mini": 3,
-
-            "message Drop": {
-                "message Item": {
-                    "optional string item_id": 1,
-                    "optional uInt32 item_num": 2,
-                    "optional uInt32 drop_count": 3
-                },
-                "repeated Item items": 1,
-
-                "message Point": {
-                    "optional sInt32 x": 1,
-                    "optional sInt32 y": 2
-                },
-                "optional Point deadPos": 2,
-                "optional uInt32 isPirateReward": 3
-            },
-            "optional Drop drop": 4,
+            "optional Mini mini": 2,
 
             "message TurnDrawItem": {
                 "optional string item_id": 1,
                 "optional uInt32 item_num": 2
             },
-            "repeated TurnDrawItem turnDraw": 5,
+            "repeated TurnDrawItem turnDraw": 3,
 
-            "optional uInt32 rmatch_nb": 6,
-            "optional uInt32 rmatch_over": 7,
-
-            "message RmatchReady": {
-                "optional string roomId": 1,
-                "optional string serverId": 2,
-                "optional uInt32 isContinue": 3
-            },
-            "optional RmatchReady rmatch_ready": 8
+            "optional uInt32 rmatch_nb": 4
         },
         "required EvtData event_data": 2
     },

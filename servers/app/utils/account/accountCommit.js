@@ -1032,6 +1032,22 @@ class AccountCommit {
         this._modify('flower_receive', value);
     }
 
+    get extend() {
+        return this._value('extend');
+    }
+
+    set extend(value) {
+        this._modify('extend', value);
+    }
+
+    get channel_game_friend(){
+        return this._value('channel_game_friend');
+    }
+
+    set channel_game_friend(value) {
+        this._modify('channel_game_friend', value);
+    }
+
 }
 
 module.exports = AccountCommit;

@@ -10,7 +10,7 @@ class IosPay extends Pay {
     }
 
     async buyByRMB(data) {
-        let res = await dao_shop.getIOSOrder(data);
+        let res = await dao_shop.getOrderInfo(data);
         data.itemid = res.goods_id;
         data.itemtype = res.item_type;
 

@@ -2,7 +2,7 @@
 const DESIGN_CFG = require('../../../utils/imports').DESIGN_CFG;
 const change_change_cfg = DESIGN_CFG.change_change_cfg;
 
-exports.getInfo = function (id) {
+exports.getInfo = (id) => {
     for (let i = 0; i < change_change_cfg.length; i++) {
         let info = change_change_cfg[i];
         if (id == info.id) {
@@ -12,7 +12,7 @@ exports.getInfo = function (id) {
     return null;
 }
 
-exports.getLeftData = function () {
+exports.getLeftData = () => {
     let ret = {};
     for (let i = 0; i < change_change_cfg.length; i++) {
         let info = change_change_cfg[i];
@@ -24,7 +24,7 @@ exports.getLeftData = function () {
     return ret;
 }
 
-exports.getDailyLeftData = function () {
+exports.getDailyLeftData = () => {
     let ret = {};
     for (let i = 0; i < change_change_cfg.length; i++) {
         let info = change_change_cfg[i];

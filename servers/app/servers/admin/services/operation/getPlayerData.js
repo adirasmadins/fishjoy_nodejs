@@ -1,6 +1,7 @@
 const SQL_CONFIG = require('../../configs/sql');
 const tools = require('../../../../utils/tools');
 const PlayerData = require('../../configs/consts/PlayerData');
+const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
 
 /**
  * 获取玩家账户数据
@@ -55,14 +56,20 @@ function makeAccount(list) {
             }
         });
     }
+    if (ret.length == 0) {
+        throw ERROR_OBJ.ACCOUNT_NULL;
+    }
     return ret[0];
 }
 
 /**
  * 获取玩家数据.
- * @param {*} uid 查询玩家的UID
+ * @param {*} uid_list 查询玩家的UID
  */
-async function fetchData(uid) {
-    let sql = SQL_CONFIG.queryAccount.replace('uid_list', uid);
-    return await tools.SqlUtil.query(sql, []);
+async function fetchData(uid_list) {
+    if (uid_list) {
+        let sql = SQL_CONFIG.queryAccount.replace('uid_list', uid_list);
+        return await tools.SqlUtil.query(sql, []);
+    }
+    return [];
 }

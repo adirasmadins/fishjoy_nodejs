@@ -17,6 +17,7 @@ const ItemType = require('../buzz/pojo/Item').ItemType;
 const ERROR_OBJ = CstError.ERROR_OBJ;
 const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 const DrawBroadcast = require('../../../../common/broadcast/DrawBroadcast');
+const itemDef = require('../../../../consts/itemDef');
 
 let TAG = "【dao_draw】";
 
@@ -273,7 +274,7 @@ function getDraw(data, cb) {
                         item_id: item_id,
                         item_num: item_num
                     });
-                    if ('i001' == item_id) {
+                    if (itemDef.GOLD == item_id) {
                         gain += item_num;
                     }
                 }
@@ -286,13 +287,13 @@ function getDraw(data, cb) {
                         item_id: item_id,
                         item_num: item_num
                     });
-                    if ('i001' == item_id) {
+                    if (itemDef.GOLD == item_id) {
                         cost += item_num;
                     }
                 }
 
-                logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.ACTIVE_DRAW);
-                logBuilder.addItemLogByAccount(cost_item_list, account, common_log_const_cfg.ACTIVE_DRAW, -1);
+                logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.ACTIVE_DRAW);
+                logBuilder.addGoldAndItemLog(cost_item_list, account, common_log_const_cfg.ACTIVE_DRAW, -1);
 
                 // yDONE: 钻石数据记录
                 let diamondGain = 0;
@@ -301,7 +302,7 @@ function getDraw(data, cb) {
                     let item = items[i];
                     let item_id = item[0];
                     let item_num = item[1];
-                    if ('i002' == item_id) {
+                    if (itemDef.DIAMOND == item_id) {
                         diamondGain += item_num;
                     }
                 }
@@ -309,7 +310,7 @@ function getDraw(data, cb) {
                     let item = cost_items[i];
                     let item_id = item[0];
                     let item_num = item[1];
-                    if ('i002' == item_id) {
+                    if (itemDef.DIAMOND == item_id) {
                         diamondCost += item_num;
                     }
                 }

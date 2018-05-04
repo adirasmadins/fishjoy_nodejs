@@ -27,7 +27,7 @@ exports.setOrderFail = setOrderFail;
 
 exports.addShopLog = addShopLog;
 exports.hasCard = hasCard;
-exports.getIOSOrder = getIOSOrder;
+exports.getOrderInfo = getOrderInfo;
 exports.checkIOSOrder = checkIOSOrder;
 exports.getVietnamCardTypeInfo = getVietnamCardTypeInfo;
 //------------------------------------------------------------------------------
@@ -202,23 +202,23 @@ async function _checkOrder(game_order_id) {
     }
 }
 
-function getIOSOrder(game_order_id) {
+function getOrderInfo(game_order_id) {
     let sql = '';
-    sql += 'SELECT `goods_id`,`game_account_id`,`status`,`channel_order_id`,`item_type`,`item_list` FROM `tbl_order` ';
+    sql += 'SELECT * FROM `tbl_order` ';
     sql += 'WHERE game_order_id=?';
 
     return new Promise(function (resolve, reject) {
         mysqlConnector.query(sql, [game_order_id], function (err, result) {
             if (err) {
-                logger.error('[ERROR] err:', err);
+                logger.error('getOrderInfo err:', err);
                 reject(err);
                 return;
             }
             if (!result[0]) {
-                reject("查询不到此订单");
+                reject(ERROR_OBJ.ORDER_ILLEGAL);
                 return;
             }
-            logger.info('getIOSOrder: ', result[0]);
+            logger.info('getOrderInfo: ', result[0]);
             resolve(result[0]);
         });
     });
@@ -235,7 +235,7 @@ function checkIOSOrder(channel_order_id) {
                 reject(err);
                 return;
             }
-            logger.info('getIOSOrder: ', result);
+            logger.info('getOrderInfo: ', result);
             resolve(result[0]);
         });
     });

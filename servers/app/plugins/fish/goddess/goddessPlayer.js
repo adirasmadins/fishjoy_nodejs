@@ -221,6 +221,23 @@ class GoddessPlayer extends ChannelPlayer {
     }
 
     /**
+     * 切换武器倍率
+     * 注意保卫女神规则：
+     *  * 当玩家最高倍率低于 GOLDDESS_WEAPON倍 时，只能使用玩家的最高倍率
+        当玩家最高倍率大于等于 GOLDDESS_WEAPON倍 时，可以使用 GOLDDESS_WEAPON倍 及以上的倍率
+     */
+    c_turn_weapon(data, cb) {
+        let godWpLv = configReader.getValue('common_const_cfg', 'GOLDDESS_WEAPON');
+        if (this._maxWpLv < godWpLv) {
+            return utils.invokeCallback(cb, null, {
+                wp_level: -1, //切换失败，当前可用最大倍率低于  GOLDDESS_WEAPON倍
+            });
+        }
+        this._sceneCfg.min_level = Math.max(this._sceneCfg.min_level, godWpLv);
+        super.c_turn_weapon(data, cb);
+    }
+
+    /**
      * 定时轮序逻辑
      * @param {*轮询时间差，单位秒} dt 
      */
@@ -312,8 +329,8 @@ class GoddessPlayer extends ChannelPlayer {
 
     /**
      * 检查武器等级
-     * 当玩家最高倍率低于1000倍时，只能使用玩家的最高倍率
-        当玩家最高倍率大于等于1000倍时，可以使用1000倍及以上的倍率
+     * 当玩家最高倍率低于 GOLDDESS_WEAPON倍 时，只能使用玩家的最高倍率
+        当玩家最高倍率大于等于 GOLDDESS_WEAPON倍 时，可以使用 GOLDDESS_WEAPON倍 及以上的倍率
      */
     _checkBulletLevel (wpLv) {
         let godWpLv = configReader.getValue('common_const_cfg', 'GOLDDESS_WEAPON');

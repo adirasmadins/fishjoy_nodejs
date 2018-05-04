@@ -6,7 +6,7 @@ const string_strings_cfg = DESIGN_CFG.string_strings_cfg
  * 根据rankid获取段位信息
  * @param {*} rankid 
  */
-exports.getInfo = function (rankid) {
+exports.getInfo = (rankid) => {
     for (let i = rank_rankgame_cfg.length - 1; i > 0; i--) {
         let rankInfo = rank_rankgame_cfg[i]
         if (rankid == rankInfo.id) {
@@ -18,7 +18,7 @@ exports.getInfo = function (rankid) {
 /**
  * 从玩家的比赛积分计算玩家的段位
  */
-exports.getRankIdFromPoints = function (points) {
+exports.getRankIdFromPoints = (points) => {
     for (let i = rank_rankgame_cfg.length - 1; i > 0; i--) {
         let rankInfo = rank_rankgame_cfg[i]
         if (points >= rankInfo.integral) {
@@ -31,7 +31,7 @@ exports.getRankIdFromPoints = function (points) {
  * 从玩家段位rankid 获取段位名字
  * @param {*} rankid 
  */
-exports.getRankNameFromId = function (rankid) {
+exports.getRankNameFromId = (rankid) => {
     let info = this.getInfo(rankid)
     if (info) {
         let name = info.name;

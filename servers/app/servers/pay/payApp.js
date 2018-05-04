@@ -8,7 +8,11 @@ const DaoChange = require('./src/dao/dao_change');
 const CacheOperation = require('./src/buzz/cache/CacheOperation');
 const CacheChange = require('./src/buzz/cache/CacheChange');
 const serviceCtrl = require('../common/serviceCtrl');
+const paySdk = require('./controllers/recharge/paySdk');
 class PayApp {
+    constructor(){
+        logger.error('PayApp ================================== ');
+    }
     async start() {
         let result = await redisClient.start(omelo.app.get('redis'));
         if (!result) {
@@ -33,6 +37,7 @@ class PayApp {
             logger.info('[MYSQL] 共加载%d条实物兑换数据', len);
         });
 
+        paySdk.init();
         logger.info('支付服务启动成功');
 
         this._loadInitData();

@@ -4,6 +4,8 @@ const utils = require('../../../utils/utils');
 const tools = require('../../../utils/tools');
 const REDISKEY = require('../../../database/consts').REDISKEY;
 
+let count = 0;
+
 /**
  * 用户数据重置
  */
@@ -23,6 +25,11 @@ class OnlineTask extends Task {
         logger.info(`上一个10分钟(idx=${idx})在线人数为${count}`);
 
         logger.info('统计10分钟在线人数执行完成');
+
+        // 10分钟更新一次公告
+        const addBroadcast = require('../services/gamemgmt/addBroadcast');
+        addBroadcast.set(count++);
+
         utils.invokeCallback(cb, null);
     }
 }

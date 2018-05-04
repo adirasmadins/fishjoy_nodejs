@@ -9,6 +9,7 @@ class AuthSdk {
         this.install(constDef.AUTH_CHANNEL_ID.INNER);
         this.install(constDef.AUTH_CHANNEL_ID.WANBA);
         this.install(constDef.AUTH_CHANNEL_ID.COCO);
+        this.install(constDef.AUTH_CHANNEL_ID.WECHAT);
     }
 
     sdk(type) {

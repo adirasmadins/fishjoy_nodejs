@@ -439,9 +439,9 @@ function _levelup(dataObj, cb) {
             change = ObjUtil.merge(change, change_m);
             _handleReturn(change, cb);
         });
-        logBuilder.addItemLogByAccount(item_list_cost, account, common_log_const_cfg.WEAPON_UNLOCK, -1);
+        logBuilder.addGoldAndItemLog(item_list_cost, account, common_log_const_cfg.WEAPON_UNLOCK, -1);
     }
-    logBuilder.addItemLogByAccount([{
+    logBuilder.addGoldAndItemLog([{
         item_id: 'i002',
         item_num: weapon_unlock_cost
     }], account, common_log_const_cfg.WEAPON_UNLOCK, -1);

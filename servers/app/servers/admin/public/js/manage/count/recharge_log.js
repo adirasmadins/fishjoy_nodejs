@@ -27,7 +27,7 @@ var callback = {
 		 var listnum = 500;//默认每页500条
 		$('.s_date').find('input').val(events.get_today());
 		$('.e_date').find('input').val(events.get_today());
-		$('#search_btn').attr({'data-sday':events.get_today(),'data-eday':events.get_today(),'data-status':callback.check_val().join()});
+		$('#search_btn').attr({'data-sday':events.get_today(),'data-eday':events.get_today(),'data-status':callback.check_val().join(),'data-uid':$('#uid_box').val()});
 		events.$ajax(actions.list_url,{'startDate':events.get_today(),'endDate':events.get_today(),'status':callback.check_val().join(),'start':1,'length':actions.listnum},callback.get_list);
 		// get_list(events.get_today(),events.get_today(),0,listnum);
 		// 搜索
@@ -35,10 +35,12 @@ var callback = {
 			var sday = $('.s_date').find('input').val();
 			var eday = $('.e_date').find('input').val();
 			var status = callback.check_val();
-			$(this).attr({'data-sday':sday,'data-eday':eday,'data-status':status.join()})
+			var uid = $('#uid_box').val();
+			$(this).attr({'data-sday':sday,'data-eday':eday,'data-status':status.join(),'data-uid':uid});
 			if(sday && eday && status.length>0){
 				// get_list(sday,eday,0,listnum);
-				events.$ajax(actions.list_url,{'startDate':sday,'endDate':eday,'status':status.join(),'start':1,'length':actions.listnum},callback.get_list);
+				var data = uid ? {'startDate':sday,'endDate':eday,'status':status.join(),'uid':uid,'start':1,'length':actions.listnum} : {'startDate':sday,'endDate':eday,'status':status.join(),'start':1,'length':actions.listnum}
+				events.$ajax(actions.list_url,data,callback.get_list);
 			}else{
 				events.myalert(namebox.alertTip);
 			}
@@ -46,7 +48,9 @@ var callback = {
 		// 点击分页
 		$('body').on('click','.pagination a[data-page]',function(){
 			var data = events.clickPage($(this));
-			events.$ajax(actions.list_url,{'startDate':data.sday,'endDate':data.eday,'status':$('#search_btn').attr('data-status'),'start':data.startpage,'length':actions.listnum},callback.get_list);
+			var uid = $('#search_btn').attr('data-uid');
+			var parm = uid ? {'startDate':data.sday,'endDate':data.eday,'status':$('#search_btn').attr('data-status'),'uid':uid,'start':data.startpage,'length':actions.listnum} : {'startDate':data.sday,'endDate':data.eday,'status':$('#search_btn').attr('data-status'),'start':data.startpage,'length':actions.listnum}
+			events.$ajax(actions.list_url,parmparm,callback.get_list);
 			// get_list(data.sday,data.eday,data.startpage,listnum);
 		})
 	})

@@ -173,7 +173,7 @@ class LogBuilder {
         let uid = account.id;
         if (goldGain != 0) {
             // yDONE: 金币记录日志
-            logBuilder.addGoldLogEx({
+            this.addGoldLogEx({
                 account_id: uid,
                 log_at: new Date(),
                 gain: goldGain > 0 ? goldGain : 0,
@@ -187,7 +187,7 @@ class LogBuilder {
         }
         if (diamondGain != 0) {
             // yDONE: 钻石记录日志
-            logBuilder.addPearlLogEx({
+            this.addPearlLogEx({
                 account_id: uid,
                 log_at: new Date(),
                 gain: diamondGain > 0 ? diamondGain : 0,
@@ -269,6 +269,7 @@ class LogBuilder {
             let item = item_list[i];
             let item_id = item.item_id;
             let item_num = item.item_num;
+            if (0 == item_num) continue;// 物品没有变化, 不记录日志
             if (item_id == itemDef.GOLD) continue;
             let keyMap = this.itemMap.get(item_id);
             if (!keyMap) continue;
@@ -304,6 +305,7 @@ class LogBuilder {
             let item = item_list[i];
             let item_id = item.item_id;
             let item_num = item.item_num;
+            if (0 == item_num) continue;// 物品没有变化, 不记录日志
             if (item_id == itemDef.GOLD) continue;
             let keyMap = this.itemMap.get(item_id);
             if (!keyMap) continue;
@@ -369,6 +371,7 @@ class LogBuilder {
                 logger.error(`addGoldAndItemLog item数据错误${item}`);
                 continue;
             }
+            if (0 == item_num) continue;// 数量没有变化, 不记录日志
             let keyMap = this.itemMap.get(item_id);
             if (!keyMap) {
                 logger.error(`addGoldAndItemLog item_id不存在:${item_id}`);

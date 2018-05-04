@@ -56,7 +56,7 @@ const PLATFORM = {
 //==============================================================================
 // letiable
 //==============================================================================
-let broadcast_server = {timestamp: _timestamp(), content: {txt: '欢迎来到捕捞季！', times: 1}};
+let broadcast_server = null;//{timestamp: _timestamp(), content: {txt: 'Welcome!', times: 1}};
 // android和ios分离
 let broadcast_gameevent_android = new TimeQueue(5000, 60000, 10, 500);
 let broadcast_famousonline_android = new TimeQueue(5000, 60000, 3, 10);
@@ -92,7 +92,7 @@ function getBroadcast(dataObj, cb) {
     const FUNC = TAG + "getBroadcast() --- ";
 
     //屏蔽默认系统公告
-    let lServer = null;//_getBroadcastServer(dataObj.server); 
+    let lServer = _getBroadcastServer(dataObj.server); 
     let lGameEvent = _getBroadcastGameEvent(dataObj.gameevent, dataObj.platform);
     let lFamousOnline = _getBroadcastFamousOnline(dataObj.famousonline, dataObj.platform);
     let lDraw = _getBroadcastDraw(dataObj.draw, dataObj.platform);
@@ -217,6 +217,11 @@ function addBroadcastRewardPeople(content) {
 // GET
 // DONE: 只取客户端时间戳之后的数据
 function _getBroadcastServer(timestamp) {
+    if (!broadcast_server) {
+        return null;
+    }
+    // logger.error('---------------timestamp:', timestamp);
+    // logger.error('---------------broadcast_server:', broadcast_server);
     if (!timestamp || timestamp < broadcast_server.timestamp) {
         return broadcast_server;
     }

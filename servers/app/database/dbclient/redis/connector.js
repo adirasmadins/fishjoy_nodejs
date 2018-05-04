@@ -1,5 +1,6 @@
 const redis = require('redis');
 const utils = require('../../../utils/utils');
+const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
 
 class Connector {
     constructor() {
@@ -121,7 +122,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             this._cmdClient.incr(key, function (err, res) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis incrP err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(res);
@@ -138,7 +140,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             this._cmdClient.expire(key, time, function (err, res) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis expireP err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(res);
@@ -157,7 +160,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.get(key, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis get err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     if (!result) {
@@ -181,7 +185,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.set(key, value, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis set err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -198,7 +203,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.del(key, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis del err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -215,7 +221,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.hget(key, member, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis hget err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     if (!result) {
@@ -234,7 +241,28 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.hgetall(key, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis hgetall err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
+                }
+                else {
+                    if (!result) {
+                        resolve(null);
+                        return;
+                    }
+                    result = self._getDBReadValue(result);
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    async hmget(key, members) {
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self._cmdClient.hmget(key, members, function (err, result) {
+                if (err) {
+                    logger.error('redis hmget err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     if (!result) {
@@ -253,7 +281,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.zremrangebyrank(key, start, stop, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis zremrangebyrank err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -267,7 +296,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.zcard(key, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis zcard err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -281,7 +311,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.zrem(key, members, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis zrem err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -295,7 +326,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.sadd(key, members, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis sadd err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -309,7 +341,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.srem(key, members, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis srem err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -323,7 +356,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.smembers(key, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis smembers err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result);
@@ -337,7 +371,8 @@ class Connector {
         return new Promise(function (resolve, reject) {
             self._cmdClient.sscan(key, skip, 'COUNT', limit, function (err, result) {
                 if (err) {
-                    reject(err);
+                    logger.error('redis sscan err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
                     resolve(result[1]);

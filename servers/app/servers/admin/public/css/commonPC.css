@@ -132,7 +132,7 @@ white-space: nowrap;
 .underline{text-decoration:underline!important;}
 .marginLR0{margin-left: 0;margin-right: 0;}
 .marginL10{margin-left: 10px;}
-.marginB10{margin-bottom: 10px;}
+.marginB10{margin-bottom: 10px!important;}
 .marginB5{margin-bottom: 5px;}
 .marginB30{margin-bottom: 30px;}
 .marginLR5{margin-left: 5px;margin-right: 5px;}

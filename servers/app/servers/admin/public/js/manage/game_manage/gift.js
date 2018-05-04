@@ -84,7 +84,10 @@ $(function(){
 	// 开关提交
 	$('body').on('click','#syetembtn',function(){
 	    var radio_val = $('.open-close [type="radio"]:checked').val();
-	    events.$ajax(actions.serverSwitch,{'type':2,'value':radio_val},callback.change_back);
+	    events.myalert(namebox.sure_tip,function(){
+	    	events.$ajax(actions.serverSwitch,{'type':2,'value':radio_val},callback.change_back);
+	    })
+	    
 	})
 	// 搜索
 	$('body').on('click','#search_btn',function(){

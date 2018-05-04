@@ -1,3 +1,4 @@
+require('./app/utils/logHelper');
 require('./app/utils/globals');
 const omelo = require('omelo');
 const path = require('path');

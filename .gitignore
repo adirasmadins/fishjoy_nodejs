@@ -23,4 +23,3 @@ doc/~$*
 package-lock.json
 servers/app/servers/resource/public/upload/
 tools/zookeeper*
-node_modules_prod.zip

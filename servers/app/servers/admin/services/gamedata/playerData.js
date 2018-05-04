@@ -100,11 +100,12 @@ async function gainChart(start, length) {
 }
 
 async function getAccountData(list) {
-    let accountArray = await tools.SqlUtil.query(SQL_CONFIG.queryAccount.replace('uid_list', list.toString()), []);
-
     let accountSet = {};
-    for (let i = 0; i < accountArray.length; i++) {
-        accountSet[accountArray[i].id] = accountArray[i];
+    if (list.length > 0) {
+        let accountArray = await tools.SqlUtil.query(SQL_CONFIG.queryAccount.replace('uid_list', list.toString()), []);
+        for (let i = 0; i < accountArray.length; i++) {
+            accountSet[accountArray[i].id] = accountArray[i];
+        }
     }
     return accountSet;
 }

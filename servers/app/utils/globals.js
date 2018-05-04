@@ -6,3 +6,5 @@ global.packMsg = require('./packMsg');
 global.dbConsts = require('../database/index').dbConsts;
 global.logBuilder = require('./logSync').logBuilder;
 
+
+

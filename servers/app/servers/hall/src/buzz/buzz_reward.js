@@ -215,7 +215,7 @@ function guideReward(dataObj, cb) {
         ret.change.weapon_energy = wpEng;
         ret.change.gold = gold;
         cb(null, ret);
-        logBuilder.addItemLogByAccount(item_list, account, common_log_const_cfg.GOLDFISH_GAIN);
+        logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.GOLDFISH_GAIN);
     });
 }
 
@@ -288,7 +288,7 @@ function missionReward(dataObj, cb) {
         if (QUEST_TYPE.ACHIEVE_ONCE == quest_type) {
             scene = common_log_const_cfg.ACHIEVE_GAIN;
         }
-        logBuilder.addItemLogByAccount(item_list, account, scene);
+        logBuilder.addGoldAndItemLog(item_list, account, scene);
         // yDONE: 金币数据记录
         let gain = 0;
         for (let i = 0; i < item_list.length; i++) {
@@ -792,7 +792,7 @@ function _onekeyReward(req, dataObj, cb) {
                     scene = common_log_const_cfg.DAILY_GAIN;
                     break;
             }
-            logBuilder.addItemLogByAccount(item_list, account, scene);
+            logBuilder.addGoldAndItemLog(item_list, account, scene);
             logger.info(FUNC + "000mailReward:", item_list);
             let goldGain = 0;
             let diamondGain = 0;

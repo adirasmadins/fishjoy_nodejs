@@ -12,7 +12,7 @@ class GooglePay extends Pay {
     async buyByRMB(data) {
         let res = await this._api.checkOrder(data);
         let orderId = res.developerPayload;
-        let {goods_id, game_account_id, status, channel_order_id, item_type} = await dao_shop.getIOSOrder(orderId);
+        let {goods_id, game_account_id, status, channel_order_id, item_type} = await dao_shop.getOrderInfo(orderId);
         if (status == 0) {
             logger.error(`此订单已经使用id${game_account_id},orderId:${orderId},status:${status},channel_order_id:${channel_order_id}`);
             throw ERROR_OBJ.ORDER_REPEAT;

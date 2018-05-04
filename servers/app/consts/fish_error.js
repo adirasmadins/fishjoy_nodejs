@@ -72,6 +72,7 @@ const _errorCode = {
     UID_INVALID: 1014, //客户端传入的用户uid在数据库中没有找到
     UID_CANNOT_FIND: 1015, //用户ID无法找到
     PLAYER_CHEAT: 1016, //账号因为作弊行为被封禁，有疑问请联系客服微信：gamekefu01
+    DB_REDIS_ERR:1017, //REDIS数据库操作错误
 
     NOT_SUPPORT_SERVICE: 1017, //不支持此服务
     NOT_SUPPORT_CHANNEL_LOGIN: 1018, //不支持此渠道用户登录
@@ -112,6 +113,8 @@ const _errorCode = {
     GODDESS_STATE_ERR: 1123, //女神状态错误
     GIFT_ADV_GOTTEN: 1124, //今日礼包已经领取
     ADV_REWARD_TIMES_FINISH: 1125, //今日广告观看领取奖励的次数已经用完
+    GODDESS_LEVEL_NOT_REACHED: 1126, //女神还没有达到解锁特权的等级
+    GODDESS_INTERACT_REWARD_ALREADY: 1127, //女神互动奖励已经领取
 
     RANK_COUNT_TOO_LARGE: 1131, //请求的最大排名数超过了100
 
@@ -218,6 +221,9 @@ const _errorCode = {
     ORDER_REPEAT: 1274, // 重复订单
     NOT_SUPPORT_CHANNEL_PAY: 1275, // 不支持此渠道支付
     BUY_GOODS_ILLEGAL: 1276, // 购买物品非法
+    AMOUNT_NOT_ENOUGH: 1277, // 余额不足
+    SDK_ACCESS_TOKEN_INVALID:1288, //第三方SDK接口凭证无效
+
 
     // 排行榜相关
     CHART_REWARD_FAIL: 1281, // 排行榜奖励领取失败
@@ -581,6 +587,10 @@ const _errorObj = {
         code: _errorCode.DB_ERR,
         msg: i18n.DB_ERR[lan]
     },
+    DB_REDIS_ERR: {
+        code: _errorCode.DB_REDIS_ERR,
+        msg: 'REDIS数据库操作错误'
+    },
     PARAM_MISSING: {
         code: _errorCode.PARAM_MISSING,
         msg: i18n.PARAM_MISSING[lan]
@@ -777,6 +787,24 @@ const _errorObj = {
         code: _errorCode.ADV_REWARD_TIMES_FINISH,
         msg: i18n.ADV_REWARD_TIMES_FINISH[lan]
     },
+
+    GODDESS_LEVEL_NOT_REACHED: {
+        code: _errorCode.GODDESS_LEVEL_NOT_REACHED,
+        msg: '女神还没有达到解锁特权的等级'
+    },
+    // GODDESS_LEVEL_NOT_REACHED: {
+    //     code: _errorCode.GODDESS_LEVEL_NOT_REACHED,
+    //     msg: i18n.GODDESS_LEVEL_NOT_REACHED[lan]
+    // },
+
+    GODDESS_INTERACT_REWARD_ALREADY: {
+        code: _errorCode.GODDESS_INTERACT_REWARD_ALREADY,
+        msg: '女神互动奖励已经领取'
+    },
+    // GODDESS_INTERACT_REWARD_ALREADY: {
+    //     code: _errorCode.GODDESS_INTERACT_REWARD_ALREADY,
+    //     msg: i18n.GODDESS_INTERACT_REWARD_ALREADY[lan]
+    // },
 
     RANK_COUNT_TOO_LARGE: {
         code: _errorCode.RANK_COUNT_TOO_LARGE,
@@ -1144,6 +1172,16 @@ const _errorObj = {
     BUY_GOODS_ILLEGAL: {
         code: _errorCode.BUY_GOODS_ILLEGAL,
         msg: i18n.BUY_GOODS_ILLEGAL[lan]
+    },
+
+    AMOUNT_NOT_ENOUGH: {
+        code: _errorCode.AMOUNT_NOT_ENOUGH,
+        msg: '余额不足'
+    },
+
+    SDK_ACCESS_TOKEN_INVALID: {
+        code: _errorCode.SDK_ACCESS_TOKEN_INVALID,
+        msg: '第三方SDK接口凭证无效'
     },
 
     // 订单相关

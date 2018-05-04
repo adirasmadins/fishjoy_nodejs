@@ -29,6 +29,8 @@ class EventHandler {
             [ACCOUNTKEY.SKILL, 1],
             [ACCOUNTKEY.VIP, 1],
             [ACCOUNTKEY.COMEBACK, 1],
+            [ACCOUNTKEY.MISSION_DAILY_RESET, 1],
+            [ACCOUNTKEY.MISSION_ONLY_ONCE, 1],
         ]);
     }
 

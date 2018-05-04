@@ -706,4 +706,9 @@ module.exports = {
 	t1704: 'On',
 	t1705: 'Off',
 	t1706: 'Submit',
+	t1707: 'Are you sure',
+	t1708: 'Mail ID',
+	t1709: 'Mail ID (Seperator: ",")',
+	t1710: 'Scene ID (Seperator: ",")',
+	t1711: 'Scene ID',
 }

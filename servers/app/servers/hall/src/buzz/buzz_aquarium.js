@@ -5,6 +5,7 @@ const ObjUtil = require('./ObjUtil');
 const CstError = require('../../../../consts/fish_error');
 const CacheAccount = require('./cache/CacheAccount');
 const Item = require('./pojo/Item');
+const itemDef = require('../../../../consts/itemDef');
 const _ = require('underscore');
 const buzz_goddess = require('./buzz_goddess');
 const RewardModel = require('../../../../utils/account/RewardModel');
@@ -138,7 +139,19 @@ function upgradePetfish(data, cb) {
                 account.commit();
                 cb(null, account);
             });
-            logBuilder.addItemLog(account.id, chip_id, -need.chip, chip[chip_id], common_log_const_cfg.PET_FISH_UPGRADE, account.level);
+
+            let item_list = [
+                {
+                    item_id: coinId,
+                    item_num: need.gold,
+                },
+                {
+                    item_id: chip_id,
+                    item_num: need.chip,
+                }
+            ];
+            logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.PET_FISH_UPGRADE, -1);
+            // logBuilder.addItemLog(account.id, chip_id, -need.chip, chip[chip_id], common_log_const_cfg.PET_FISH_UPGRADE, account.level);
         }
     });
 
@@ -596,115 +609,115 @@ function _PetfishCanReward(petfish,aquarium) {
 // 升级
 //----------------------------------------------------------
 
-function _didUpgradePetfish(req, data, cb) {
-    const FUNC = TAG + "_didUpgradePetfish() --- ";
+// function _didUpgradePetfish(req, data, cb) {
+//     const FUNC = TAG + "_didUpgradePetfish() --- ";
 
-    let token = data['token'];
-    let id = data['id'];
-    let uid = data['account_id'];
+//     let token = data['token'];
+//     let id = data['id'];
+//     let uid = data['account_id'];
     
-    logger.info(FUNC + "fish_id:", id);
+//     logger.info(FUNC + "fish_id:", id);
 
-    let chip_id = _getChipFromId(id);
+//     let chip_id = _getChipFromId(id);
 
-    CacheAccount.getAccountById(uid, function (err, account) {
+//     CacheAccount.getAccountById(uid, function (err, account) {
 
-        if(account){
+//         if(account){
 
-            let coinId = shop_shop_buy_type_cfg.PETFISH_UP.id;
-            let coinType = shop_shop_buy_type_cfg.PETFISH_UP.name;
+//             let coinId = shop_shop_buy_type_cfg.PETFISH_UP.id;
+//             let coinType = shop_shop_buy_type_cfg.PETFISH_UP.name;
 
-            account.aquarium = account.aquarium || {};// 数据为空则初始化
-            account.aquarium.petfish = account.aquarium.petfish || {};// 数据为空则初始化
+//             account.aquarium = account.aquarium || {};// 数据为空则初始化
+//             account.aquarium.petfish = account.aquarium.petfish || {};// 数据为空则初始化
 
-            let aquarium = account.aquarium;
+//             let aquarium = account.aquarium;
 
-            // 未解锁指定id的鱼等级设置为0
-            let level = 0;//data['level'];
+//             // 未解锁指定id的鱼等级设置为0
+//             let level = 0;//data['level'];
 
-            // 取用对象的键时再确认一下对象是否为空.
-            if (aquarium.petfish != null && aquarium.petfish["" + id] != null) {
-                level = account.aquarium.petfish["" + id].level;
-            }
-            let need = _getCost(level);// 获取消耗品种类和数量
-            logger.info(FUNC + "解锁或升级需要消耗的碎片 --- need:", need);
+//             // 取用对象的键时再确认一下对象是否为空.
+//             if (aquarium.petfish != null && aquarium.petfish["" + id] != null) {
+//                 level = account.aquarium.petfish["" + id].level;
+//             }
+//             let need = _getCost(level);// 获取消耗品种类和数量
+//             logger.info(FUNC + "解锁或升级需要消耗的碎片 --- need:", need);
 
-            // 查看当前玩家水族馆中这个鱼是否解锁或达到了目标等级
-            if (_alreadyHave(account, id, level, cb)) return;
+//             // 查看当前玩家水族馆中这个鱼是否解锁或达到了目标等级
+//             if (_alreadyHave(account, id, level, cb)) return;
 
-            // 判断玩家碎片是否足够
-            if (!_isChipEnough(account, id, need.chip, cb)) return;
+//             // 判断玩家碎片是否足够
+//             if (!_isChipEnough(account, id, need.chip, cb)) return;
 
-            let package1 = account.package;
-            let chip = package1[ItemTypeC.DEBRIS];
+//             let package1 = account.package;
+//             let chip = package1[ItemTypeC.DEBRIS];
 
-            // 金币数量判断
-            if (!_isGoldEnough(account, need.gold, cb)) return;
+//             // 金币数量判断
+//             if (!_isGoldEnough(account, need.gold, cb)) return;
 
-            // 消耗碎片: 从缓存背包中删除一定量的碎片, 从缓存金币数量中扣除金币
-            chip[chip_id] -= need.chip;
+//             // 消耗碎片: 从缓存背包中删除一定量的碎片, 从缓存金币数量中扣除金币
+//             chip[chip_id] -= need.chip;
 
-            BuzzUtil.useCoin(account, coinId, need.gold, function (err, res) {
+//             BuzzUtil.useCoin(account, coinId, need.gold, function (err, res) {
 
-                // account.gold = -need.gold;
+//                 // account.gold = -need.gold;
 
-                if (aquarium && aquarium.petfish) {
+//                 if (aquarium && aquarium.petfish) {
 
-                    // 在水族馆中放入一条鱼(数据字段为aquarium)
-                    // 或升级已经解锁的鱼
-                    if (level == 0) {
-                        logger.info(FUNC + "解锁！");
-                        aquarium.petfish["" + id] = {
-                            id: id,
-                            level: level + 1,
-                            state: PET_STATE.NOTPLACED,
-                            time: 0,
-                        };
-                    }
-                    else {
-                        logger.info(FUNC + "升级！");
-                        aquarium.petfish["" + id].level++;
-                    }
+//                     // 在水族馆中放入一条鱼(数据字段为aquarium)
+//                     // 或升级已经解锁的鱼
+//                     if (level == 0) {
+//                         logger.info(FUNC + "解锁！");
+//                         aquarium.petfish["" + id] = {
+//                             id: id,
+//                             level: level + 1,
+//                             state: PET_STATE.NOTPLACED,
+//                             time: 0,
+//                         };
+//                     }
+//                     else {
+//                         logger.info(FUNC + "升级！");
+//                         aquarium.petfish["" + id].level++;
+//                     }
 
-                    // 记录玩家宠物鱼的排名更新
-                    let petfish_list = aquarium.petfish;
-                    let total_level = 0;
-                    for (let i in petfish_list) {
-                        let petfish = petfish_list[i];
-                        total_level += petfish.level;
-                    }
-                    CacheAccount.setMaxPetfishLevel(account, total_level);
-                    account.package = package1;
-                    CacheAccount.setAquarium(account, aquarium,function (err, res) {
-                        account.commit();
-                        cb(null, account);
-                    });
-                    logBuilder.addItemLog(account.id, chip_id, -need.chip, chip[chip_id], common_log_const_cfg.PET_FISH_UPGRADE, account.level);
-                }
-            });
+//                     // 记录玩家宠物鱼的排名更新
+//                     let petfish_list = aquarium.petfish;
+//                     let total_level = 0;
+//                     for (let i in petfish_list) {
+//                         let petfish = petfish_list[i];
+//                         total_level += petfish.level;
+//                     }
+//                     CacheAccount.setMaxPetfishLevel(account, total_level);
+//                     account.package = package1;
+//                     CacheAccount.setAquarium(account, aquarium,function (err, res) {
+//                         account.commit();
+//                         cb(null, account);
+//                     });
+//                     logBuilder.addItemLog(account.id, chip_id, -need.chip, chip[chip_id], common_log_const_cfg.PET_FISH_UPGRADE, account.level);
+//                 }
+//             });
 
-            /**
-             * 玩家游戏币是否足够的判断.
-             */
-            function _isGoldEnough(account, needCoin, cb) {
-                const FUNC = TAG + "_isGoldEnough() --- ";
+//             /**
+//              * 玩家游戏币是否足够的判断.
+//              */
+//             function _isGoldEnough(account, needCoin, cb) {
+//                 const FUNC = TAG + "_isGoldEnough() --- ";
 
-                let ownCoin = account[coinType];
-                logger.info(FUNC + "ownCoin:", ownCoin);
-                if (ownCoin < needCoin) {
-                    logger.error("金币不足:", ERROR_OBJ.GOLD_NOT_ENOUGH);
-                    cb(ERROR_OBJ.GOLD_NOT_ENOUGH);
-                    return false;
-                }
-                return true;
-            }
-        }
-        else {
-            cb(new Error("玩家数据错误"));
-        }
+//                 let ownCoin = account[coinType];
+//                 logger.info(FUNC + "ownCoin:", ownCoin);
+//                 if (ownCoin < needCoin) {
+//                     logger.error("金币不足:", ERROR_OBJ.GOLD_NOT_ENOUGH);
+//                     cb(ERROR_OBJ.GOLD_NOT_ENOUGH);
+//                     return false;
+//                 }
+//                 return true;
+//             }
+//         }
+//         else {
+//             cb(new Error("玩家数据错误"));
+//         }
 
-    });
-}
+//     });
+// }
 
 ////------------------------------------------------------------------------------
 

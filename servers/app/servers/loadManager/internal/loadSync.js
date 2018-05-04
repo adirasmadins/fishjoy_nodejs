@@ -17,9 +17,6 @@ class LoadSync {
             password: adminUser.password
         });
 
-        this._adminClient.on('error', function () {
-            
-        })
         let master = omelo.app.getMaster();
         this._adminClient.connect('loadManager-' + Date.now(), master.host, master.port, function (err) {
             if (err) {
@@ -146,7 +143,7 @@ class LoadSync {
 
                     for (let id in data) {
                         self[`_${moduleId}LoadMap`].set(id, data[id].load);
-                        logger.error('服务器负载信息:', id, data[id].load);
+                        logger.info('服务器负载信息:', id, data[id].load);
                     }
                     self._clearCacheServer(moduleId);
                 });

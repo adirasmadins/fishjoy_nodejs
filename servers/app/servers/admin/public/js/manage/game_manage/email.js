@@ -42,9 +42,11 @@ var callback = {
 		$('body').on('click','#search_btn',function(){
 			var sday = $('.s_date').find('input').val();
 			var eday = $('.e_date').find('input').val();
-			$(this).attr({'data-sday':sday,'data-eday':eday})
+			var mailId = $('#mailId').val();
+			$(this).attr({'data-sday':sday,'data-eday':eday,'data-mailId':mailId});
 			if(sday && eday){
-				events.$ajax(actions.list_url,{'startDate':sday,'endDate':eday},callback.get_list);
+				var data = mailId ? {'startDate':sday,'endDate':eday,'mailId':mailId} : {'startDate':sday,'endDate':eday} ;
+				events.$ajax(actions.list_url,data,callback.get_list);
 			}else{
 				events.myalert(namebox.alertTip);
 			}

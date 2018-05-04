@@ -6,14 +6,23 @@ const omelo = require('omelo');
 const httpCfg = omelo.app.get('http');
 const logicResponse = require('../../common/logicResponse');
 
+const www_domain = versions.WWW_DOMAIN.indexOf(versions.PUB) !== -1 ? 'www.' : null;
+
 module.exports = (router) => {
 	router.prefix = '/';
 
 	//获取游戏首页
 	router.get('/', async (ctx, next) => {
 		ctx.status = 301;
+        let host = ctx.host;
+		if(ctx.host.search('www') == -1 && www_domain){
+            host = www_domain + host;
+		}
+		let redirectUrl = redirect_https.genRedirectUrl(ctx.protocol, host, '/fishjoy/index.html?td_channelid=' + CHANNEL_TAG);
+		logger.error('redirect url host=', host);
+		logger.error('redirect url redirectUrl=', redirectUrl);
 
-		ctx.redirect(redirect_https.genRedirectUrl(ctx.protocol, ctx.host, '/fishjoy/index.html?td_channelid=' + CHANNEL_TAG));
+		ctx.redirect(redirectUrl);
 		// ctx.type = 'html';
 		// if (!gameIndexHtml) {
 		// 	try {

@@ -4,6 +4,7 @@ const WanbaUser = require('./wanbaUser');
 const EgretUser = require('./egretUser');
 const CocoUser = require('./cocoUser');
 const GooglePlusUser = require('./googlePlusUser');
+const WechatUser = require('./wechatUser');
 
 module.exports = {
     PLATFORM_CONFIG: {
@@ -58,6 +59,14 @@ module.exports = {
             sdk:{
                 url:'http://www.17525.com/user/info',
                 gameid:''
+            }
+        },
+        1007: {
+            Class:WechatUser,
+            sdk:{
+                url:'https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code',
+                appid:'wxfece06b250c43b30',
+                secret:'951b9dc8e68065c72a57bd5a917c3307'
             }
         }
     }

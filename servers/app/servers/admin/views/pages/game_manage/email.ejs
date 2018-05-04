@@ -32,6 +32,10 @@
 		  		<!-- 搜索框 -->
 		  		<div class="formbox padding20 bgfff">
 		  			<form class="form-inline">
+						<div class="form-group">
+							<label class="fn"><%=t1708;%>：</label>
+							<input type="text" name="" class="form-control" placeholder="<%=t1709;%>" id="mailId">
+						</div>
 		  			  <div class="form-group">
 		  		          	<div class="form-group marginL10">
 		  		          	    <label for="s_date" class="control-label textright lineheight34 fn"><%=t1420;%>：</label>
@@ -56,6 +60,7 @@
 	  	       <table class="table table-bordered table-striped textcenter">
 	  	       	<thead class="bgf5">
 	  	       		<tr>
+						<th><%=t1708;%></th>
 	  	       			<th><%=t1575;%></th>
 	  	       			<th><%=t1452;%></th>
 	  	       			<th><%=t1453;%></th>
@@ -72,24 +77,26 @@
  				<script type="text/html" id="email_data">
  				    {{each data as val}}
  				    	<tr>
+							<td>{{val.mailId}}</td>
 	  				  		<td>{{arrbox(val.reward)}}</td>
 	  				  		<td>{{val.title}}</td>
 	  				  		<td>{{val.typeText}}</td>
 	  				  		<td>{{val.time}}</td>
 	  				  		<td>{{val.valid == 0 ? '<%=t1465;%>' : val.valid}}</td>
 	  				  		<td>{{val.addByWho}}</td>
-	  				  		<td  class="textleft ft12">
-	  				  			{{if ifarry(val.received)}}
-	  				  			<p><%=t1576;%>：{{joinstring(val.received)}}</p>
-	  				  			{{else}}
-	  				  			<p><%=t1578;%>：{{val.received}}</p>
-	  				  			{{/if}}
-	  				  			{{if ifarry(val.notReceived)}}
-	  				  			<p class="cred"><%=t1577;%>：{{joinstring(val.notReceived)}}</p>
-	  				  			{{else}}
-	  				  			<p class="cred"><%=t1579;%>：{{val.notReceived}}</p>
-	  				  			{{/if}}
-
+	  				  		<td>
+	  				  			<div class="textleft ft12" style="max-width: 250px;word-break: break-all;">
+	  				  				{{if ifarry(val.received)}}
+	  				  				<p><%=t1576;%>：{{joinstring(val.received)}}</p>
+	  				  				{{else}}
+	  				  				<p><%=t1578;%>：{{val.received}}</p>
+	  				  				{{/if}}
+	  				  				{{if ifarry(val.notReceived)}}
+	  				  				<p class="cred"><%=t1577;%>：{{joinstring(val.notReceived)}}</p>
+	  				  				{{else}}
+	  				  				<p class="cred"><%=t1579;%>：{{val.notReceived}}</p>
+	  				  				{{/if}}
+	  				  			</div>
 	  				  		</td>
 	  				  		<td>
 	  				  			{{if val.status == 'valid'}}

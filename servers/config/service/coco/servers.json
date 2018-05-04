@@ -6,7 +6,7 @@
       "clientPort": 3001,
       "frontend": true,
       "auto-restart": false,
-      "args": " --inspect=10.163.56.148:13001"
+      "args": " --inspect=172.16.2.12:13001"
     }],
     "loadManager": [{
       "id": "loadManager",
@@ -34,7 +34,7 @@
       "id": "resource",
       "host": "172.16.2.13",
       "port": 3501,
-      "publicHost": "192.144.157.144",
+      "publicHost": "www.blyule.com",
       "auto-restart": false,
       "args": " --inspect=172.16.2.13:13501"
     }],
@@ -42,7 +42,7 @@
         "id": "hall-1-1",
         "host": "172.16.2.5",
         "port": 3601,
-        "publicHost": "192.144.137.93",
+        "publicHost": "hall.blyule.com",
         "auto-restart": false,
         "args": " --inspect=172.16.2.5:13601"
       },
@@ -50,7 +50,7 @@
         "id": "hall-1-2",
         "host": "172.16.2.5",
         "port": 3603,
-        "publicHost": "192.144.137.93",
+        "publicHost": "hall.blyule.com",
         "auto-restart": false,
         "args": " --inspect=172.16.2.5:13603"
       }
@@ -59,7 +59,7 @@
       "id": "chat",
       "host": "172.16.2.3",
       "port": 3701,
-      "publicHost": "192.144.157.205",
+      "publicHost": "chat.blyule.com",
       "auto-restart": false,
       "args": " --inspect=172.16.2.3:13701"
     }],
@@ -67,7 +67,7 @@
       "id": "admin",
       "host": "172.16.2.17",
       "port": 3801,
-      "publicHost": "192.144.144.173",
+      "publicHost": "admin.blyule.com",
       "auto-restart": false,
       "args": " --inspect=172.16.2.17:13801"
     }],
@@ -89,7 +89,7 @@
       "id": "pay",
       "host": "172.16.2.6",
       "port": 4201,
-      "publicHost": "192.144.147.242",
+      "publicHost": "pay.blyule.com",
       "auto-restart": false,
       "args": " --inspect=172.16.2.6:14201"
     }],
@@ -111,7 +111,7 @@
       "id": "game-1-1",
       "host": "172.16.2.4",
       "port": 4001,
-      "clientHost": "192.144.157.202",
+      "clientHost": "room1.blyule.com",
       "clientPort": 4003,
       "frontend": true,
       "auto-restart": false,
@@ -121,7 +121,7 @@
       "id": "game-1-2",
       "host": "172.16.2.4",
       "port": 4005,
-      "clientHost": "192.144.157.202",
+      "clientHost": "room1.blyule.com",
       "clientPort": 4007,
       "frontend": true,
       "auto-restart": false,
@@ -131,7 +131,7 @@
       "id": "game-1-3",
       "host": "172.16.2.4",
       "port": 4009,
-      "clientHost": "192.144.157.202",
+      "clientHost": "room1.blyule.com",
       "clientPort": 4011,
       "frontend": true,
       "auto-restart": false,
@@ -141,7 +141,7 @@
       "id": "game-1-4",
       "host": "172.16.2.4",
       "port": 4013,
-      "clientHost": "192.144.157.202",
+      "clientHost": "room1.blyule.com",
       "clientPort": 4015,
       "frontend": true,
       "auto-restart": false,

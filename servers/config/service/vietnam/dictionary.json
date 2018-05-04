@@ -18,6 +18,8 @@
     "game.fishHandler.c_room_chat",
     "game.fishHandler.c_world_barrage",
     "game.fishHandler.c_pirate_reward",
+    "game.fishHandler.c_turn_weapon",
+
     "s_enter_room",
     "s_leave_room",
     "s_playerState",
@@ -33,6 +35,7 @@
     "s_god_pause",
     "s_god_continue",
     "s_god_hurt",
+    "s_turn_weapon",
 
     "matching.matchingHandler.c_signup",
     "matching.matchingHandler.c_cancel",

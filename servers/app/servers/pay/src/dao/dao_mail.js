@@ -566,22 +566,7 @@ function _didReadMail(data, cb) {
                             huafeiGain += item_num;
                         }
                     }
-                    logBuilder.addItemLogByAccount(gain_item_list, account, common_log_const_cfg.MAIL);
-                    if (goldGain > 0) {
-                        // yDONE: 金币记录日志
-                        logger.info(FUNC + uid + "领取邮件发放的金币");
-                        logBuilder.addGoldLogEx({
-                            account_id: uid,
-                            log_at: new Date(),
-                            gain: goldGain,
-                            cost: 0,
-                            duration: 0,
-                            total: account.gold,
-                            scene: common_log_const_cfg.MAIL,
-                            nickname: 0,
-                            level: account.level,
-                        });
-                    }
+                    logBuilder.addGoldAndItemLog(gain_item_list, account, common_log_const_cfg.MAIL);
                     if (diamondGain > 0) {
                         // yDONE: 钻石记录日志
                         logger.info(FUNC + uid + "领取邮件发放的钻石");

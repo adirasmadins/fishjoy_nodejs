@@ -8,7 +8,6 @@ const RedisUtil = require("../utils/RedisUtil");
 const redisKeys = require('../../../../database').dbConsts.REDISKEY;
 const constDef = require('../../../../consts/constDef');
 const RANK_TYPE = require('../rankCache/cacheConf').RANK_TYPE;
-const DaoCommon = require('../dao/dao_common');
 const CstError = require('../../../../consts/fish_error');
 const ERROR_OBJ = CstError.ERROR_OBJ;
 const cache = require('../rankCache/cache');
@@ -94,11 +93,10 @@ const getFriendsChartsFields = [
 /**
  * buzz_social调用接口
  */
-async function getFriendsCharts(list, fopenidsMap, cb) {
-    const FUNC = TAG + "getFriendsCharts() --- ";
+async function getFriendsCharts(list, fopenidsMap, skip, limit, cb) {
     let accounts = await CacheAccount.getAccountsFieldsByIdsSync(list, getFriendsChartsFields);
-
     ArrayUtil.sort(accounts, "match_points", SORT_RULE.DESC, "vip", SORT_RULE.DESC);
+    accounts = accounts.slice(skip, skip + limit);
     for(let i=0;i<accounts.length;++i){
         let account = accounts[i];
         account.friend = fopenidsMap[account.channel_account_id] ? 2:1;

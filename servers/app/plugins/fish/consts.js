@@ -54,12 +54,10 @@ module.exports = {
 
     FIGHTING_NOTIFY: {
         WP_SKIN: 0, //切换武器皮肤
-        WP_LEVEL: 1, //切换武器倍率
-        MINI_GAME: 2, //小游戏
-        TURN_DRAW: 3, //奖金鱼抽奖
-        RMATCH_READY: 4, //排位赛
-        DROP: 5, //战斗内掉落
-        RMATCH_NB: 6, //排位赛核弹与否，0取消 1使用
+        MINI_GAME: 1, //小游戏
+        TURN_DRAW: 2, //奖金鱼抽奖
+        RMATCH_STATE: 3, //排位赛标记,0开始，1结束
+        RMATCH_NB: 4, //排位赛核弹与否，0取消 1使用
     },
 
     FIRE_FLAG: {

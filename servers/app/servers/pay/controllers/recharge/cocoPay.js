@@ -12,7 +12,7 @@ class CocoPay extends Pay {
 
     async buyByRMB(data) {
         let account = data.account;
-        let order = await dao_shop.getIOSOrder(data.orderid);
+        let order = await dao_shop.getOrderInfo(data.orderid);
         logger.error("buyByRMB:", order);
         if (order.status == Pay.ORDER_STATUS.SUCCESS) {
             let itemList = order.item_list;
@@ -55,7 +55,7 @@ class CocoPay extends Pay {
         let orderId = data.txid;
         let sign = data.sign;
 
-        let newVar = await dao_shop.getIOSOrder(orderId);
+        let newVar = await dao_shop.getOrderInfo(orderId);
         if (newVar.status == 0) {
             logger.error("coco支付错误,订单已处理", newVar);
             return api.SUCCESS;

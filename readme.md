@@ -141,7 +141,7 @@ git config --global core.autocrlf false
 - git add .getmodules design_cfg
 - git commit -m "add design_cfg submodule."
 - git submodule init
-
+- git submodule update
 // 提交submodule的内容到远程:
 - cd design_cfg
 - git add .
@@ -158,3 +158,15 @@ git push
 - git submodule foreach git pull origin master
 - cd design_cfg
 - git pull
+
+## 发布
+- 修改版本号(versions.js)
+DEVELOPMENT: false
+PUB: GAMEPLAY.VIETNAM_VN_TEST
+- 执行发布文件
+cd /fishjoy_server3.1/tools/pack/
+gulp
+- 登录到主机
+cd /opt/auto_deploy
+./publish.sh
+./restart.sh

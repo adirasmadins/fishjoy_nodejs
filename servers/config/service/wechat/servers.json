@@ -1,0 +1,285 @@
+{
+  "development": {
+    "gate": [{
+      "id": "gate",
+      "host": "172.16.2.12",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.12:13001"
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "172.16.2.6",
+      "port": 3201,
+      "publicHost": "192.144.147.242",
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.6:13201"
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "172.16.2.17",
+      "port": 3301,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.17:13301"
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "172.16.2.5",
+      "port": 3401,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.5:13401"
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "172.16.2.13",
+      "port": 3501,
+      "publicHost": "blyule.com",
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.13:13501"
+    }],
+    "hall": [{
+        "id": "hall-1-1",
+        "host": "172.16.2.5",
+        "port": 3601,
+        "publicHost": "hall.blyule.com",
+        "auto-restart": false,
+        "args": " --inspect=172.16.2.5:13601"
+      },
+      {
+        "id": "hall-1-2",
+        "host": "172.16.2.5",
+        "port": 3603,
+        "publicHost": "hall.blyule.com",
+        "auto-restart": false,
+        "args": " --inspect=172.16.2.5:13603"
+      }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "172.16.2.3",
+      "port": 3701,
+      "publicHost": "chat.blyule.com",
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.3:13701"
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "172.16.2.17",
+      "port": 3801,
+      "publicHost": "admin.blyule.com",
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.17:13801"
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "172.16.2.7",
+      "port": 3901,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.7:13901"
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "172.16.2.7",
+      "port": 4101,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.7:14101"
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "172.16.2.6",
+      "port": 4201,
+      "publicHost": "pay.blyule.com",
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.6:14201"
+    }],
+    "logManager": [{
+      "id": "logManager",
+      "host": "172.16.2.10",
+      "port": 4301,
+      "auto-restart": false,
+      "args": " --inspect=172.16.1.5:14301"
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1-1",
+      "host": "172.16.2.6",
+      "port": 5001,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.6:15001"
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "172.16.2.4",
+      "port": 4001,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.4:14001",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "172.16.2.4",
+      "port": 4005,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.4:14005",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-3",
+      "host": "172.16.2.4",
+      "port": 4009,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.4:14009",
+      "maxLoad": 250
+    }, {
+      "id": "game-1-4",
+      "host": "172.16.2.4",
+      "port": 4013,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": false,
+      "args": " --inspect=172.16.2.4:14013",
+      "maxLoad": 250
+    }
+    ]
+  },
+  "production": {
+    "gate": [{
+      "id": "gate",
+      "host": "172.16.2.12",
+      "clientPort": 3001,
+      "frontend": true,
+      "auto-restart": true
+    }],
+    "loadManager": [{
+      "id": "loadManager",
+      "host": "172.16.2.6",
+      "port": 3201,
+      "publicHost": "192.144.147.242",
+      "auto-restart": true
+    }],
+    "eventSync": [{
+      "id": "eventSync",
+      "host": "172.16.2.17",
+      "port": 3301,
+      "auto-restart": true
+    }],
+    "matching": [{
+      "id": "matching",
+      "host": "172.16.2.5",
+      "port": 3401,
+      "auto-restart": true
+    }],
+    "resource": [{
+      "id": "resource",
+      "host": "172.16.2.13",
+      "port": 3501,
+      "publicHost": "blyule.com",
+      "auto-restart": true
+    }],
+    "hall": [{
+      "id": "hall-1-1",
+      "host": "172.16.2.5",
+      "port": 3601,
+      "publicHost": "hall.blyule.com",
+      "auto-restart": true
+    },
+      {
+        "id": "hall-1-2",
+        "host": "172.16.2.5",
+        "port": 3603,
+        "publicHost": "hall.blyule.com",
+        "auto-restart": true
+      }
+    ],
+    "chat": [{
+      "id": "chat",
+      "host": "172.16.2.3",
+      "port": 3701,
+      "publicHost": "chat.blyule.com",
+      "auto-restart": true
+    }],
+    "admin": [{
+      "id": "admin",
+      "host": "172.16.2.17",
+      "port": 3801,
+      "publicHost": "admin.blyule.com",
+      "auto-restart": true
+    }],
+    "r2mSync": [{
+      "id": "r2mSync",
+      "host": "172.16.2.7",
+      "port": 3901,
+      "auto-restart": true
+    }],
+    "ranking": [{
+      "id": "ranking",
+      "host": "172.16.2.7",
+      "port": 4101,
+      "auto-restart": true
+    }],
+    "pay": [{
+      "id": "pay",
+      "host": "172.16.2.6",
+      "port": 4201,
+      "publicHost": "pay.blyule.com",
+      "auto-restart": true
+    }],
+    "logManager": [{
+      "id": "logManager",
+      "host": "172.16.2.10",
+      "port": 4301,
+      "auto-restart": true
+    }],
+    "rankMatch": [{
+      "id": "rankMatch-1-1",
+      "host": "172.16.2.6",
+      "port": 5001,
+      "auto-restart": true
+    }],
+    "game": [{
+      "id": "game-1-1",
+      "host": "172.16.2.4",
+      "port": 4001,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4003,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-2",
+      "host": "172.16.2.4",
+      "port": 4005,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4007,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-3",
+      "host": "172.16.2.4",
+      "port": 4009,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4011,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }, {
+      "id": "game-1-4",
+      "host": "172.16.2.4",
+      "port": 4013,
+      "clientHost": "room1.blyule.com",
+      "clientPort": 4015,
+      "frontend": true,
+      "auto-restart": true,
+      "maxLoad": 250
+    }]
+  }
+}

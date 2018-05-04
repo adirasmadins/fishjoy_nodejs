@@ -5,11 +5,9 @@ const gameConfig = require('../../../../utils/imports').DESIGN_CFG;
 const common_log_const_cfg = gameConfig.common_log_const_cfg;
 const item_mix_cfg = gameConfig.item_mix_cfg;
 const item_itemtype_cfg = gameConfig.item_itemtype_cfg;
-const item_item_cfg = gameConfig.item_item_cfg;
 const newweapon_weapons_cfg = gameConfig.newweapon_weapons_cfg;
 const shop_shop_buy_type_cfg = gameConfig.shop_shop_buy_type_cfg;
 const BuzzUtil = require('../../src/utils/BuzzUtil');
-const ObjUtil = require('../../src/buzz/ObjUtil');
 const utils = require('../../src/buzz/utils');
 const buzz_limit_items = require('../../src/buzz/buzz_limit_items');
 const CacheAccount = require('../../src/buzz/cache/CacheAccount');
@@ -111,7 +109,7 @@ function _mix(data, cb) {
      */
     function _checkMix(account, item_key, num) {
         let item_type = item_itemtype_cfg.ITEM_MIX;
-        let item = item_item_cfg[item_key];
+        let item = tools.CfgUtil.item_item.getInfo(item_key);
         // 条件1: 物品类型必须是合成类型
         // 条件2: 物品没有售价, 有售价的物品不能合成
         if (item.type != item_type || item.saleprice > 0) {
@@ -176,7 +174,7 @@ function _use(data, cb) {
     let itemId = data.itemId;
     let num = data.num;
 
-    let itemInfo = item_item_cfg[itemId];
+    let itemInfo = tools.CfgUtil.item_item.getInfo(itemId);
     if (!itemInfo) {
         throw ERROR_OBJ.PACK_ITEM_NOT_EXIST;
         return;
@@ -301,7 +299,7 @@ function _use(data, cb) {
                 doneFunc();
             }
         }
-        logBuilder.addItemLogByAccount({ item_id: itemId, item_num: num }, account, common_log_const_cfg.USE, -1);
+        logBuilder.addGoldAndItemLog([{ item_id: itemId, item_num: num }], account, common_log_const_cfg.USE, -1);
     }
 
     function _checkSkinExist(mySkin, skinId) {
@@ -321,7 +319,7 @@ function _use(data, cb) {
     }
 
     function _afterUse(pool, account, itemId, cost, cb) {
-        let itemInfo = item_item_cfg[itemId];
+        let itemInfo = tools.CfgUtil.item_item.getInfo(itemId);
         let reward = [];
         let gainGold = 0;
         if (itemInfo.dropid === '0') {
@@ -633,7 +631,7 @@ function exchange(data, costList, gainList, scene) {
                 }
         }
     }
-    buzz_limit_items.setItemGetAt(account, reward);
+    // buzz_limit_items.setItemGetAt(account, reward);
 
     account.commit();
 

@@ -188,6 +188,7 @@ module.exports =
 
         // 获取邮件列表
         getMailData: "select * from tbl_mail where sendtime>=? and sendtime<=? order by sendtime",
+        getMailDataWithId: "select * from tbl_mail where id in (|mid_list|) sendtime>=? and sendtime<=? order by sendtime",
         // 删除邮件
         delMail: 'update tbl_mail set status=0 where id=?',
         // 插入邮件

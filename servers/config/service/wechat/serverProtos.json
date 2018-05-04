@@ -1,0 +1,310 @@
+{
+    "message Error":{
+        "required uInt32 code": 1,
+        "required string msg": 2
+    },
+
+    "game.fishHandler.c_login": {
+        "optional Error error": 1
+    },
+
+    "message Player": {
+        "required uInt32 id": 1,
+        "required uInt32 seatId": 2,
+        "required string nickname": 3,
+        "required uInt32 wp_skin": 4,
+        "required uInt32 wp_level": 5,
+        "required uInt32 wp_energy": 6,
+        "required sInt32 gold": 7,
+        "required sInt32 pearl": 8,
+        "required string figure_url": 9,
+        "required uInt32 kindId": 10,
+        "required uInt32 sex": 11,
+
+        "message ContinueData":{
+            "optional uInt32 mBIdx": 1
+        },
+        "optional ContinueData cData": 12,
+        "required uInt32 wp_star": 13
+    },
+
+    "game.fishHandler.c_enter_room": {
+        "repeated Player players": 1,
+        "optional string roomId": 2,
+        "optional Error error": 3
+    },
+
+    "s_enter_room": {
+        "repeated Player players": 1
+    },
+
+    "s_leave_room": {
+        "required uInt32 seatId": 1
+    },
+
+    "s_fire": {
+        "message Fire": {
+            "message FirePoint": {
+                "required sInt32 x": 1,
+                "required sInt32 y": 2
+            },
+            "required FirePoint fire_point": 1,
+
+            "optional string fire_fish": 2,
+            "required uInt32 seatId": 3,
+            "required sInt32 gold": 4,
+            "required string wp_bk": 5,
+            "optional uInt32 clone": 6
+        },
+        "repeated Fire fire": 1
+    },
+
+    "s_catch_fish": {
+        "message Catch": {
+            "required uInt32 seatId": 1,
+            "required sInt32 gold": 2,
+
+            "message CatchFishes": {
+                "required uInt32 fireFlag": 1,
+
+                "message OneFish": {
+                    "required uInt32 fidx": 1,
+                    "required sInt32 gold": 2,
+                    "repeated string drops": 3
+                },
+                "repeated OneFish fishes": 2
+            },
+            "repeated CatchFishes catch_fishes": 3,
+            "optional sInt32 pearl": 4
+        },
+        "repeated Catch catch": 1,
+
+        "message Fire": {
+            "message FirePoint": {
+                "required sInt32 x": 1,
+                "required sInt32 y": 2
+            },
+            "required FirePoint fire_point": 1,
+
+            "optional string fire_fish": 2,
+            "required uInt32 seatId": 3,
+            "required sInt32 gold": 4,
+            "required string wp_bk": 5
+        },
+        "repeated Fire fire": 2
+    },
+
+    "s_use_skill": {
+        "required uInt32 seatId": 1,
+        "optional uInt32 skill_id": 2,
+        "message SkillCommon": {
+            "required uInt32 skill_id": 1
+        },
+        "optional SkillCommon common": 3,
+
+        "message SkillCall": {
+            "required string fish_key": 1,
+            "required string fish_path": 2
+        },
+        "optional SkillCall skill_call": 3,
+
+        "message SkillCallReady": {
+            "required string fish": 1,
+            "required string path": 2,
+            "required uInt32 dt": 3
+        },
+        "optional SkillCallReady call_ready": 4,
+
+        "optional string skill_lock": 5,
+
+        "message FirePoint": {
+            "optional uInt32 x": 1,
+            "optional uInt32 y": 2
+        },
+        "optional FirePoint skill_power": 6,
+        "optional string wp_bk": 7
+    },
+
+    "s_use_skill_end": {
+        "optional uInt32 seatId": 1,
+        "optional uInt32 skill": 2,
+        "optional uInt32 ice_all_over": 3
+    },
+
+    "s_flush_fish": {
+        "required string evtName": 1,
+        "message EventData": {
+            "optional uInt32 escape_dt": 1,
+            "repeated string fishKeys": 2,
+            "optional string tideIcon": 3,
+            "optional string bgm": 4,
+
+            "message Data": {
+                "required string nameKey": 1,
+                "required uInt32 lifeDt": 2,
+                "required string path": 3,
+                "optional uInt32 sub_fish": 4,
+                "optional uInt32 tide": 5,
+                "required sInt32 goldVal": 6
+            },
+            "optional Data data": 5,
+
+            "message Goddess": {
+                "optional uInt32 waveCount": 1,
+                "optional uInt32 waveDt": 2,
+                "optional uInt32 isFirst": 3,
+                "optional uInt32 rIdx": 4,
+                "optional uInt32 liveC": 5,
+                "optional uInt32 passAll": 6,
+                "optional uInt32 godId": 7,
+
+                "message GoddessReward": {
+                    "optional uInt32 times": 1,
+                    "repeated string drops": 2,
+                    "optional uInt32 treasureID": 3
+                },
+                "optional GoddessReward reward": 8
+            },
+            "optional Goddess goddess": 6
+
+        },
+        "optional EventData evtData": 2
+    },
+
+    "s_fighting_notify": {
+        "required uInt32 seatId": 1,
+        "required uInt32 event": 2,
+        "message EvtData": {
+            "optional uInt32 wp_level": 1,
+            "optional uInt32 wp_skin": 2,
+
+            "message Mini": {
+                "optional uInt32 type": 1,
+                "optional sInt32 gold": 2
+            },
+            "optional Mini mini": 3,
+
+            "message Drop": {
+                "message Item": {
+                    "optional string item_id": 1,
+                    "optional uInt32 item_num": 2,
+                    "optional uInt32 drop_count": 3
+                },
+                "repeated Item items": 1,
+
+                "message Point": {
+                    "optional sInt32 x": 1,
+                    "optional sInt32 y": 2
+                },
+                "optional Point deadPos": 2,
+                "optional uInt32 isPirateReward": 3
+            },
+            "optional Drop drop": 4,
+
+            "message TurnDrawItem": {
+                "optional string item_id": 1,
+                "optional uInt32 item_num": 2
+            },
+            "repeated TurnDrawItem turnDraw": 5,
+
+            "optional uInt32 rmatch_nb": 6,
+            "optional uInt32 rmatch_over": 7,
+
+            "message RmatchReady": {
+                "optional string roomId": 1,
+                "optional string serverId": 2
+            },
+            "optional RmatchReady rmatch_ready": 8
+        },
+        "required EvtData event_data": 3
+    },
+
+    "s_player_notify": {
+        "required uInt32 seatId": 1,
+        "required sInt32 pearl": 2,
+        "required sInt32 gold": 3,
+        "required uInt32 wp_skin": 4,
+        "required uInt32 wp_level": 5,
+        "required uInt32 wp_star": 6
+    },
+
+    "s_matching_result": {
+        "message MatchingInfo": {
+            "message Info": {
+                "required string serverId": 1,
+                "required string roomId": 2
+            },
+            "required Info rankMatch": 1,
+
+            "message Player": {
+                "required sInt32 uid": 1,
+                "required uInt32 rank": 2,
+                "required string nickname": 3,
+                "required string figure_url": 4,
+                "required float winning_rate": 5,
+                "required uInt32 wp_skin": 6,
+                "required uInt32 nbomb_cost": 7,
+                "required uInt32 vip": 8
+            },
+            "repeated Player players": 2
+        },
+        "optional MatchingInfo matchingInfo": 1,
+
+        "optional string err": 2
+    },
+
+    "s_rank_match_start": {
+        "required uInt32 countdown": 1
+    },
+
+    "s_rank_match_weapon_skin_change": {
+        "required sInt32 uid": 1,
+        "required uInt32 wp_skin": 2
+    },
+
+    "s_rank_match_use_nbomb": {
+        "required sInt32 uid": 1,
+        "required uInt32 score": 2,
+
+        "message Nbomb": {
+            "required uInt32 num": 1,
+            "required uInt32 point": 2
+        },
+        "required Nbomb nbomb": 3
+    },
+
+    "s_rank_match_cancel_nbomb": {
+        "required sInt32 uid": 1,
+        "optional uInt32 score": 2
+    },
+
+    "s_rank_match_fight_info": {
+        "required sInt32 uid": 1,
+        "required uInt32 score": 2,
+        "required uInt32 fire": 3,
+
+        "message FishList": {
+            "required string name": 1,
+            "required uInt32 num": 2,
+            "required uInt32 point": 3
+        },
+        "repeated FishList fish_list": 4
+    },
+
+    "s_rank_match_timer": {
+        "required uInt32 countdown": 1
+    },
+
+    "s_rank_match_chat": {
+        "optional sInt32 uid": 1,
+        "optional uInt32 type": 2,
+        "optional uInt32 idx": 3,
+        "optional uInt32 matchFlag": 4
+    },
+
+    "s_turn_weapon": {
+        "required uInt32 seatId": 1,
+        "optional uInt32 wp_level": 2
+    }
+
+}

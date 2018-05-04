@@ -22,6 +22,7 @@ module.exports = {
         GOOGLE: 1004,
         INNER: 1005,
         COCO: 1006,
+        WECHAT:1007,
     },
 
     //支付渠道ID定义
@@ -121,6 +122,11 @@ module.exports = {
         CHALLENGE_WIN: 28, //排位赛获得x次胜利
         CHALLENGE_DUANWEI: 29, //排位赛段位大于等于x
         MAX: 30,//最后一个，暂时取消掉了
+    },
+
+    SEX:{
+        MALE:0,
+        FEMALE:1
     },
 
 };

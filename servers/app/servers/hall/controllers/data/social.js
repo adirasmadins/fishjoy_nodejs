@@ -1,5 +1,7 @@
 const buzz_social = require('../../src/buzz/buzz_social');
 const logicResponse = require('../../../common/logicResponse');
+const REDISKEY = require('../../../../database').dbConsts.REDISKEY;
+const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
 
 exports.getInviteProgress = getInviteProgress;
 exports.getShareStatus = getShareStatus;
@@ -8,10 +10,29 @@ exports.inviteSuccess = inviteSuccess;
 exports.shareSuccess = shareSuccess;
 exports.enshrineSuccess = enshrineSuccess;
 exports.getSocialReward = getSocialReward;
+exports.updateChannelFriends = _updateChannelFriends;
 exports.getFriendsCharts = getFriendsCharts;
 exports.inviteDaily = inviteDaily;
 exports.getFreeCard = getFreeCard;
 exports.getFreeBomb = getFreeBomb;
+
+async function _updateChannelFriends(data) {
+    logger.error('_updateChannelFriends data=', data);
+    let account = data.account;
+    let friends = data.channel_friends;
+    for (let i = 0; i < friends.length; ++i) {
+        friends[i] += "_" + account.platform;
+    }
+    let friendUids = await redisConnector.hmget(REDISKEY.OPENID_UID, friends);
+    let uid_list = [];
+    for(let i=0;i< friendUids.length; ++i){
+        let item = friendUids[i];
+        item && uid_list.indexOf(Number(item)) === -1 && uid_list.push(Number(item));
+    }
+    account.channel_game_friend = uid_list;
+    account.commit();
+    return logicResponse.ask(ERROR_OBJ.OK);
+}
 
 /**
  * 获取好友排行榜.
@@ -98,7 +119,7 @@ async function inviteSuccess(data) {
  */
 async function inviteDaily(data, cb) {
     return new Promise(function (resolve, reject) {
-        buzz_social.inviteDaily({ pool: mysqlConnector }, data, function (err, result) {
+        buzz_social.inviteDaily({pool: mysqlConnector}, data, function (err, result) {
             if (err) {
                 logger.error('首次邀请好友记录 err:', err);
                 reject(err);

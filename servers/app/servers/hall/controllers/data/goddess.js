@@ -34,6 +34,24 @@ exports.unlock = unlock;
 exports.levelup = levelup;
 exports.weekReward = weekReward;
 exports.queryWeekReward = queryWeekReward;
+exports.interractReward = interractReward;
+
+/**
+ * 女神互动奖励(爱抚女神获取奖励)
+ * @param {*} data 包含玩家account数据
+ */
+async function interractReward(data) {
+    return new Promise(function (resolve, reject) {
+        buzz_goddess.interractReward(data, function(err, result) {
+            if (err) {
+                logger.error('领取女神互动奖励 err:', err);
+                reject(err);
+                return;
+            }
+            resolve(logicResponse.ask(result));
+        });
+    });
+}
 
 //------------------------------------------------------------------------------
 // implement

@@ -8,13 +8,19 @@ const tools = require('../../../../utils/tools');
  */
 exports.get = async function (data, ctx) {
     // console.log('data:', data);
-    let mailList = await tools.SqlUtil.query(
-        SQL_CONFIG.getMailData,
-        tools.ObjUtil.makeSqlDataFromTo(
-            data.startDate,
-            data.endDate));
+    let mailList = await getMailList(data.startDate, data.endDate, data.mailId);
     // console.log('mailList:', mailList);
     return makeChart(mailList);
+}
+
+async function getMailList(startDate, endDate, mailId) {
+    let sql = SQL_CONFIG.getMailData;
+    if (mailId && mailId.length > 0) {
+        sql = SQL_CONFIG.getMailDataWithId.replace('|mid_list|', mailId);
+    }
+    let fields = tools.ObjUtil.makeSqlDataFromTo(startDate, endDate);
+    let mailList = await tools.SqlUtil.query(sql, fields);
+    return mailList;
 }
 
 /**
@@ -39,6 +45,7 @@ function makeChart(list) {
         try {
             ret.push({
                 id: mailData.id,
+                mailId: mailData.id,
                 title: mailData.title,
                 time: sendtime,
                 reward: JSON.parse(mailData.reward),
@@ -73,9 +80,9 @@ function getValid(mailData) {
 
 function getTypeText(type) {
     const MAIL_TYPE = {
-        "1":'系统邮件',
-        "2":'补偿邮件',
-        "3":'指定邮件',
+        "1": '系统邮件',
+        "2": '补偿邮件',
+        "3": '指定邮件',
     };
     return MAIL_TYPE[type];
 }

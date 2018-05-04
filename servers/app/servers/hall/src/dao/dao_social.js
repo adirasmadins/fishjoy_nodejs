@@ -336,7 +336,7 @@ function addSocialDiamondLog(uid, account, reward, type) {
             scene: scene,
             nickname: 0,
         });
-        logBuilder.addItemLogByAccount(item_list, account, scene);
+        logBuilder.addGoldAndItemLog(item_list, account, scene);
     }
 }
 

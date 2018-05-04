@@ -10,4 +10,7 @@ module.exports = {
     vip: require('./cfgs/vip'),
     common: require('./cfgs/common'),
     scene: require('./cfgs/scene'),
+    daily: require('./cfgs/daily'),
+    goddess: require('./cfgs/goddess'),
+    drop: require('./cfgs/drop'),
 }

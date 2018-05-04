@@ -7,8 +7,7 @@ const buzz_charts = require('./buzz_charts');
 const redisKeys = require('../../../../database').dbConsts.REDISKEY;
 const dao_social = require('../dao/dao_social');
 const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
-const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
-
+const _ = require("underscore");
 
 const TAG = "【buzz_social】";
 
@@ -91,7 +90,7 @@ exports.inviteSuccess = inviteSuccess;
 exports.shareSuccess = shareSuccess;
 exports.enshrineSuccess = enshrineSuccess;
 exports.getSocialReward = getSocialReward;
-exports.getFriendsCharts = getFriendsCharts;
+exports.getFriendsCharts = _getFriendsCharts;
 exports.inviteDaily = inviteDaily;
 exports.getFreeCard = getFreeCard;
 exports.getFreeBomb = getFreeBomb;
@@ -100,12 +99,7 @@ exports.getFreeBomb = getFreeBomb;
 // implement
 //------------------------------------------------------------------------------
 
-/**
- * 获取好友的排行榜.
- */
-function getFriendsCharts(dataObj, cb) {
-    _getFriendsCharts(dataObj, cb);
-}
+
 
 /**
  * 获取好友邀请进度.
@@ -235,10 +229,9 @@ function getSocialReward(dataObj, cb) {
     }
 }
 
-//==============================================================================
-// private
-//==============================================================================
-
+/**
+ * 获取好友的排行榜.
+ */
 function _getFriendsCharts(data, cb) {
     let account = data.account;
     let fopenids = data['fopenids'];
@@ -254,33 +247,51 @@ function _getFriendsCharts(data, cb) {
     let platform = account.platform;
     let uid = account.id;
     let fopenidsMap = {};
-    for (let i = 0; i < fopenids.length; i++) {
-        fopenids[i] += "_" + platform;
-        fopenidsMap[fopenids[i]] = 1;
+    if(fopenids && fopenids.length > 0){
+        for (let i = 0; i < fopenids.length; i++) {
+            fopenids[i] += "_" + platform;
+            fopenidsMap[fopenids[i]] = 1;
+        }
     }
+
     // 获取PAIR.OPENID_UID中所有玩家的uid.
     RedisUtil.hmget(redisKeys.OPENID_UID, fopenids, function (err, uid_list) {
         if (err) return cb && cb(err);
-        let gameFriend = account.game_friend;
+
         let list = [];
         list.push(uid);
         for (let i = 0; i < uid_list.length; i++) {
             let items = uid_list[i];
             items && list.indexOf(Number(items)) === -1 && list.push(Number(items));
         }
+
+        let gameFriend = account.game_friend;
         for (let i = 0; i < gameFriend.length; i++) {
             let items = +gameFriend[i];
             list.indexOf(items) === -1 && list.push(items);
         }
-        buzz_charts.getFriendsCharts(list, fopenidsMap, function (err, charts) {
+
+        let channel_game_friend = account.channel_game_friend;
+        for (let i = 0; i < channel_game_friend.length; i++) {
+            let items = +channel_game_friend[i];
+            list.indexOf(items) === -1 && list.push(items);
+            fopenidsMap[channel_game_friend[i]] = 1;
+        }
+
+        buzz_charts.getFriendsCharts(list, fopenidsMap, data.offset, data.ranking_count, function (err, charts) {
             if (err) return cb && cb(err);
+
+            let channel_friend_count = _.keys(fopenidsMap).length;
             let ret = {
                 rank_change: 0,
                 notify_friends: [],
                 rank_list: charts,
                 charm_point: account.charm_point,
                 charm_rank: account.charm_rank,
+                channel_friend_count:channel_friend_count,
+                game_friend_count:gameFriend.length
             };
+            logger.error('ret=', ret);
             cb && cb(null, ret);
         });
     });

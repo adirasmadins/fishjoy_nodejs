@@ -79,7 +79,7 @@ module.exports = {
         }],
         chat: [{
             id: 'chat',
-            useCluster: true,
+            useCluster: false,
             useSSL: versions.SSL,
             static: false,
             views: false,

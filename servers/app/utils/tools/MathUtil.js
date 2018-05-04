@@ -1,3 +1,5 @@
+const ArrayUtil = require('./ArrayUtil');
+
 exports.makePercent = makePercent;
 exports.getDenominator = getDenominator;
 exports.min = min;
@@ -46,4 +48,21 @@ function max(obj) {
         ret = Math.max(ret, Number(obj[i]));
     }
     return ret;
+}
+
+/**
+ * 获取概率索引
+ * @param {*} probability [1000,2000,3000,4000] 
+ */
+exports.getRandomIdx = (probability) => {
+    const totalProperty = ArrayUtil.sum(probability);
+    const ran = Math.random() * totalProperty;
+    let checkValue = 0;
+    for (let i = 0; i < probability.length; i++) {
+        checkValue += probability[i];
+        if (ran < checkValue) {
+            return i;
+        }
+    }
+    return null;
 }

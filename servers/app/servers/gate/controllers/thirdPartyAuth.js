@@ -40,6 +40,7 @@ class ThirdPartyAuth {
                 device: data.device,
                 ip: data.ip
             });
+            account.extend = userInfo.extend || {};
             account.figure_url = userInfo.figure_url;
             account.nickname = userInfo.nickname;
             account.commit();
@@ -50,8 +51,6 @@ class ThirdPartyAuth {
             let globalSwitchCdkey = await RedisUtil.get(REDISKEY.SWITCH.CDKEY);
             globalSwitchCdkey = +globalSwitchCdkey;
             account.cdkey_on &= globalSwitchCdkey;
-
-            logger.error(`uid${account.id} -- cdkey_on:${account.cdkey_on}`);
             
             return logicResponse.ask(account.toJSON());
         } catch (err) {

@@ -34,9 +34,9 @@ class LogRemove extends Task {
     // 删除过期表
     async removeExpireTable(task) {
         let tab = await mysqlClient.query(`SHOW TABLES FROM ${this.bakDBName}`);
-        let today = moment(new Date()).format('YYYYMMDD');
-        let beforeDay = Number(today) - task.expiryTime;
-        let tables = {};
+        let beforeDay = moment().subtract(task.expiryTime, 'day');
+        beforeDay = Number(beforeDay.format('YYYYMMDD'));
+
         for (let k in tab) {
             let tablename = tab[k][`Tables_in_${this.bakDBName}`];
             let parts = tablename.split('_');

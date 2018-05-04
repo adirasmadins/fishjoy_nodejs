@@ -861,7 +861,7 @@ class FishPlayer extends Player {
         if (saveData.pearl) {
             this._log.addDiamondLog(GAMECFG.common_log_const_cfg.SKILL_BUY, saveData.pearl, this.account.level);
             this._powerSkillCost = saveData.pearl;
-            logBuilder.addItemLogByAccount([
+            logBuilder.addGoldAndItemLog([
                 {
                     item_id: 'i002',
                     item_num: saveData.pearl,
@@ -1162,10 +1162,11 @@ class FishPlayer extends Player {
                     mgold = Math.min(mgold, this._miniGame.maxscore);
                     if (now >= dt && this.isRealPlayer()) {
                         this._mission.updateProcess(RewardModel.TaskType.PLAY_LITTLE_GAME, mgold, mtype);
+                        this._log.addGoldLog(GAMECFG.common_log_const_cfg.MINI_GAME, mgold, this.account.level);
                         this._save({
                             gold: mgold,
                             isRightNow: true,
-                        }, GAMECFG.common_log_const_cfg.MINI_GAME);
+                        });
                         ret = {
                             gold: mgold,
                             totalGold: this.account.gold,
@@ -1301,6 +1302,7 @@ class FishPlayer extends Player {
             gold: brokeGold,
             broke_times: bTimes,
         });
+        this._log.addGoldLog(GAMECFG.common_log_const_cfg.BROKE_GAIN, brokeGold, this.account.level);
     }
 
     /**
@@ -1731,6 +1733,17 @@ class FishPlayer extends Player {
                 serverId: data.serverId,
                 roomId: data.roomId,
             });
+
+            this.emit(fishCmd.push.fighting_notify.route, {
+                player: this,
+                data: {
+                    seatId: this.seatId,
+                    event: consts.FIGHTING_NOTIFY.RMATCH_STATE,
+                    event_data: {
+                        rmatch_state: 0
+                    },
+                }
+            });
         }
     }
 
@@ -1769,6 +1782,16 @@ class FishPlayer extends Player {
      * 排位赛：全程结束，销毁
      */
     clearRmatch() {
+        this._rmHelper && this.emit(fishCmd.push.fighting_notify.route, {
+            player: this,
+            data: {
+                seatId: this.seatId,
+                event: consts.FIGHTING_NOTIFY.RMATCH_STATE,
+                event_data: {
+                    rmatch_state: 1
+                },
+            }
+        });
         this._rmHelper = null;
         logger.info('比赛结束，重置状态');
     }
@@ -1880,7 +1903,7 @@ class FishPlayer extends Player {
      */
     _addSkillItemCostLog(skillId) {
         const cfg = configReader.getValue('skill_skill_cfg', skillId);
-        logBuilder.addItemLogByAccount([
+        logBuilder.addGoldAndItemLog([
             {
                 item_id: cfg.item_id,
                 item_num: -1,
