@@ -22,11 +22,11 @@ class Pay {
     async createPayOrder(data) {
         logger.error('Pay createPayOrder data=', data);
         try{
-            if (!data.itemid) {
+            if (data.itemid == null || data.itemtype == null) {
                 throw ERROR_OBJ.PARAM_MISSING;
             }
 
-            let shopItemInfo = this._getShopItemInfo(data.orderInfo.goods_id, data.orderInfo.item_type);
+            let shopItemInfo = this._getShopItemInfo(data.itemid, data.itemtype);
             if(!shopItemInfo){
                 throw ERROR_OBJ.BUY_WRONG_SHOP_ID;
             }
@@ -270,6 +270,7 @@ class Pay {
                 accountComeback.hitrate = hitrate;
                 price = shop_fund.price;
                 item_type = ITEM_TYPE.IT_FUND;
+                // yxlTODO: 玩家剩余金币不为0时会导致购买后的金币金额错误
                 total = account.gold;
                 item_list = [{
                     item_id: itemDef.GOLD,

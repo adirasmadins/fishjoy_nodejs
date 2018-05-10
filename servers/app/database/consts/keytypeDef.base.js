@@ -206,7 +206,8 @@ module.exports.AccountDef = {
     },
     "achieve_point": {
         "def": 0,
-        "type": "number"
+        "type": "number",
+        "inc": true
     },
     "gold_shopping": {
         "def": 0,

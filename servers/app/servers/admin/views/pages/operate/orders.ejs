@@ -84,7 +84,7 @@
 			  	</div>
 			  	    <div role="tabpanel" class="tab-pane tablebox active" id="tablebox">
 			  	    	<div class="tablebox">
-			  				<table class="table table-bordered table-striped">
+			  				<table class="table table-bordered">
 			  				  <thead class="bgf5">
 			  				  	<tr>
 			  				  		<th><%=t1246;%></th>
@@ -117,7 +117,11 @@
 			  				</div>
 			  	   			<script type="text/html" id="order_data">
 			  	   				{{each data.chart as val}}
-				  	   				<tr>
+										  {{if val.isCheater == true}}
+				  	   				    <tr bgcolor="#888888">
+										  {{else}}
+										<tr>
+										  {{/if}}
 				  	   					<td>{{val.orderId}}</td>
 				  	   					<td>{{val.createTime}}</td>
 				  	   					<td>{{val.uid}}</td>
@@ -158,15 +162,17 @@
 				  	   							{{/if}}
 				  	   						{{/if}}
 					  	   				</td>
-				  	   					<td>{{val.status}}</td>
+				  	   					<td>{{val.statusText}}</td>
 				  	   					<td>{{val.confirmBy}}</td>
 				  	   					<td>{{val.confirmTime}}</td>
-				  	   					<td>{{val.isCheater == true ? '<%=t1385;%>' : '<%=t1421;%>'}}</td>
+				  	   					<td>{{val.isCheater == true ? '<%=t1599;%>' : '<%=t1600;%>'}}</td>
 				  	   					<td>
+	                                      {{if (val.isCheater == false)}}
 				  	   						{{if (val.catalog == 1 && val.status == 0) || (val.catalog == 2 && val.status == 0)}}
 				  	   						<a href="javascript:;" class="btn btn-xs btn-success ok-btn marginB5" data-id="{{val.orderId}}" data-catalog="{{val.catalog}}"><%=t1386;%></a>
 				  	   						<a href="javascript:;" class="btn btn-xs btn-warning cancel-btn" data-id="{{val.orderId}}"><%=t1398;%></a>
 				  	   						{{/if}}
+                                          {{/if}}
 				  	   					</td>
 				  	   				</tr>
 			  	   				{{/each}}

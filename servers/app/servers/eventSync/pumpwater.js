@@ -3,8 +3,6 @@ const moment = require('moment');
 const EventEmitter = require('events').EventEmitter;
 const SERVER_PERIOD = require('../../consts/constDef').SERVER_PERIOD;
 const redisKey = require('../../database/index').dbConsts.REDISKEY;
-const redisClient = require('../../utils/dbclients').redisClient;
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
 const tools = require('../../utils/tools');
 const common_log_const_cfg = require('../../utils/imports').DESIGN_CFG.common_log_const_cfg;
 const common_mathadjust_const_cfg = require('../../utils/imports').DESIGN_CFG.common_mathadjust_const_cfg;
@@ -48,8 +46,8 @@ class Pumpwater extends EventEmitter {
         };
 
         logger.info('平台抽水系数计算结果:', perioid_info);
-        redisClient.cmd.set(redisKey.PLATFORM_DATA.PUMPWATER, JSON.stringify(perioid_info));
-        redisClient.pub(redisKey.DATA_EVENT_SYNC.PUMPWATER, perioid_info);
+        redisConnector.cmd.set(redisKey.PLATFORM_DATA.PUMPWATER, JSON.stringify(perioid_info));
+        redisConnector.pub(redisKey.DATA_EVENT_SYNC.PUMPWATER, perioid_info);
     }
 
     /**
@@ -88,7 +86,7 @@ class Pumpwater extends EventEmitter {
     }
 
     async _getTableInfo(isYesterday = false) {
-        let tab = await mysqlClient.query(`SHOW TABLES FROM ${this.bakDBName}`);
+        let tab = await mysqlConnector.query(`SHOW TABLES FROM ${this.bakDBName}`);
         let timeTag = moment(new Date()).format('YYYYMMDD');
         if (isYesterday) {
             timeTag = moment();
@@ -127,7 +125,7 @@ class Pumpwater extends EventEmitter {
 
         let gain = 0;
         let cost = 0;
-        let results = await mysqlClient.query(sql);
+        let results = await mysqlConnector.query(sql);
         if (results && results[0]) {
             gain = results[0].gain || 0;
             cost = results[0].cost || 0;

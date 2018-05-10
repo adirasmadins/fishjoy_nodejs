@@ -22,20 +22,25 @@ const VER_KEY = [
     'wechat',
 ];
 
+const CDN_DOMAIN = {};
+// CDN_DOMAIN[GAMEPLAY.VIETNAM_VN] = "vncdn1.secureswiftcontent.com";
+
 module.exports = {
-    //游戏发行版本
-    DEVELOPMENT: false,  //发布时修改为false
-    PUB: GAMEPLAY.VIETNAM_VN_TEST,
-    SSL: true, //是否启动SSL
+    //配置游戏发行版本
+    DEVELOPMENT: true,  //发布时修改为false
+    PUB: GAMEPLAY.VIETNAM_VN, //设置发布版本类型
+    SSL: false, //是否启动SSL
 
     //游戏发行版本类型定义
     GAMEPLAY: GAMEPLAY,
     //版本标识KEY
     VER_KEY:VER_KEY,
 
-    getVerKey:function (pub) {
-        return VER_KEY[pub];
-    },
+    CDN_DOMAIN:CDN_DOMAIN,
+
+    IMG_DISPATCHER:[
+        GAMEPLAY.WANBA
+    ],
 
     CHEAT_BROKEN: [
         GAMEPLAY.VIETNAM_VN,

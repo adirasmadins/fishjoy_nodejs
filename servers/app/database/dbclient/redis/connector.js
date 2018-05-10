@@ -9,6 +9,7 @@ class Connector {
         this._pubClient = null;
         this.events = {};
         this.opts = null;
+        logger.error('-----------------RedisConnector')
     }
 
     start(opts, cb) {
@@ -195,7 +196,7 @@ class Connector {
         });
     }
 
-    async del(key){
+    async del(key) {
         if (key == null) {
             return;
         }
@@ -230,6 +231,24 @@ class Connector {
                         return;
                     }
                     result = self._getDBReadValue(result);
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    async hset(key, member, value) {
+        if (key == null || member == null || value == null) {
+            return;
+        }
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self._cmdClient.hset(key, member, value, function (err, result) {
+                if (err) {
+                    logger.error('redis hset err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
+                }
+                else {
                     resolve(result);
                 }
             });
@@ -381,6 +400,21 @@ class Connector {
         });
     }
 
+    async multi(cmds) {
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self._cmdClient.multi(cmds).exec(function (err, results) {
+                if (err) {
+                    logger.error('redis multi err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
+                }
+                else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
     _getDBWriteValue(value) {
         if (typeof value == 'object') {
             value = JSON.stringify(value);
@@ -440,6 +474,19 @@ class Connector {
 
         this._pubClient.on('error', function (err) {
             logger.error('redis pub client connect err:', err);
+        });
+    }
+
+    async zrangewithscores(key, start, end) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            self._cmdClient.zrange(key, start, end, 'withscores', (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
         });
     }
 

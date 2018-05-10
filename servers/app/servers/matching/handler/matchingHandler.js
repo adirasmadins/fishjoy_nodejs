@@ -1,6 +1,6 @@
 const ReqHandler = require('../../common/reqHandler');
 const matchingCmd = require('../../../cmd/matchingCmd');
-const matchingApp = require('../matchingApp');
+const omelo = require('omelo');
 
 class MatchingHandler extends ReqHandler {
     constructor() {
@@ -8,7 +8,7 @@ class MatchingHandler extends ReqHandler {
     }
 
     request(route, msg, session, next) {
-        matchingApp.request(route, msg, session, (err, result)=>{
+        omelo.app.entry.request(route, msg, session, (err, result)=>{
             super.response(err, result, next);
         });
     }

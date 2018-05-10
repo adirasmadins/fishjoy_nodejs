@@ -69,4 +69,9 @@ do
   #scripts/cmd.sh $ip $port $AUTH $user $password 'alias cnpm="npm --registry=https://registry.npm.taobao.org --cache=$HOME/.npm/.cache/cnpm --disturl=https://npm.taobao.org/dist --userconfig=$HOME/.cnpmrc"'
   #echo '服务器【'${hostname}':'${ip}'】开启CNPM完成'
 
+  #删除文件
+  #echo '服务器【'${hostname}':'${ip}'】删除文件...'
+  #scripts/cmd.sh $ip $port $AUTH $user $password 'rm -rf /opt/fishjoy/servers/shared/cert/coco'
+  #echo '服务器【'${hostname}':'${ip}'】删除文件完成'
+
 done

@@ -1,15 +1,16 @@
 const Cost = require('./cost');
-const versions = require('../../../utils/imports').versions;
+const versionsUtil = require('../../../utils/imports').versionsUtil;
 
 class GamePlay {
     constructor() {
-        let ver = versions.VER_KEY[versions.PUB];
+        let ver = versionsUtil.getVerKey();
         try {
             let COST_CLASS = require(`./cost.${ver}`);
             this._cost = new COST_CLASS();
         }catch (err){
             this._cost = new Cost();
         }
+        logger.error('-----------------GamePlay')
     }
 
     get cost() {
@@ -17,4 +18,4 @@ class GamePlay {
     }
 }
 
-module.exports = new GamePlay();
+module.exports = GamePlay;

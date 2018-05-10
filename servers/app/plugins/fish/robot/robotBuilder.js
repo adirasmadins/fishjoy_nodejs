@@ -3,7 +3,7 @@ const consts = require('../consts');
 const randomUtil = require('../../../utils/RandomUtil');
 const omeloNickname = require('omelo-nickname');
 const GAMECFG = require('../../../utils/imports').DESIGN_CFG;
-const versions = require('../../../utils/imports').versions;
+const versionsUtil = require('../../../utils/imports').versionsUtil;
 
 class RobotBuilder {
     constructor() {
@@ -15,7 +15,7 @@ class RobotBuilder {
         this._weaponSkins = Object.keys(GAMECFG.newweapon_weapons_cfg);
         this._roleMaxLevel = GAMECFG.player_level_cfg.length;
 
-        if(versions.VER_KEY[versions.PUB].search('vietnam') >= 0){
+        if(versionsUtil.getVerKey().search('vietnam') >= 0){
             omeloNickname.setLan(omeloNickname.lan.vietnam);
         }
     }

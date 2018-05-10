@@ -1,7 +1,8 @@
-const gameApp = require('./gameApp');
+const GameApp = require('./gameApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    gameApp.start();
+    app.entry = new GameApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    gameApp.stop();
+    app.entry.stop();
     cb();
 };
 

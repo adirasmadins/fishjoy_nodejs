@@ -2,11 +2,9 @@ const http = require('http');
 const https = require('https');
 const redirect_https = require('../../common/redirect_https');
 const URL = require('url');
+const versionsUtil = require('../../../utils/imports').versionsUtil;
 
 class DownloadRes {
-    constructor() {
-
-    }
 
     getRemoteResource(headers, url) {
         let req_headers = {};
@@ -68,10 +66,17 @@ class DownloadRes {
         let figure_url = params.figure_url;
         if (figure_url == 'default.png' || figure_url == 'jiaodie.png' || figure_url.indexOf('upload/boys/') > -1 ||
             figure_url.indexOf('upload/girls/') > -1) {
-            ctx.status = 301;
-            let url = redirect_https.genRedirectUrl(ctx.protocol, ctx.host, '/' + figure_url);
+            ctx.status = 302;
+            let url = redirect_https.genRedirectUrl(ctx.protocol, versionsUtil.getCDNDomain() || ctx.host, '/' + figure_url);
             ctx.redirect(url);
         } else {
+
+            if(!versionsUtil.getImgDispatcher()){
+                ctx.status = 302;
+                ctx.redirect(decodeURIComponent(figure_url));
+                return;
+            }
+
             try {
                 let {
                     data,

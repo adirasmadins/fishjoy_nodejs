@@ -54,4 +54,4 @@ class LoadManagerApp {
 
 }
 
-module.exports = new LoadManagerApp();
+module.exports = LoadManagerApp;

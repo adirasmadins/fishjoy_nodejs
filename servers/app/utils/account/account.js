@@ -6,8 +6,8 @@ const accountParser = require('./accountParser');
 const EventHandler = require('./eventHandler');
 const ACCOUNT_EVENT_TYPE = require('../../database/consts/consts').ACCOUNT_EVENT_TYPE;
 const omelo = require('omelo');
-
 const versions = require('../../../config/versions');
+
 class Account extends AccountCommit {
     constructor(id) {
         super(id);

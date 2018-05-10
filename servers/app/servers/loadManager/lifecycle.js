@@ -1,7 +1,8 @@
-const loadManagerApp = require('./loadManagerApp');
+const LoadManagerApp = require('./loadManagerApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    loadManagerApp.start();
+    app.entry = new LoadManagerApp();
+    app.entry.start();
     cb();
 };
 
@@ -10,7 +11,7 @@ module.exports.afterStartup = function(app, cb) {
 };
 
 module.exports.beforeShutdown = function(app, cb) {
-    loadManagerApp.stop();
+    app.entry.stop();
     cb();
 };
 

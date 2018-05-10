@@ -15,7 +15,7 @@ const path = require('path');
 const del = require('del');
 const moment = require('moment');
 const config = require('./pack.config');
-const versions = require('../../servers/config/versions');
+const versionsUtil = require('../../servers/config/versionsUtil');
 
 const SRC_DIR = '';
 
@@ -28,7 +28,7 @@ gulp.task('default', function (cb) {
   // runSequence('clean', ['unmix', 'copy'], 'zip', 'scp', cb);
 });
 
-gulp.task('firstPack', function (cb) {
+gulp.task('full', function (cb) {
   firstPack = true;
   runSequence(['unmix', 'copyStatics'],'zip', 'scp', cb);
   // runSequence('clean', ['unmix', 'copy'], 'zip', 'scp', cb);
@@ -60,7 +60,11 @@ gulp.task('clean', function () {
 
 gulp.task('copyStatics', function () {
   let task = null;
-  config.input.statics.forEach(function (item) {
+  let statics = config.input.statics;
+  if(firstPack){
+      statics = config.input.statics.concat(config.input.first_statics);
+  }
+    statics.forEach(function (item) {
     task = gulp.src(item[0])
       .pipe(gulp.dest(item[1]));
   });
@@ -74,7 +78,7 @@ gulp.task('watch', function () {
 
 gulp.task('zip', function () {
   let timeStamp = moment().format("YYYYMMDHHmmss");
-  pkgName = `fishjoy.${versions.VER_KEY[versions.PUB]}.${timeStamp}.zip`;
+  pkgName = `fishjoy.${versionsUtil.getVerKey()}.${timeStamp}.zip`;
   console.info('pkgName:', pkgName);
   return gulp.src(config.input.zip)
     .pipe(zip(pkgName))
@@ -119,7 +123,7 @@ gulp.task('eslint', function () {
 });
 
 gulp.task('mix', function () {
-  let input = firstPack?config.input.firstJs:config.input.js;
+  let input = config.input.js;
   return gulp.src(input)
     .pipe(babel({
       presets: ['es2015', 'es2016', 'es2017'],
@@ -145,7 +149,7 @@ gulp.task('mix', function () {
 });
 
 gulp.task('unmix', function () {
-  let input = firstPack?config.input.firstJs:config.input.js;
+  let input = config.input.js;
   return gulp.src(input)
     // .pipe(babel({
     //   presets: ['es2015', 'es2016', 'es2017'],

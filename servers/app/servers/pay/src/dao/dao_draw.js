@@ -251,7 +251,7 @@ function getDraw(data, cb) {
                             type: GameEventBroadcast.TYPE.GAME_EVENT.DRAW_REWARD,
                             params: gameEventParams,
                         };
-                        new GameEventBroadcast(account, gameEventContent).add();
+                        new GameEventBroadcast(gameEventContent).extra(account).add();
                     }
                 }
                 // 抽奖记录
@@ -259,7 +259,7 @@ function getDraw(data, cb) {
                     type: drawBroadcastType,
                     params: drawParams,
                 };
-                new DrawBroadcast(account, drawContent).add();
+                new DrawBroadcast(drawContent).extra(account).add();
 
                 // yDONE: 金币数据记录
                 let gain = 0;

@@ -17,13 +17,13 @@ exports.get = async function (data, ctx) {
     tableList = await tools.SqlUtil.showTablesFrom('fishjoy_bak');
     let queryTableList = getQueryTableList(dateList, data.bak_table);
 
-    const countList = await fetchRows(queryTableList, data.bak_table, data.uid, data.itemId);
+    const countList = await fetchRows(queryTableList, data.bak_table, data.uid, data.sceneId, data.itemId);
     const rows = tools.ArrayUtil.sum(countList);
     const pages = Math.ceil(rows / data.length);
     let start = (+data.start - 1) * +data.length;
     let length = +data.length;
 
-    let rawData = await fetchData(queryTableList, countList, start, length, data.bak_table, data.uid, data.itemId);
+    let rawData = await fetchData(queryTableList, countList, start, length, data.bak_table, data.uid, data.sceneId, data.itemId);
     return {
         rows: rows,
         pages: pages,
@@ -75,30 +75,29 @@ function getDateTableList(tableList, tablePattern) {
  * @param {Array} queryTableList 需要查询的数据表列表 [] 每一个元素为一个表名
  * @param {String} bak_table 备份的表名(tbl_gold_log)
  * @param {String} uid 玩家ID列表, 如果不为空表示查询指定玩家数据
+ * @param {String} scene 场景过滤
  * @param {*} itemId 物品列表(仅在有物品列表的表中有用如activity_log,item_log)
  */
-async function fetchRows(queryTableList, bak_table, uid, itemId) {
+async function fetchRows(queryTableList, bak_table, uid, scene, itemId) {
     let ret = [];
     for (let i = 0; i < queryTableList.length; i++) {
         let sql = null;
         let sql_data = [];
         let tableName = queryTableList[i];
+        let extraCondition = '';
         if (bak_table == tableName) {
-            sql = SQL_CONFIG.getLogCount;
-            if (uid) {
-                sql = SQL_CONFIG.getPlayerLogCount.replace('|uid_list|', uid);
-            }
+            sql = SQL_CONFIG.getCommonLogCount;
             sql = sql.replace('|table_name|', tableName);
             sql_data = tools.ObjUtil.makeSqlDataFromTo(dateTodayQuery, dateTodayQuery);
         }
         else {
-            sql = SQL_CONFIG.getLogCountHistory;
-            if (uid) {
-                sql = SQL_CONFIG.getPlayerLogCountHistory.replace('|uid_list|', uid);
-            }
+            sql = SQL_CONFIG.getCommonLogCountHistory;
             sql = sql.replace('|table_name|', `fishjoy_bak.${tableName}`);
         }
-        sql = sql.replace('|extra_condition|', getExtraCondition(itemId));
+        if (uid) extraCondition += `and account_id in (${uid})`;
+        if (scene) extraCondition += `and scene in (${scene}) `;
+        extraCondition += getExtraCondition(itemId);
+        sql = sql.replace('|extra_condition|', extraCondition);
         let count = await tools.SqlUtil.query(sql, sql_data);
         ret.push(count[0].rows);
     }
@@ -112,14 +111,14 @@ async function fetchRows(queryTableList, bak_table, uid, itemId) {
  * @param {*} start 开始索引
  * @param {*} length 数据长度
  * @param {String} bak_table 备份的表名(tbl_gold_log)
- * @param {*} uid 玩家ID列表, 如果不为空表示查询指定玩家数据
+ * @param {String} uid 玩家ID列表, 如果不为空表示查询指定玩家数据
+ * @param {String} scene 场景过滤
  * @param {*} itemId 物品列表(仅在有物品列表的表中有用如activity_log,item_log)
  */
-async function fetchData(queryTableList, countList, start, length, bak_table, uid, itemId) {
+async function fetchData(queryTableList, countList, start, length, bak_table, uid, scene, itemId) {
     let end = start + length;
     let ret = [];
     let queryTable = tools.ObjUtil.getQueryTableParams(queryTableList, countList, start, end, length);
-    
     for (let i = 0; i < queryTable.length; i++) {
         let params = queryTable[i];
         let tableName = params.tableName;
@@ -132,22 +131,20 @@ async function fetchData(queryTableList, countList, start, length, bak_table, ui
         let sql = null;
         let sql_data = [];
 
+        let extraCondition = '';
         if (bak_table == tableName) {
-            sql = SQL_CONFIG.getLog;
-            if (uid) {
-                sql = SQL_CONFIG.getPlayerLog.replace('|uid_list|', uid);
-            }
+            sql = SQL_CONFIG.getCommonLog;
             sql = sql.replace('|table_name|', tableName);
             sql_data = tools.ObjUtil.makeSqlDataFromTo(dateTodayQuery, dateTodayQuery);
         }
         else {
-            sql = SQL_CONFIG.getLogHistory;
-            if (uid) {
-                sql = SQL_CONFIG.getPlayerLogHistory.replace('|uid_list|', uid);
-            }
+            sql = SQL_CONFIG.getCommonLogHistory;
             sql = sql.replace('|table_name|', `fishjoy_bak.${tableName}`);
         }
-        sql = sql.replace('|extra_condition|', getExtraCondition(itemId));
+        if (uid) extraCondition += `and account_id in (${uid})`;
+        if (scene) extraCondition += `and scene in (${scene}) `;
+        extraCondition += getExtraCondition(itemId);
+        sql = sql.replace('|extra_condition|', extraCondition);
 
         sql_data.push(start);
         sql_data.push(length);

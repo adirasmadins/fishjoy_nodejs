@@ -1,7 +1,8 @@
-const rankingApp = require('./rankingApp');
+const RankingApp = require('./rankingApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    rankingApp.start();
+    app.entry = new RankingApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    rankingApp.stop();
+    app.entry.stop();
     cb();
 };
 

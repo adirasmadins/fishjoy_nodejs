@@ -6,7 +6,9 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY;
  * 黑名单类, 完成黑名单的添加和删除等相关操作
  */
 class BlackList {
-    constructor() { }
+    constructor() { 
+        logger.error('-----------------BlackList')
+    }
 
     /**
      * 黑名单添加一个用户

@@ -105,11 +105,6 @@ exports.addRmb = addRmb;
 // 投资回报率(ROI PCT)相关
 exports.setRoipctTime = setRoipctTime;
 
-// 成就相关
-exports.setAchievePoint = setAchievePoint;
-exports.addAchievePoint = addAchievePoint;
-exports.addActivePoint = addActivePoint;
-
 // 武器相关
 exports.setWeaponEnergy = setWeaponEnergy;
 exports.setOneWeaponEnergy = setOneWeaponEnergy;
@@ -159,7 +154,6 @@ exports.setPack = setPack;
 
 // 金币相关
 exports.getGold = getGold;
-exports.addGold = addGold;
 exports.costGold = costGold;
 exports.setGold = setGold;
 
@@ -646,30 +640,6 @@ function addRmb(uid, cur) {
 }
 
 //----------------------------------------------------------
-// 成就相关
-//----------------------------------------------------------
-function setAchievePoint(uid, cur) {
-    setField(uid, cur, 'achieve_point');
-    getAccountFieldById(uid, [account_def.PLATFORM], function (err, account) {
-    });
-}
-
-function addAchievePoint(account, cur) {
-    if (!account || cur <= 0) return;
-    account.achieve_point += cur;
-    account.mission_only_once.achievePoint += cur;
-}
-
-/** 添加活跃值 */
-function addActivePoint(account, cur) {
-    if (account && cur > 0) {
-        account.mission_daily_reset = account.mission_daily_reset || {dailyTotal: 0};
-        account.mission_daily_reset.dailyTotal = account.mission_daily_reset.dailyTotal || 0;
-        account.mission_daily_reset.dailyTotal += cur;
-    }
-}
-
-//----------------------------------------------------------
 // 投资回报率相关
 //----------------------------------------------------------
 function setRoipctTime(uid, cur) {
@@ -944,14 +914,6 @@ function setPack(uid, cur) {
 function getGold(uid, cb) {
     getAccountFieldById(uid, [account_def.GOLD], function (err, account) {
         utils.invokeCallback(cb, null, account.gold);
-    });
-}
-
-// TODO: 金币是否足够的判断
-function addGold(uid, add) {
-    add > 0 && setField(uid, add, 'gold', function (account) {
-        account.gold = parseInt(account.gold) + parseInt(add);
-        account.commit();
     });
 }
 

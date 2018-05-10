@@ -7,6 +7,7 @@ const consts = require('../consts');
 
 class PlayerFactory{
     constructor(){
+        logger.error('-----------------PlayerFactory')
     }
 
     _allocPlayer(data, classObj){

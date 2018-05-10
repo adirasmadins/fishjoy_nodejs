@@ -1,6 +1,5 @@
 const logTableDef = require('./logTableDef');
 const utils = require('../utils');
-const mysqlClient = require('../dbclients').mysqlClient;
 
 /**
  * log写入mysql
@@ -31,7 +30,7 @@ class MysqlLogInsert {
                 let writeData = datas.splice(0, taskConf.writeLimit);
                 let values = this._buildValues(writeData);
                 try {
-                    await mysqlClient.insert(sql + values);
+                    await mysqlConnector.insert(sql + values);
                 } catch (error) {
                     logger.error('sql = ', sql);
                     logger.error('values = ', values);

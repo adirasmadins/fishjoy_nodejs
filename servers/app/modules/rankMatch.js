@@ -6,6 +6,7 @@ class RankMatchModule {
         this.app = opts.app;
         this.type = opts.type || 'pull';
         this.interval = opts.interval || 5;
+        logger.error('-----------------RankMatchModule')
     }
 
     monitorHandler(agent, msg) {
@@ -13,8 +14,8 @@ class RankMatchModule {
             logger.error('not support type: %j', agent.id);
             return;
         }
-        let rankMatchApp = require('../servers/rankMatch/rankMatchApp');
-        let loadInfo = rankMatchApp.getLoadInfo();
+
+        let loadInfo = this.app.entry.getLoadInfo();
         agent.notify(module.exports.moduleId, {
             serverId: agent.id,
             load: loadInfo

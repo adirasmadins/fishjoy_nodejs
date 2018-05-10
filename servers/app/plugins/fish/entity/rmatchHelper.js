@@ -4,10 +4,9 @@
 // date: 20171129
 // ATTENTION：
 // //--]]
-
+const omelo = require('omelo');
 const config = require('../config');
 const consts = require('../consts');
-const gamePlay = require('../gamePlay/gamePlay');
 const STATE = consts.RMATCH_STATE;
 
 class RmatchHelper {
@@ -101,7 +100,7 @@ class RmatchHelper {
 
         let oldFc = this._fireC;
         if (bks) {
-            const cost = gamePlay.cost;
+            const cost = omelo.app.entry.instance.gamePlay.cost;
             for (let i = 0; i < bks.length; i ++) {
                 let bk = bks[i];
                 let temp = cost.parseBulletKey(bk);

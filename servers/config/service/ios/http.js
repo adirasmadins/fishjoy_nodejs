@@ -102,7 +102,13 @@ module.exports = {
             id: 'admin',
             useCluster: false,
             useSSL: versions.SSL,
-            static: true,
+            static:{
+                enable:true,
+                opts:{
+                    root:null,
+                    index:false
+                }
+            },
             views: true,
             http: {
                 host: getServerCfg('admin', 'admin').host,
@@ -118,14 +124,20 @@ module.exports = {
             },
             session: {
                 store: dbCfg.redis.server,
-                maxAge: 3600000
+                maxAge: 36000000
             }
         }],
         resource: [{
             id: 'resource',
-            useCluster: false,
+            useCluster: true,
             useSSL: versions.SSL,
-            static: true,
+            static:{
+                enable:true,
+                opts:{
+                    root:null,
+                    index:false
+                }
+            },
             views: true,
             http: {
                 host: getServerCfg('resource', 'resource').host,
@@ -261,7 +273,13 @@ module.exports = {
             id: 'admin',
             useCluster: false,
             useSSL: versions.SSL,
-            static: true,
+            static:{
+                enable:true,
+                opts:{
+                    root:null,
+                    index:false
+                }
+            },
             views: true,
             http: {
                 host: getServerCfg('admin', 'admin').host,
@@ -277,14 +295,20 @@ module.exports = {
             },
             session: {
                 store: dbCfg.redis.server,
-                maxAge: 3600000
+                maxAge: 36000000
             }
         }],
         resource: [{
             id: 'resource',
-            useCluster: false,
+            useCluster: true,
             useSSL: versions.SSL,
-            static: true,
+            static:{
+                enable:true,
+                opts:{
+                    root:null,
+                    index:false
+                }
+            },
             views: true,
             http: {
                 host: getServerCfg('resource', 'resource').host,

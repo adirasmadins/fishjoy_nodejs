@@ -1,7 +1,8 @@
-const rankMatchApp = require('./rankMatchApp');
+const RankMatchApp = require('./rankMatchApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    rankMatchApp.start();
+    app.entry = new RankMatchApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    rankMatchApp.stop();
+    app.entry.stop();
     cb();
 };
 

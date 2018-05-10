@@ -1,16 +1,18 @@
-const redisKey = require('../database').dbConsts.REDISKEY;
-const redisAccountSync = require('../utils/redisAccountSync');
-const platform_data_conf = require('../utils/imports').sysConfig.PLATFORM_DATA_CONF;
-const subGameData = require('./subGameData');
+const redisKey = require('../../../database/index').dbConsts.REDISKEY;
+const redisAccountSync = require('../../../utils/redisAccountSync');
+const platform_data_conf = require('../../../utils/imports').sysConfig.PLATFORM_DATA_CONF;
+const SubGameData = require('./subGameData');
 
 class Cache{
     constructor(){
         this._data = new Map();
+        logger.error('-----------------Cache')
     }
 
     async start(){
         await this._loadData();
-        subGameData.listen(this.set.bind(this));
+        this._subGameData = new SubGameData();
+        this._subGameData.listen(this.set.bind(this));
     }
 
     async _loadData(){
@@ -80,4 +82,4 @@ class Cache{
 
 }
 
-module.exports = new Cache();
+module.exports = Cache;

@@ -6,82 +6,61 @@
 // //--]]
 
 const GAMECFG = require('./imports').DESIGN_CFG;
+const designCfgUtils = require('./designCfg/designCfgUtils');
+const updateCfgsEvent = require('./designCfg/updateCfgsEvent');
+
+//数组格式配置转key-value格式
+const TB_KEYS = {
+    skill_skill_cfg: 'id',
+    skill_skill_fish_cfg: 'id',
+    goddess_defend_cfg: 'id',
+    goddess_fishborn_cfg: 'id',
+    new_mini_game_coincatch_cfg: 'id',
+    new_mini_game_crazyfugu_cfg: 'id',
+    rank_rankgame_cfg: 'id',
+    treasure_treasure_cfg: 'id',
+    aquarium_petfish_cfg: 'id',
+    daily_pirate_cfg: 'ID',
+    vip_vip_cfg: 'vip_level',
+    player_level_cfg: 'level',
+};
+
+//多字段转换一个关键字
+const TB_KEYS_2 = [           
+    {
+        tbl: 'goddess_goddessup_cfg',
+        tkey: 'id',
+        tkey1: 'level'
+    },
+    {
+        tbl: 'newweapon_star_cfg',
+        tkey: 'id',
+        tkey1: 'star'
+    },
+];
 
 class ConfigReader {
     constructor() {
         this._cfg = {};
         this._transCfg();
+
+        for (let i = 0; i < TB_KEYS_2.length; i ++) {
+            let name = TB_KEYS_2[i].tbl;
+            updateCfgsEvent.on(name, this._update.bind(this));
+        }
+    }
+
+    _update(cfgs) {
+        this._transCfg();
     }
 
     /**
      * 数组类型转换成key-value,且数组元素da带有‘id’字段
+     * 注意：两个关键字决定一个新key
      */
     _transCfg() {
-        const toTrans = [{
-                tbl: 'skill_skill_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'skill_skill_fish_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'vip_vip_cfg',
-                tkey: 'vip_level'
-            },
-            {
-                tbl: 'player_level_cfg',
-                tkey: 'level'
-            },
-            {
-                tbl: 'goddess_defend_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'goddess_fishborn_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'new_mini_game_coincatch_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'new_mini_game_crazyfugu_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'daily_pirate_cfg',
-                tkey: 'ID'
-            },
-            {
-                tbl: 'rank_rankgame_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'treasure_treasure_cfg',
-                tkey: 'id'
-            },
-            {
-                tbl: 'aquarium_petfish_cfg',
-                tkey: 'id'
-            },
-            
-
-            {
-                tbl: 'goddess_goddessup_cfg',
-                tkey: 'id',
-                tkey1: 'level'
-            },
-            {
-                tbl: 'newweapon_star_cfg',
-                tkey: 'id',
-                tkey1: 'star'
-            },
-
-        ];
-
-        for (let i = 0; i < toTrans.length; i++) {
-            let ts = toTrans[i];
+        for (let i = 0; i < TB_KEYS_2.length; i++) {
+            let ts = TB_KEYS_2[i];
             let tbl = ts.tbl;
             let tkey = ts.tkey;
             let tkey1 = ts.tkey1;
@@ -104,29 +83,19 @@ class ConfigReader {
     }
 
     /**
-     * 根据表名，取得配置项个数
-     */
-    getLength(tbl) {
-        let tbVal = this._cfg[tbl] || GAMECFG[tbl];
-        return tbVal && Object.keys(tbVal).length || tbVal.length;
-    }
-
-    /**
      * 根据表名+唯一标识取得配置
      */
     getValue(tbl, key) {
-        let tbVal = this._cfg[tbl] || GAMECFG[tbl];
-        // logger.error('===this._cfg', tbVal);
-        // logger.error('===tbl key', tbl, key);
+        let tbVal = this._cfg[tbl];
+        if (!tbVal) {
+            let itemKey = TB_KEYS[tbl];
+            if (itemKey) {
+                return designCfgUtils.getCfgMapValue(tbl, itemKey, key);
+            }else {
+                tbVal = GAMECFG[tbl];
+            }
+        }
         return tbVal[key];
-    }
-
-    /**
-     * 根据 表名 + 唯一标识 + 字段名 取得配置
-     */
-    getField(tbl, key, field) {
-        let val = this.getValue(tbl, key);
-        return val[field];
     }
 
     /**

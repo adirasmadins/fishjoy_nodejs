@@ -3,8 +3,8 @@ const async = require('async');
 const utils = require('../../../utils/utils');
 const tools = require('../../../utils/tools');
 const REDISKEY = require('../../../database/consts').REDISKEY;
-
-let count = 0;
+const addBroadcast = require('../services/gamemgmt/addBroadcast');
+let serverBroadCastCount = 0;
 
 /**
  * 用户数据重置
@@ -26,11 +26,10 @@ class OnlineTask extends Task {
 
         logger.info('统计10分钟在线人数执行完成');
 
-        // 10分钟更新一次公告
-        const addBroadcast = require('../services/gamemgmt/addBroadcast');
-        addBroadcast.set(count++);
-
         utils.invokeCallback(cb, null);
+
+        // 10分钟更新一次公告
+        await addBroadcast.set(serverBroadCastCount++);
     }
 }
 

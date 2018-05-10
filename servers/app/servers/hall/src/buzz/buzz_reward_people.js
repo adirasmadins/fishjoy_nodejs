@@ -21,6 +21,7 @@ const shop_shop_buy_type_cfg = DESIGN_CFG.shop_shop_buy_type_cfg;
 const i18n = DESIGN_CFG.string_strings_cfg;
 const lan = 'cn';
 const tools = require('../../../../utils/tools');
+const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 exports.give_reward = give_reward;
 
 const TAG = "【buzz_reward_people】";
@@ -125,14 +126,10 @@ function _give_reward(dataObj, cb) {
                 let nick = account.nickname;
                 let params = [nick, name, itemcount, nick1, account.vip, account.charm_rank];
                 let content = {
-                    type: buzz_cst_game.GAME_EVENT_TYPE.REWARD_PEOPLE,
-                    txt: "",
-                    times: 1,
+                    type: GameEventBroadcast.TYPE.GAME_EVENT.REWARD_PEOPLE,
                     params: params,
-                    platform: account.platform,
-                    uid: uid
                 };
-                buzz_cst_game.addBroadcastGameEvent(content);
+                new GameEventBroadcast(content).extra(account).add();
             }
             cb(null, account, cost_info);
         }], function (err, account, cost_info) {

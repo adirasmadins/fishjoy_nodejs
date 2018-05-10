@@ -63,6 +63,7 @@ class Cache {
     }
 }
 
+// 1表示Android平台, 2表示IOS平台
 Cache.all_charts = {'1': {}, '2': {}};
 
 module.exports = Cache;

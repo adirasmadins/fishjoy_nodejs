@@ -1,7 +1,9 @@
-const versions = require('../../servers/config/versions');
-const VER = versions.VER_KEY[versions.PUB];
+const versionsUtil = require('../../servers/config/versionsUtil');
+const VER = versionsUtil.getVerKey();
 const BUILD_DIR = './build/servers';
 const RESOURCE_DIR = '/app/servers/resource/public/cfgs';
+const ADMIN_PUBLIC_DIR = '/app/servers/admin/public';
+const ADMIN_VIEWS_DIR = '/app/servers/admin/views';
 
 const upload_packages_servers = {
     wanba: {
@@ -19,7 +21,7 @@ const upload_packages_servers = {
     vietnam_vn: {
         host: '103.90.220.2',
         username: 'root',
-        password: 'Vnet@9999',
+        password: 'fishjoy2018gogo',
         remotePath: '/opt/packages'
     },
     vietnam_vn_test: {
@@ -33,19 +35,18 @@ const upload_packages_servers = {
         username: 'root',
         password: 'Bolin123456',
         remotePath: '/opt/packages'
+    },
+    wechat: {
+        host: '192.144.157.29',
+        username: 'root',
+        password: 'Bolin123456',
+        remotePath: '/opt/packages'
     }
 }
 
 module.exports = {
     gitTag: 'v1.0.0',
     input: {
-        firstJs: [
-            '../../servers*/**/*',
-            '!../../servers/test*/**/*',
-            '!../../servers/logs*/**/*',
-            '!../../servers/config/**/*',
-            '!../../servers/shared/**/*',
-        ],
         js: ['../../servers*/**/*.js',
             '!../../servers/test*/**/*',
             '!../../servers/logs*/**/*',
@@ -64,6 +65,10 @@ module.exports = {
             [`../../servers/config/design_cfg/${VER}/all_merge`, BUILD_DIR + RESOURCE_DIR],
             [`../../servers/config/design_cfg/${VER}/json_list.cfg`, BUILD_DIR + RESOURCE_DIR],
         ],
+        first_statics:[
+            [`../../servers/app/servers/admin/public/**/*`, BUILD_DIR + ADMIN_PUBLIC_DIR],
+            [`../../servers/app/servers/admin/views/**/*`, BUILD_DIR + ADMIN_VIEWS_DIR],
+        ],
         zip: './build/**/*',
     },
     output: {
@@ -73,7 +78,7 @@ module.exports = {
         zip: './packages/',
     },
     modulesZip: '../../packages/node_modules_prod.zip',
-    scp: upload_packages_servers[versions.VER_KEY[versions.PUB]],
+    scp: upload_packages_servers[versionsUtil.getVerKey()],
     upload: [{
             host: '171.244.35.40',
             username: 'root',

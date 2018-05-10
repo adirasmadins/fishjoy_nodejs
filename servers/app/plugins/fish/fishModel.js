@@ -89,6 +89,11 @@ class FishModel {
 
     constructor(evtor, currentSceneName) {
         this._evtor = evtor;
+        this.resetAll();
+        this._loadCfg(currentSceneName); 
+    }
+
+    resetAll() {
         this._lastStep = 0;
         this._actorData = {};
         this._deadHistory = {}; //死亡历史,鱼潮来临时清空现有历史        
@@ -97,10 +102,8 @@ class FishModel {
         this._rewardData = {}; //得分等奖励数据
         this._bcash = {}; //高频广播缓存
         this._fishBasePct = {};
-
-        this._makeFishZorder();
         this._curBoosCount = 0;
-        this._loadCfg(currentSceneName); 
+        this._gFish = {};
     }
 
     //设置房间id
@@ -258,7 +261,6 @@ class FishModel {
         this._isWarningEscapeNow = false; //鱼潮已经预警标记,即逃跑开始标记
         this._tideCfg = [];
         this._curTideCfg = null;
-        this._guideFishes = {};
     }
 
     //配置鱼的刷新周期
@@ -292,28 +294,6 @@ class FishModel {
             return fish;     
         }
         return null;
-    }
-
-    //鱼的层级划分：鱼的基础概率越低，层级越高
-    _makeFishZorder () {
-        let _zorders = [];
-        for (let k in FISH_CFGS) {
-            let fish = FISH_CFGS[k];
-            _zorders.push({fishbasepct: fish.fishbasepct, fk: k});
-        }    
-        _zorders.sort(function (p1, p2) {
-            return p1.fishbasepct > p2.fishbasepct ? -1 : 1;
-        });
-
-        for (let i = 0; i < _zorders.length; i ++) {
-            let data = _zorders[i];
-            FISH_CFGS[data.fk].zorder = i + 1;
-        }
-    }
-
-    //鱼潮即将开始，正在逃离
-    isEscapingNow () {
-        return this._isWarningEscapeNow;
     }
 
     //检测是否有新鱼出现
@@ -852,11 +832,6 @@ class FishModel {
      */
     callAnSpecialFish (fishKey, pathName) {
         this._newFish(fishKey, false, pathName);
-    }
-
-    //鱼技能相关------------------------------
-    getSkillData  (skillId) { //数据仅供读取别做修改
-        return SKILL_CFGS[skillId - 1];
     }
 
     //或者直接改变值吧

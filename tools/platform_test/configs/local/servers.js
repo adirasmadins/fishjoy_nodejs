@@ -1,0 +1,5 @@
+const CFG_SERVERS = module.exports;
+
+CFG_SERVERS.IP = 'http://192.168.35.220';
+
+CFG_SERVERS.GATE_URL = `${CFG_SERVERS.IP}:3002`;

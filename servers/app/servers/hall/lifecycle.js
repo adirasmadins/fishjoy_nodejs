@@ -1,7 +1,8 @@
-const hallApp = require('./hallApp');
+const HallApp = require('./hallApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    hallApp.start();
+    app.entry = new HallApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    hallApp.stop();
+    app.entry.stop();
     cb();
 };
 

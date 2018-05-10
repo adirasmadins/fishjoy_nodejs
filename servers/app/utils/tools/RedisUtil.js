@@ -1,6 +1,3 @@
-
-const redisClient = require('../dbclients').redisClient;
-
 exports.multi = multi;
 exports.set = set;
 exports.get = get;
@@ -32,7 +29,7 @@ exports.bitcount = bitcount;
  */
 function hincrby(hashkey, field, num) { 
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.hincrby(hashkey, field, num, function (err, res) {
+        redisConnector.cmd.hincrby(hashkey, field, num, function (err, res) {
             if (err) {
                 logger.error('[ERROR] hincrby() err:\n', err);
                 reject(err);
@@ -49,7 +46,7 @@ function hincrby(hashkey, field, num) {
  */
 function bitcount(key) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.bitcount(key, function (err, res) {
+        redisConnector.cmd.bitcount(key, function (err, res) {
             if (err) {
                 logger.error('[ERROR] bitcount() err:\n', err);
                 reject(err);
@@ -69,7 +66,7 @@ function bitcount(key) {
  */
 function bitop(operation, destkey, key1, key2) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.bitop(operation, destkey, key1, key2, function (err, res) {
+        redisConnector.cmd.bitop(operation, destkey, key1, key2, function (err, res) {
             if (err) {
                 logger.error('[ERROR] bitop() err:\n', err);
                 reject(err);
@@ -87,7 +84,7 @@ function bitop(operation, destkey, key1, key2) {
  */
 function getbit(key, offset) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.getbit(key, offset, function (err, res) {
+        redisConnector.cmd.getbit(key, offset, function (err, res) {
             if (err) {
                 logger.error('[ERROR] getbit() err:\n', err);
                 reject(err);
@@ -106,7 +103,7 @@ function getbit(key, offset) {
  */
 function setbit(key, offset, value) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.setbit(key, offset, value, function (err, res) {
+        redisConnector.cmd.setbit(key, offset, value, function (err, res) {
             if (err) {
                 logger.error('[ERROR] setbit() err:\n', err);
                 reject(err);
@@ -123,7 +120,7 @@ function setbit(key, offset, value) {
  */
 function scard(key) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.scard(key, function (err, res) {
+        redisConnector.cmd.scard(key, function (err, res) {
             if (err) {
                 logger.error('[ERROR] scard() err:\n', err);
                 reject(err);
@@ -140,7 +137,7 @@ function scard(key) {
  */
 function smembers(key) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.smembers(key, function (err, res) {
+        redisConnector.cmd.smembers(key, function (err, res) {
             if (err) {
                 logger.error('[ERROR] scard() err:\n', err);
                 reject(err);
@@ -158,7 +155,7 @@ function smembers(key) {
  */
 function sadd(key, member) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.sadd(key, member, function (err, res) {
+        redisConnector.cmd.sadd(key, member, function (err, res) {
             if (err) {
                 logger.error('[ERROR] sadd() err:\n', err);
                 reject(err);
@@ -176,7 +173,7 @@ function sadd(key, member) {
  */
 function srem(key, member) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.srem(key, member, function (err, res) {
+        redisConnector.cmd.srem(key, member, function (err, res) {
             if (err) {
                 logger.error('[ERROR] srem() err:\n', err);
                 reject(err);
@@ -194,7 +191,7 @@ function srem(key, member) {
  */
 function expire(key, time) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.expire(key, time, function (err, res) {
+        redisConnector.cmd.expire(key, time, function (err, res) {
             if (err) {
                 logger.error('[ERROR] expire() err:\n', err);
                 reject(err);
@@ -212,7 +209,7 @@ function expire(key, time) {
  */
 function zcard(key) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.zcard(key, function (err, res) {
+        redisConnector.cmd.zcard(key, function (err, res) {
             if (err) {
                 logger.error('[ERROR] zcard() err:\n', err);
                 reject(err);
@@ -232,7 +229,7 @@ function zcard(key) {
  */
 function zrevrange(key, start, end) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.zrevrange(key, start, end, function (err, res) {
+        redisConnector.cmd.zrevrange(key, start, end, function (err, res) {
             if (err) {
                 logger.error('[ERROR] zrevrange() err:\n', err);
                 reject(err);
@@ -252,7 +249,7 @@ function zrevrange(key, start, end) {
  */
 async function zrevrangewithscores(key, start, end) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.zrevrange(key, start, end, 'withscores', function (err, res) {
+        redisConnector.cmd.zrevrange(key, start, end, 'withscores', function (err, res) {
             if (err) {
                 logger.error('[ERROR] zrevrangewithscores() err:\n', err);
                 reject(err);
@@ -272,7 +269,7 @@ async function zrevrangewithscores(key, start, end) {
  */
 async function zrangewithscores(key, start, end) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.zrange(key, start, end, 'withscores', function (err, res) {
+        redisConnector.cmd.zrange(key, start, end, 'withscores', function (err, res) {
             if (err) {
                 logger.error('[ERROR] zrangewithscores() err:\n', err);
                 reject(err);
@@ -291,7 +288,7 @@ async function zrangewithscores(key, start, end) {
  */
 function hincrby(hashkey, field, num) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.hincrby(hashkey, field, num, function (err, res) {
+        redisConnector.cmd.hincrby(hashkey, field, num, function (err, res) {
             if (err) {
                 logger.error('[ERROR] hincrby() err:\n', err);
                 reject(err);
@@ -309,7 +306,7 @@ function hincrby(hashkey, field, num) {
  */
 function multi(data) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.multi(data).exec(function (err, res) {
+        redisConnector.cmd.multi(data).exec(function (err, res) {
             if (err) {
                 logger.error('[ERROR] multi() err:\n', err);
                 reject(err);
@@ -326,7 +323,7 @@ function multi(data) {
  */
 function set(key, field) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.set(key, field, function (err, res) {
+        redisConnector.cmd.set(key, field, function (err, res) {
             if (err) {
                 logger.error('[ERROR] set() err:\n', err);
                 reject(err);
@@ -343,7 +340,7 @@ function set(key, field) {
  */
 function get(key) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.get(key, function (err, res) {
+        redisConnector.cmd.get(key, function (err, res) {
             if (err) {
                 logger.error('[ERROR] get() err:\n', err);
                 reject(err);
@@ -360,7 +357,7 @@ function get(key) {
  */
 function hget(hashkey, field) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.hget(hashkey, field, function (err, res) {
+        redisConnector.cmd.hget(hashkey, field, function (err, res) {
             if (err) {
                 logger.error('[ERROR] hget() err:\n', err);
                 reject(err);
@@ -377,7 +374,7 @@ function hget(hashkey, field) {
  * @param {*} field 
  */
 function del(key) {
-    redisClient.cmd.del(key, function (err, res) {
+    redisConnector.cmd.del(key, function (err, res) {
         if (err) {
             logger.error('[ERROR] del() err:\n', err);
         }
@@ -390,7 +387,7 @@ function del(key) {
  * @param {*} field 
  */
 function hdel(hashkey, field) {
-    redisClient.cmd.hdel(hashkey, field, function (err, res) {
+    redisConnector.cmd.hdel(hashkey, field, function (err, res) {
         if (err) {
             logger.error('[ERROR] hdel() err:\n', err);
         }
@@ -403,7 +400,7 @@ function hdel(hashkey, field) {
  */
 function hgetall(hashkey) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.hgetall(hashkey, function (err, res) {
+        redisConnector.cmd.hgetall(hashkey, function (err, res) {
             if (err) {
                 logger.error('[ERROR] hgetall() err:\n', err);
                 reject(err);
@@ -420,7 +417,7 @@ function hgetall(hashkey) {
  */
 function hset(hashkey, field, value) {
     return new Promise(function (resolve, reject) {
-        redisClient.cmd.hset(hashkey, field, value, function (err, res) {
+        redisConnector.cmd.hset(hashkey, field, value, function (err, res) {
             if (err) {
                 logger.error('[ERROR] hset() err:\n', err);
                 reject(err);

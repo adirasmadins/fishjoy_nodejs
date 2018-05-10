@@ -1,5 +1,13 @@
 const SQL_CONFIG = require('../../configs/sql');
 const tools = require('../../../../utils/tools');
+const REDISKEY = require('../../../../database/consts').REDISKEY;
+
+const STATUS = {
+    0: "待确认",
+    1: "失败",
+    2: "成功",
+    3: "取消",
+};
 
 /**
  * 获取CIK日志
@@ -16,6 +24,8 @@ const tools = require('../../../../utils/tools');
 exports.get = async function (data, ctx) {
     console.log('data:', data);
 
+    let blacklist = await getBlackList();
+
     const rows = await fetchRows(data.startDate, data.endDate, data.filter, data.uid);
     const pages = Math.ceil(rows / data.length);
 
@@ -23,7 +33,7 @@ exports.get = async function (data, ctx) {
     let length = +data.length;
     let rawData = await findChangeLogByTimeRangeAndFilter(data.startDate, data.endDate, data.filter, start, length, data.uid);
 
-    let chart = makeChart(rawData);
+    let chart = await makeChart(rawData, blacklist);
 
     // 手动发货设置为1
     editable = tools.BuzzUtil.isVersionCikByHand() ? 1 : 0;
@@ -34,6 +44,12 @@ exports.get = async function (data, ctx) {
         chart: chart,
         editable: editable
     };
+}
+
+async function getBlackList() {
+    let blacklist = await tools.RedisUtil.smembers(REDISKEY.GLOBAL_DATA.BLACKLIST);
+    logger.error('blacklist:', blacklist);
+    return blacklist;
 }
 
 /**
@@ -56,6 +72,7 @@ async function fetchRows(startDate, endDate, filter, uid) {
     sql = sql.replace('|catalog|', catalog).replace('|status|', status);
     let sql_data = tools.ObjUtil.makeSqlDataFromTo(startDate, endDate);
 
+    logger.error('sql:', sql);
     return (await tools.SqlUtil.query(sql, sql_data))[0].rows || 0;
 }
 
@@ -70,8 +87,7 @@ async function findChangeLogByTimeRangeAndFilter(startDate, endDate, filter, sta
     else {
         sql = SQL_CONFIG.getChangeLog;
     }
-    // sql = sql.replace('|catalog|', catalog).replace('|status|', status);
-    sql = sql.replace('|catalog|', catalog).replace('|status|', '0,1,2,3');
+    sql = sql.replace('|catalog|', catalog).replace('|status|', status);
 
     let sql_data = tools.ObjUtil.makeSqlDataFromTo(startDate, endDate);
     sql_data.push(start);
@@ -88,12 +104,15 @@ async function findChangeLogByTimeRangeAndFilter(startDate, endDate, filter, sta
  * 数据转换(数据库原始数据 -> 客户端可以处理的数据形式)
  * @param {*} list 
  */
-function makeChart(list) {
+async function makeChart(list, blacklist) {
     let ret = [];
     for (let i = 0; i < list.length; i++) {
         let changeData = list[i];
         let createTime = tools.DateUtil.format(changeData.created_at, tools.DateUtil.FMT.DT);
         let confirmTime = tools.DateUtil.format(changeData.ship_at, tools.DateUtil.FMT.DT);
+        let test = +await tools.RedisUtil.hget(REDISKEY.TEST, changeData.uid);
+        let inBlacklist = tools.ArrayUtil.contain(blacklist, '' + changeData.uid);
+        let isCheater = inBlacklist || (test < 0);
         ret.push({
             orderId: changeData.orderid,
             uid: changeData.uid,
@@ -109,8 +128,9 @@ function makeChart(list) {
             thingnum: changeData.thingnum,
             catalog: changeData.catalog,
             status: changeData.status,
+            statusText: STATUS[changeData.status],
             confirmBy: 'TODO',
-            isCheater: true//TODO
+            isCheater: isCheater,
         });
     }
     return ret;

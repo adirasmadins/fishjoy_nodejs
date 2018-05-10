@@ -1,6 +1,6 @@
 const ReqHandler = require('../../common/reqHandler');
 const fishCmd = require('../../../cmd/fishCmd');
-const gameApp = require('../gameApp');
+const omelo = require('omelo');
 
 class FishHandler extends ReqHandler{
     constructor(){
@@ -8,7 +8,7 @@ class FishHandler extends ReqHandler{
     }
 
     request(route, msg, session, next) {
-        gameApp.request(route, msg, session, (err, result)=>{
+        omelo.app.entry.request(route, msg, session, (err, result)=>{
             super.response(err, result, next);
         });
     }

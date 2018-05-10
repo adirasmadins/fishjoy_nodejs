@@ -1,5 +1,6 @@
 const accountConf = require('./accountConf');
-
+const omelo = require('omelo');
+const EXCEPTION_LIST = 'log:exception:user';
 /**
  * 动态代码，自动生成
  */
@@ -27,18 +28,43 @@ class AccountCommit {
      */
     _minRevise(key, value){
         let typeInfo = accountConf.getFieldDef(key);
-        if(typeInfo && typeInfo.type == 'number' && typeInfo.min){
-            let nowValue = this[`_${key}`];
-            let newValue = nowValue + value;
-            if(newValue < typeInfo.min){
-                return value + Math.abs(newValue) + typeInfo.min;
+        if(typeInfo && typeInfo.type == 'number'){
+            let _value = Number(value);
+            if(Number.isNaN(_value)){
+                logger.error('玩家非法数值写入, 禁止写入');
+                let exp_info = {
+                    uid:this.__id,
+                    update:{
+                        key:key,
+                        value:value
+                    },
+                    gold:this.gold,
+                    pear:this.pearl,
+                    time:Date.now(),
+                    serverId:omelo.app.getServerId(),
+                    desc:'非法数值, 禁止写入',
+                };
+                redisConnector.sadd(EXCEPTION_LIST, JSON.stringify(exp_info));
+                return null;
             }
+
+            if(typeInfo.min){
+                let nowValue = this[`_${key}`];
+                let newValue = nowValue + _value;
+                if(newValue < typeInfo.min){
+                    return _value + Math.abs(newValue) + typeInfo.min;
+                }
+            }
+            return _value;
         }
         return value;
     }
 
     _modify(key, value) {
         value = this._minRevise(key, value);
+        if(null == value){
+            return;
+        }
         if (AccountCommit.bIncr(key)) {
             this[`_${key}`] += value;
         } else {
@@ -146,6 +172,18 @@ class AccountCommit {
         return this._value('gold');
     }
     set pearl(value) {
+        if(Number(value) > 100){
+            logger.error('玩家超大钻石数量提交, 监视其钻石信息');
+            let exp_info = {
+                uid:this.__id,
+                gold:this.gold,
+                pear:this.pearl,
+                time:Date.now(),
+                serverId:omelo.app.getServerId(),
+                desc:'玩家超大钻石数量提交, 监视其钻石信息',
+            };
+            redisConnector.sadd(EXCEPTION_LIST, JSON.stringify(exp_info));
+        }
         this._modify('pearl', value);
     }
     get pearl() {

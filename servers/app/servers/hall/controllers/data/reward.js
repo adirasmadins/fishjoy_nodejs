@@ -3,7 +3,7 @@ const logicResponse = require('../../../common/logicResponse');
 const buzz_reward = require('../../src/buzz/buzz_reward');
 const buzz_charts = require('../../src/buzz/buzz_charts');
 const buzz_gift = require('../../src/buzz/buzz_gift');
-const buzz_mission = require('../../src/buzz/buzz_mission');
+const RewardModel = require('../../../../utils/account/RewardModel');
 
 exports.monthSign = monthSign;
 exports.get_day_reward = get_day_reward;
@@ -132,6 +132,7 @@ async function dailyReward(data) {
 }
 
 async function missionReward(data) {
+
     return new Promise(function (resolve, reject) {
         buzz_reward.missionReward(data, function (err, result) {
             if (err) {
@@ -145,16 +146,8 @@ async function missionReward(data) {
 }
 
 async function missionInfo(data) {
-    return new Promise(function (resolve, reject) {
-        buzz_mission.getMission(data, function (err, result) {
-            if (err) {
-                logger.error('任务信息 err:', err);
-                reject(err);
-                return;
-            }
-            resolve(logicResponse.ask(result));
-        });
-    });
+    let taskProcessInfo = await RewardModel.getMissionTaskProcessInfo(data.account);
+    return logicResponse.ask(taskProcessInfo);
 }
 
 async function activeReward(data) {

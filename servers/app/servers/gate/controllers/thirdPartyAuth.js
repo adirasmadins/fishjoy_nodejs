@@ -1,6 +1,6 @@
 const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
 const authSdk = require('./loginAuth/authSdk');
-const platformCtrl = require('./platformCtrl');
+const versionsUtil = require('../../../utils/imports').versionsUtil;
 const logger = require('omelo-logger').getLogger('gate', __filename);
 const logicResponse = require('../../common/logicResponse');
 const RedisUtil = require('../../../utils/tools/RedisUtil');
@@ -22,13 +22,11 @@ class ThirdPartyAuth {
 
             let userInfo = await sdkApi.getUserInfo(sdkAuthResponse);
             userInfo.channel = data.channel;
-            userInfo.openid = platformCtrl.getOpenid(userInfo.openid, data.device);
+            userInfo.openid = versionsUtil.getOpenid(userInfo.openid, data.device);
             userInfo.deviceId = data.deviceId;
-            let uid = await sdkApi.isRegiste({
-                openid: userInfo.openid
-            });
+            let uid = await sdkApi.isRegiste(userInfo.openid);
             let isNew = 0;
-            if (!uid) {
+            if (null == uid) {
                 uid = await sdkApi.registe(userInfo);
                 logger.info(`新用户${uid}注册`, userInfo);
                 isNew = 1;

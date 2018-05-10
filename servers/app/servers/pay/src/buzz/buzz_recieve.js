@@ -487,7 +487,7 @@ function _didChangeInKind(dataObj, cb) {
                         type: GameEventBroadcast.TYPE.GAME_EVENT.NOTIFY_CHANGE_CARD,
                         params: params,
                     };
-                    new GameEventBroadcast(account, content).add();
+                    new GameEventBroadcast(content).extra(account).add();
 
                 } catch (err) {
                     logger.error('err:', err);
@@ -999,7 +999,7 @@ function _addBroadcast(account) {
         type: GameEventBroadcast.TYPE.GAME_EVENT.VIP_GIFT,
         params: params,
     };
-    new GameEventBroadcast(account, content).add();
+    new GameEventBroadcast(content).extra(account).add();
 }
 
 /**

@@ -19,6 +19,7 @@ const newweapon_upgrade_cfg = gameConfig.newweapon_upgrade_cfg;
 const player_level_cfg = gameConfig.player_level_cfg;
 const daily_dailytarget_cfg = gameConfig.daily_dailytarget_cfg;
 const RewardModel = require('../../../../utils/account/RewardModel');
+
 /** 每次补签需要扣除的钻石数量 */
 const MISS_SIGN = common_const_cfg.MISS_SIGN;
 
@@ -181,6 +182,9 @@ function dao_resetMonthSign(pool, monthSignInitStr, cb) {
 
 function guideReward(dataObj, cb) {
     let account = dataObj.account;
+    if (1 == account.guide) {
+        throw ERROR_OBJ.GUIDE_REWARD_ALREADY;
+    }
     //新手完成，获得100万兑换券("i200")，30级可用
     let item_list = [];
     item_list.push({
@@ -199,12 +203,12 @@ function guideReward(dataObj, cb) {
     }
     account.gold = gold - account.gold;
     account.guide = 1;
-    account.commit();
     let wpEng = {'1': 0};
     wpEng[weapon_level_next] = needpower;
     account.weapon_energy = wpEng;
     account.weapon = weapon_level_next;
     account.commit();
+    logger.error('--领取新手引导奖励 weapon_level_next ', weapon_level_next)
 
     BuzzUtil.putIntoPack(account, item_list, function (reward) {
         let ret = {};
@@ -232,30 +236,41 @@ function dailyReward(req, dataObj, cb) {
     }
 }
 
-function missionReward(dataObj, cb) {
+async function missionReward(dataObj, cb) {
+
     if (!lPrepare(dataObj)) return;
 
     let uid = dataObj.uid;
     let account = dataObj.account;
     let qid = dataObj.quest_id;
-    logger.error('--------------------------qid:', qid);
     let quest = BuzzUtil.getQuestById(qid);
-    if (!_checkMissionReward1()) return;
+    if (null == quest) {
+        cb(ERROR_OBJ.MISSION_WRONG_QUEST_ID);
+        return;
+    }
 
     let quest_type = quest.type;
     let quest_condition = quest.condition;
     let quest_value1 = quest.value1;
     let quest_value2 = quest.value2;
     let quest_precondition = quest.precondition;
+
+    let missionTask_redisKey = RewardModel.EXPORT_TOOLS.getTaskKey(quest_type == RewardModel.EXPORT_TOOLS.TASK_MAIN_TYPE.ONCE ?
+        RewardModel.EXPORT_TOOLS.TASK_PREFIX.MISSION_TASK_ONCE : RewardModel.EXPORT_TOOLS.TASK_PREFIX.MISSION_TASK_DAILY,
+        quest_type, quest_condition, quest_value1);
+
     let mission = _getMissionRecordByType(account, quest_type);
     if (!_checkMissionReward2()) return;
-    if (!_checkMissionReward3()) return;
+    let ok = await _checkMissionReward3();
+    if (!ok) {
+        return;
+    }
     let qcv = mission["" + qid];
     let quest_reward = quest.reward;
     let item_list = BuzzUtil.getItemList(quest_reward);
 
     // 需要将成就点进行更新
-    BuzzUtil.putIntoPack( account, item_list, function (reward) {
+    BuzzUtil.putIntoPack(account, item_list, function (reward) {
 
         if (0 != quest_precondition) {
             mission["" + quest_precondition] = qcv;
@@ -267,9 +282,10 @@ function missionReward(dataObj, cb) {
         }
 
         _setMissionRecordByType(account, quest_type, mission, reward);
+        account.achieve_point = reward.achieve_point;
         //统计成就点数dfc
         let rmd = new RewardModel(account);
-        rmd.addProcess(RewardModel.TaskType.GET_ACHIEVE_POINT, account.achieve_point);
+        rmd.addProcess(RewardModel.TaskType.GET_ACHIEVE_POINT, reward.achieve_point);
         let change = BuzzUtil.getChange(account, reward);
         account.commit();
 
@@ -282,6 +298,7 @@ function missionReward(dataObj, cb) {
             mission_only_once: account.mission_only_once,
             mission_daily_reset: account.mission_daily_reset,
         };
+
         cb(null, ret);
 
         let scene = common_log_const_cfg.DAILY_GAIN;
@@ -305,14 +322,6 @@ function missionReward(dataObj, cb) {
         }
     });
 
-    // 校验方法1
-    function _checkMissionReward1() {
-        if (null == quest) {
-            cb(ERROR_OBJ.MISSION_WRONG_QUEST_ID);
-            return false;
-        }
-        return true;
-    }
 
     // 校验方法2
     function _checkMissionReward2() {
@@ -334,14 +343,20 @@ function missionReward(dataObj, cb) {
     }
 
     // 校验方法3
-    function _checkMissionReward3() {
+    async function _checkMissionReward3() {
         if ("undefined" == typeof(mission["" + qid])) {
             cb(ERROR_OBJ.MISSION_NULL_RECORD);
             return false;
         }
 
-        let quest_cur_value = mission["" + qid];
-        if (quest_cur_value < quest_value2) {
+        let missionValue = await redisConnector.hget(missionTask_redisKey, uid);
+        logger.error('mission reward ==', missionValue, missionTask_redisKey);
+        if (missionValue == null) {
+            cb(ERROR_OBJ.MISSION_NULL_RECORD);
+            return false;
+        }
+
+        if (missionValue < quest_value2) {
             cb(ERROR_OBJ.MISSION_DISATISFY);
             return false;
         }
@@ -384,8 +399,9 @@ function _monthSign(dataObj, cb) {
     const FUNC = TAG + "_monthSign() --- ";
     let uid = dataObj.uid;
     let token = dataObj.token;
-    
+
     doNextWithAccount(dataObj.account);
+
     function doNextWithAccount(account) {
 
         // 从0开始, 即0为1号
@@ -427,6 +443,7 @@ function _getDayReward(dataObj, cb) {
     let today = new Date().getDate() - 1;
 
     doNextWithAccount(dataObj.account);
+
     function doNextWithAccount(account) {
         if (!_checkGetDayReward(account, day, today, cb)) return;
 
@@ -452,7 +469,7 @@ function _getDayReward(dataObj, cb) {
             },
         ];
 
-        BuzzUtil.putIntoPack( account, gain_item_list, function (reward_info) {
+        BuzzUtil.putIntoPack(account, gain_item_list, function (reward_info) {
             let reward_change = BuzzUtil.getChange(account, reward_info);
             let ret = {
                 day: day,
@@ -469,7 +486,7 @@ function _getDayReward(dataObj, cb) {
             // CacheAccount.signMonth(uid, day);
             // 补签扣钻石
             if (day < today) {
-                BuzzUtil.removeFromPack( account, cost_item_list, function (cost_info) {
+                BuzzUtil.removeFromPack(account, cost_item_list, function (cost_info) {
                     let cost_change = BuzzUtil.getChange(account, cost_info);
                     let change = ObjUtil.merge(reward_change, cost_change);
                     ret.change = change;
@@ -513,7 +530,7 @@ function _getDayExtraReward(dataObj, cb) {
     let monthSignExtraReward = account.month_sign_extra_reward || {};
     if (!monthSignExtraReward[id]) {
         let item = BuzzUtil.getItemList(item_list);
-        BuzzUtil.putIntoPack( account, item, function (reward) {
+        BuzzUtil.putIntoPack(account, item, function (reward) {
             monthSignExtraReward[id] = 1;
             account.month_sign_extra_reward = monthSignExtraReward;
             account.commit();
@@ -627,9 +644,9 @@ function _missionReward(req, dataObj, cb) {
 
 function _getMissionRecordByType(account, quest_type) {
     switch (quest_type) {
-        case QUEST_TYPE.DAILY_RESET:
+        case RewardModel.EXPORT_TOOLS.TASK_MAIN_TYPE.DAILY:
             return account.mission_daily_reset;
-        case QUEST_TYPE.ACHIEVE_ONCE:
+        case RewardModel.EXPORT_TOOLS.TASK_MAIN_TYPE.ONCE:
             return account.mission_only_once;
     }
     return null;
@@ -639,12 +656,20 @@ function _setMissionRecordByType(account, quest_type, mission, reward) {
     switch (quest_type) {
         case QUEST_TYPE.DAILY_RESET:
             account.mission_daily_reset = mission;
-            CacheAccount.addActivePoint(account, reward.active_point);
+            _addActivePoint(account, reward.active_point);
             break;
         case QUEST_TYPE.ACHIEVE_ONCE:
             account.mission_only_once = mission;
-            CacheAccount.addAchievePoint(account, reward.achieve_point);
             break;
+    }
+}
+
+/** 添加活跃值 */
+function _addActivePoint(account, cur) {
+    if (account && cur > 0) {
+        account.mission_daily_reset = account.mission_daily_reset || {dailyTotal: 0};
+        account.mission_daily_reset.dailyTotal = account.mission_daily_reset.dailyTotal || 0;
+        account.mission_daily_reset.dailyTotal += cur;
     }
 }
 
@@ -655,7 +680,7 @@ function _setMissionRecordByType(account, quest_type, mission, reward) {
  * 活跃领奖
  */
 function _didActiveReward(dataObj, cb) {
-    let account=dataObj.account;
+    let account = dataObj.account;
     let idx = dataObj.idx;
     let vitality = BuzzUtil.getVitalityByIdx(idx);
     if (!_checkActiveReward1()) return;
@@ -663,7 +688,7 @@ function _didActiveReward(dataObj, cb) {
     let item_list = BuzzUtil.getItemList(vitality.reward);
 
     // 需要将成就点进行更新
-    BuzzUtil.putIntoPack( account, item_list, function (reward) {
+    BuzzUtil.putIntoPack(account, item_list, function (reward) {
         let change = BuzzUtil.getChange(account, reward);
         let ret = {
             item_list: item_list,
@@ -755,9 +780,8 @@ function _onekeyReward(req, dataObj, cb) {
 
         function handleResult(item_list) {
             if (DEBUG) logger.info(FUNC + "item_list:\n", item_list);
-            BuzzUtil.putIntoPack( account, item_list, function (reward_info) {
+            BuzzUtil.putIntoPack(account, item_list, function (reward_info) {
                 let change = BuzzUtil.getChange(account, reward_info);
-                account.mission_only_once.achievePoint = account.achieve_point;
                 if (DEBUG) logger.info(FUNC + "mission_daily_reset:", account.mission_daily_reset);
                 let ret = {
                     item_list: item_list,

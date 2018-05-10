@@ -154,18 +154,11 @@ module.exports =
         //--------------------------------------------------------------------------
         // 通用日志
         //--------------------------------------------------------------------------
-        // 获取日志
-        getLog: "select * from |table_name| where log_at>=? and log_at<=? order by log_at, id limit ?,?",
-        getLogHistory: "select * from |table_name| order by log_at, id limit ?,?",
-        // 获取指定日期内所有日志总条数
-        getLogCount: "select count(id) as rows from |table_name| where log_at>=? and log_at<=?",
-        getLogCountHistory: "select count(id) as rows from |table_name|",
-        // 获取指定玩家日志
-        getPlayerLog: "select * from |table_name| where account_id in (|uid_list|) |extra_condition| and log_at>=? and log_at<=? order by log_at, id limit ?,?",
-        getPlayerLogHistory: "select * from |table_name| where account_id in (|uid_list|) |extra_condition| order by log_at, id limit ?,?",
-        // 获取指定玩家指定日期内所有金币日志总条数
-        getPlayerLogCount: "select count(id) as rows from |table_name| where account_id in (|uid_list|) |extra_condition| and log_at>=? and log_at<=?",
-        getPlayerLogCountHistory: "select count(id) as rows from |table_name| where account_id in (|uid_list|) |extra_condition|",
+        // 通用获取log方法
+        getCommonLog: "select * from |table_name| where log_at>=? and log_at<=? |extra_condition| order by log_at, id limit ?,?",
+        getCommonLogHistory: "select * from |table_name| where true |extra_condition| order by log_at, id limit ?,?",
+        getCommonLogCount: "select count(id) as rows from |table_name| where log_at>=? and log_at<=? |extra_condition|",
+        getCommonLogCountHistory: "select count(id) as rows from |table_name| where true |extra_condition|",
 
         //--------------------------------------------------------------------------
         // 金币数据
@@ -188,7 +181,7 @@ module.exports =
 
         // 获取邮件列表
         getMailData: "select * from tbl_mail where sendtime>=? and sendtime<=? order by sendtime",
-        getMailDataWithId: "select * from tbl_mail where id in (|mid_list|) sendtime>=? and sendtime<=? order by sendtime",
+        getMailDataWithId: "select * from tbl_mail where id in (|mid_list|) and sendtime>=? and sendtime<=? order by sendtime",
         // 删除邮件
         delMail: 'update tbl_mail set status=0 where id=?',
         // 插入邮件

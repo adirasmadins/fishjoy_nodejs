@@ -4,6 +4,7 @@ const mysqlAccountSync = require('../../../utils/mysqlAccountSync');
 const Task = require('../../../utils/task/task');
 const REDISKEY = require('../../../database/consts').REDISKEY;
 const utils = require('../../../utils/utils');
+const ERROR_CODE = require('../../../consts/fish_error').ERROR_CODE;
 
 // const deleteAllKey = require('../../tools/deleteAllKey').deleteAllKey;
 
@@ -136,6 +137,12 @@ class AccountSync extends Task {
                     logger.info(`玩家${uids[i]}数据增量同步成功`);
                 } catch (err) {
                     logger.error(`玩家${uids[i]}数据增量同步失败`, err);
+                    if (ERROR_CODE.USER_NOT_EXIST == err.code) {
+                        // 从增量任务列表中删除玩家
+                        let key = `${REDISKEY.UPDATED_DELTA_FIELDS}:${uids[i]}`;
+                        await redisConnector.del(key);
+                        await redisConnector.srem(REDISKEY.UPDATED_DELTA_UIDS, uids[i]);
+                    }
                 }
             }
 

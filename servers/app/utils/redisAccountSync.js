@@ -267,7 +267,7 @@ function _getHashValueLimit(redisKey, skip, limit, op, finish) {
         let cursor = res[0];
         utils.invokeCallback(op, res[1], function nextCursor() {
             if (0 == cursor) {
-                utils.invokeCallback(finish, null);
+                utils.invokeCallback(finish);
             } else {
                 _getHashValueLimit(redisKey, cursor, limit, op, finish);
             }

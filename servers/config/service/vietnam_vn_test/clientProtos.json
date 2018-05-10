@@ -72,7 +72,8 @@
 
             "message Mini": {
                 "optional uInt32 type": 1,
-                "optional sInt32 gold": 2
+                "optional sInt32 gold": 2,
+                "optional sInt32 score": 3
             },
             "optional Mini mini": 2,
 

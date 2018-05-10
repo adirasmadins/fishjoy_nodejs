@@ -1,6 +1,5 @@
 const omelo = require('omelo');
-const redisClient = require('../../utils/dbclients').redisClient;
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
+const {RedisConnector, MysqlConnector} = require('../../database/dbclient');
 const taskPool = require('../../utils/task').taskPool;
 const AccountSync = require('./task/accountSync');
 const AccountKick = require('./task/accountKick');
@@ -11,12 +10,14 @@ class R2mSyncApp {
         this._instance = null;
     }
     async start() {
-        let result = await redisClient.start(omelo.app.get('redis'));
+        this._redisConnector = new RedisConnector();
+        let result = await this._redisConnector.start(omelo.app.get('redis'));
         if (!result) {
             process.exit(0);
             return;
         }
-        result = await mysqlClient.start(omelo.app.get('mysql'));
+        this._mysqlConnector = new MysqlConnector();
+        result = await this._mysqlConnector.start(omelo.app.get('mysql'));
         if (!result) {
             process.exit(0);
             return;
@@ -28,8 +29,8 @@ class R2mSyncApp {
 
     stop() {
         taskPool.removeTask();
-        redisClient.stop();
-        mysqlClient.stop();
+        redisConnector.stop();
+        mysqlConnector.stop();
         logger.info('REDIS数据同步服关闭');
     }
 
@@ -41,4 +42,4 @@ class R2mSyncApp {
     }
 }
 
-module.exports = new R2mSyncApp();
+module.exports = R2mSyncApp;

@@ -3,7 +3,7 @@ const path = require('path');
 const omelo = require('omelo');
 const fs = require('mz/fs');
 
-class HttpMaxAgeFilter {
+class Http304Filter {
     constructor() {
         this._pathMap = new Set();
         this.staticDir = path.join(omelo.app.getBase(), 'app/servers', omelo.app.getServerType(), 'public');
@@ -42,4 +42,4 @@ class HttpMaxAgeFilter {
     }
 }
 
-module.exports = HttpMaxAgeFilter;
+module.exports = Http304Filter;

@@ -5,6 +5,7 @@ const versions = require('../../config/versions');
 
 class RpcSender {
     constructor() {
+        logger.error('-----------------RpcSender')
     }
 
     get serverType() {

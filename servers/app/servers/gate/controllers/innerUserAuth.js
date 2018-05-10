@@ -23,8 +23,8 @@ class InnerUserAuth {
         }
 
         try {
-            let isReg = await sdkApi.isRegiste(data);
-            if (isReg) {
+            let uid = await sdkApi.isRegiste(data.username);
+            if (uid != null) {
                 throw ERROR_OBJ.USERNAME_EXIST;
             } else {
                 let uid = await sdkApi.registe(data);
@@ -51,6 +51,12 @@ class InnerUserAuth {
         }
 
         try {
+            let uid = await sdkApi.isRegiste(data.username);
+            if(uid == null){
+                throw ERROR_OBJ.USER_NOT_EXIST;
+            }
+
+            data.uid = uid;
             let account = await sdkApi.login(data);
             return logicResponse.ask(account.toJSON());
         } catch (err) {
@@ -70,6 +76,11 @@ class InnerUserAuth {
         }
 
         try {
+            let uid = await sdkApi.isRegiste(data.username);
+            if(uid == null){
+                throw ERROR_OBJ.USER_NOT_EXIST;
+            }
+            data.uid = uid;
             let account = await sdkApi.modifyPassword(data);
             return logicResponse.ask(account);
         } catch (err) {
@@ -85,6 +96,11 @@ class InnerUserAuth {
         }
 
         try {
+            let uid = await sdkApi.isRegiste(data.username);
+            if(uid == null){
+                throw ERROR_OBJ.USER_NOT_EXIST;
+            }
+            data.uid = uid;
             await sdkApi.bindPhone(data);
         } catch (err) {
             logger.error('用户手机号绑定失败', err);

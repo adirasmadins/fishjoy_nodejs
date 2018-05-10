@@ -1,9 +1,9 @@
+const moment = require('moment');
 const CacheAccount = require('../../src/buzz/cache/CacheAccount');
 const gameConfig = require('../../../../utils/imports').DESIGN_CFG;
 const shop_card_cfg = gameConfig.shop_card_cfg;
 const common_log_const_cfg = gameConfig.common_log_const_cfg;
 const string_strings_cfg = gameConfig.string_strings_cfg;
-const moment = require('moment');
 const BuzzUtil = require('../../src/utils/BuzzUtil');
 const logicResponse = require('../../../common/logicResponse');
 
@@ -147,7 +147,7 @@ function _buyMonthCard(data, cb) {
             type: CARD_BROADCAST_TYPE_MAP[cType],
             params: params,
         };
-       new GameEventBroadcast(account, content).add();
+       new GameEventBroadcast(content).extra(account).add();
     });
 }
 

@@ -23,6 +23,7 @@ const LOG_DT = 30; //金币钻石日志写入周期，即每隔指定时间插�
                 total: account.pearl,
             }
         };
+        logger.error('-----------------FishingLog')
     }
 
     setCheatProc (func) {

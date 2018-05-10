@@ -8,15 +8,16 @@ const BuzzUtil = require('../utils/BuzzUtil');
 const ArrayUtil = require('../utils/ArrayUtil');
 const RedisUtil = require('../utils/RedisUtil');
 const RandomUtil = require('../../../../utils/RandomUtil');
+const RewardModel = require('../../../../utils/account/RewardModel');
 const CacheAccount = require('./cache/CacheAccount');
-const buzz_cst_game = require('./cst/buzz_cst_game');
-const GAME_EVENT_TYPE = buzz_cst_game.GAME_EVENT_TYPE;
-const gameConfig = require('../../../../utils/imports').DESIGN_CFG;
-const shop_shop_buy_type_cfg = gameConfig.shop_shop_buy_type_cfg;
-const string_strings_cfg = gameConfig.string_strings_cfg;
-const newweapon_star_cfg = gameConfig.newweapon_star_cfg;
-const newweapon_weapons_cfg = gameConfig.newweapon_weapons_cfg;
-const common_log_const_cfg = gameConfig.common_log_const_cfg;
+const DESIGN_CFG = require('../../../../utils/imports').DESIGN_CFG;
+const shop_shop_buy_type_cfg = DESIGN_CFG.shop_shop_buy_type_cfg;
+const string_strings_cfg = DESIGN_CFG.string_strings_cfg;
+const newweapon_star_cfg = DESIGN_CFG.newweapon_star_cfg;
+const newweapon_weapons_cfg = DESIGN_CFG.newweapon_weapons_cfg;
+const common_log_const_cfg = DESIGN_CFG.common_log_const_cfg;
+const newweapon_upgrade_cfg = DESIGN_CFG.newweapon_upgrade_cfg;
+const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 
 
 let MIN_WEAPON_ID = 1;
@@ -156,31 +157,31 @@ function _vote(dataObj, cb) {
                 cb(null, delta);
             }
             , function step2(delta, cb) {
-            let data = [];
-            for (let i = 0; i < delta.incr.length; i++) {
-                data.push(['hincrby', redisKesy.WEAPON_VOTE, delta.incr[i], 1]);
+                let data = [];
+                for (let i = 0; i < delta.incr.length; i++) {
+                    data.push(['hincrby', redisKesy.WEAPON_VOTE, delta.incr[i], 1]);
+                }
+                for (let i = 0; i < delta.decr.length; i++) {
+                    data.push(['hincrby', redisKesy.WEAPON_VOTE, delta.decr[i], -1]);
+                }
+                // 有投票动作的玩家需要记录uid到对应武器的集合中
+                for (let i = 0; i < serverOwn.length; i++) {
+                    data.push(['sadd', redisKesy.SKIN_VOTE_UID + ':' + serverOwn[i], uid]);
+                }
+                data.push(['sadd', redisKesy.SKIN_VOTE_UID, uid]);
+                RedisUtil.multi(data, function (err, res) {
+                    cb(null, res);
+                });
             }
-            for (let i = 0; i < delta.decr.length; i++) {
-                data.push(['hincrby', redisKesy.WEAPON_VOTE, delta.decr[i], -1]);
-            }
-            // 有投票动作的玩家需要记录uid到对应武器的集合中
-            for (let i = 0; i < serverOwn.length; i++) {
-                data.push(['sadd', redisKesy.SKIN_VOTE_UID + ':' + serverOwn[i], uid]);
-            }
-            data.push(['sadd', redisKesy.SKIN_VOTE_UID, uid]);
-            RedisUtil.multi(data, function (err, res) {
-                cb(null, res);
-            });
-        }
             , function step3(result, cb) {
-            weapon_skin.vote = clientVote;
-            account.weapon_skin = weapon_skin;
-            account.commit();
-            cb(null, 'next');
-        }
+                weapon_skin.vote = clientVote;
+                account.weapon_skin = weapon_skin;
+                account.commit();
+                cb(null, 'next');
+            }
             , function step4(result, cb) {
-            getNewVoteResult(cb);
-        }
+                getNewVoteResult(cb);
+            }
         ]
         , function (err, result) {
             cb(err, result);
@@ -227,7 +228,7 @@ function getDiff(serverVote, clientVote) {
     }
     logger.info(FUNC + '新增支持的武器:', incr);
     logger.info(FUNC + '放弃支持的武器:', decr);
-    return {incr: incr, decr: decr};
+    return { incr: incr, decr: decr };
 }
 
 /**
@@ -252,29 +253,29 @@ function getNewVoteResult(cb) {
                 });
             }
             , function step2(count_list, cb) {
-            let ret = [];
-            RedisUtil.repeatHscan(redisKesy.WEAPON_VOTE, 0, 100,
-                function op(res, nextCursor) {
-                    let voteList = res[1];
-                    for (let i = 0; i < voteList.length; i += 2) {
-                        let weaponId = voteList[i];
-                        logger.info(FUNC + 'weapon id:', voteList[i]);
-                        logger.info(FUNC + 'vote count:', voteList[i + 1]);
-                        if (count_list[weaponId] > 0) {
-                            let count = count_list[weaponId];
-                            ret.push({
-                                weapon: voteList[i],
-                                vote: voteList[i + 1] / count,
-                            });
+                let ret = [];
+                RedisUtil.repeatHscan(redisKesy.WEAPON_VOTE, 0, 100,
+                    function op(res, nextCursor) {
+                        let voteList = res[1];
+                        for (let i = 0; i < voteList.length; i += 2) {
+                            let weaponId = voteList[i];
+                            logger.info(FUNC + 'weapon id:', voteList[i]);
+                            logger.info(FUNC + 'vote count:', voteList[i + 1]);
+                            if (count_list[weaponId] > 0) {
+                                let count = count_list[weaponId];
+                                ret.push({
+                                    weapon: voteList[i],
+                                    vote: voteList[i + 1] / count,
+                                });
+                            }
                         }
+                        nextCursor();
+                    },
+                    function next() {
+                        cb(null, ret);
                     }
-                    nextCursor();
-                },
-                function next() {
-                    cb(null, ret);
-                }
-            );
-        }
+                );
+            }
         ]
         , function (err, result) {
             result.sort(function (a, b) {
@@ -378,7 +379,7 @@ function _levelup(dataObj, cb) {
     let account = dataObj.account;
 
     let need_stone = 0;
-    if (typeof(use_stone) == "undefined") {
+    if (typeof (use_stone) == "undefined") {
         use_stone = false;
     }
 
@@ -403,7 +404,7 @@ function _levelup(dataObj, cb) {
     if (!_checkLevelup2()) return;
 
     account.pearl = -weapon_unlock_cost;
-    let change = {pearl: account.pearl};
+    let change = { pearl: account.pearl };
     if (0 == weapon_unlock_material.length) {
         didWeaponLevelUp();
         _handleReturn(change, cb);
@@ -435,7 +436,7 @@ function _levelup(dataObj, cb) {
         logger.info("2.item_list_cost:", item_list_cost);
         BuzzUtil.removeFromPack(account, item_list_cost, function (cost_info) {
             let change_m = BuzzUtil.getChange(account, cost_info);
-            let change = {pearl: account.pearl};
+            let change = { pearl: account.pearl };
             change = ObjUtil.merge(change, change_m);
             _handleReturn(change, cb);
         });
@@ -447,10 +448,18 @@ function _levelup(dataObj, cb) {
     }], account, common_log_const_cfg.WEAPON_UNLOCK, -1);
 
     function _handleReturn(change, cb) {
+        let cfg = newweapon_upgrade_cfg[weapon_level_next];
+        if (cfg) {
+            weapon_energy[weapon_level_next] = cfg.needpower;
+            account.weapon_energy = weapon_energy;
+            account.commit();
+        }
+
         let ret = {
             change: change,
             weapon_level: weapon_level_next,
             is_success: weapon_level != account.weapon,
+            weapon_energy: account.weapon_energy,
         };
 
         CacheAccount.setWeapon(account, weapon_level, function (chs) {
@@ -501,10 +510,10 @@ function _levelup(dataObj, cb) {
     }
 
     function _checkLevelup3() {
-        if (typeof(account.package['9']) == "undefined") {
+        if (typeof (account.package['9']) == "undefined") {
             account.package['9'] = {};
         }
-        if (typeof(account.package['9']['i500']) == "undefined") {
+        if (typeof (account.package['9']['i500']) == "undefined") {
             account.package['9']['i500'] = 0;
         }
         let own_stone = account.package['9']['i500'];
@@ -529,7 +538,10 @@ function _levelup(dataObj, cb) {
     function didWeaponLevelUp() {
         let old_level = account.weapon;
         account.weapon = weapon_level_next;
-        stepMissionWeaponLevel();
+
+        let reward = new RewardModel(account);
+        reward.addProcess(RewardModel.TaskType.UPDATE_WEAPON_LV, account.weapon);
+
         addWeaponLog(account.weapon, old_level);
     }
 
@@ -558,18 +570,6 @@ function _levelup(dataObj, cb) {
         return true;
     }
 
-    /**
-     * 更新成就任务中的武器倍率进度.
-     * 武器成就任务的id模式(2040**).
-     */
-    function stepMissionWeaponLevel() {
-        let mission = account.mission_only_once;
-        let mission_weapon_id = BuzzUtil.getWeaponLevelQuestIdByMission(mission);
-        mission[mission_weapon_id] = account.weapon;
-        account.mission_only_once = mission;
-        account.commit();
-
-    }
 
     //todo 武器日志
     /**
@@ -608,7 +608,7 @@ function _buySkin(dataObj, cb) {
     let mySkin = account.weapon_skin;
     let own = mySkin.own;
     let i = own.length;
-    while (i > 0 && i --) {
+    while (i > 0 && i--) {
         let id = own[i];
         id = parseInt(id);
         if (!id) {
@@ -630,7 +630,7 @@ function _buySkin(dataObj, cb) {
     let skinId = dataObj.skinId;
     if (own.indexOf(skinId) != -1) {
         return failOperation('不可重复购买');
-    }else{
+    } else {
         const cfg = newweapon_weapons_cfg[skinId];
         if (!cfg) {
             return failOperation('无皮肤配置');
@@ -676,13 +676,10 @@ function _buySkin(dataObj, cb) {
                     let weapon_skin = string_strings_cfg[weaponNameId].cn;
                     let charm = account.charm_rank && parseInt(account.charm_rank) || 0;
                     let content = {
-                        txt: player + ' 获得了皮肤：' + weapon_skin,
-                        times: 1,
-                        type: GAME_EVENT_TYPE.SKIN_GOT,
-                        params: [player, weapon_skin, account.vip,charm],
-                        platform: account.platform,
+                        type: GameEventBroadcast.TYPE.GAME_EVENT.SKIN_GOT,
+                        params: [player, weapon_skin, account.vip, charm],
                     };
-                    buzz_cst_game.addBroadcastGameEvent(content);
+                    new GameEventBroadcast(content).extra(account).add();
                 }
             }
         });
@@ -695,16 +692,16 @@ function _buySkin(dataObj, cb) {
 function _equip(dataObj, cb) {
     let account = dataObj.account;
     let skinId = dataObj.skinId;
-    if(isNaN(Number(skinId))) {
+    if (isNaN(Number(skinId))) {
         cb(ERROR_OBJ.PARAM_WRONG_TYPE);
     }
     let own = account.weapon_skin.own;
-    if(own.indexOf(Number(skinId))!=-1||own.indexOf(""+skinId)!=-1){
+    if (own.indexOf(Number(skinId)) != -1 || own.indexOf("" + skinId) != -1) {
         account.weapon_skin.equip = skinId;
         account.weapon_skin = account.weapon_skin;
         account.commit();
-        cb && cb(null, {weapon_skin: account.weapon_skin});
-    }else {
+        cb && cb(null, { weapon_skin: account.weapon_skin });
+    } else {
         cb && cb(ERROR_OBJ.INVALID_WP_SKIN);
     }
 }

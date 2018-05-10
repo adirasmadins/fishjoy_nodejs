@@ -1,7 +1,8 @@
-const payApp = require('./payApp');
+const PayApp = require('./payApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    payApp.start();
+    app.entry = new PayApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    payApp.stop();
+    app.entry.stop();
     cb();
 };
 

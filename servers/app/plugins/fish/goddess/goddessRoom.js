@@ -37,6 +37,9 @@ class GoddessRoom extends FishRoom {
 
         player.on(fishCmd.push.god_ready.route, function (event) {
             this._isPause = true;
+            //注意：保卫女神无需保留离线前的数据， 即重新开始，清除之前已有的数据
+            this._isStarted = false;
+            this._fishModel.resetAll();
         }.bind(this));
 
         player.on(fishCmd.push.god_pause.route, function (event) {

@@ -7,6 +7,7 @@
 
 const FishModel = require('../fishModel');
 const configReader= require('../../../utils/configReader');
+const GAMECFG = require('../../../utils/imports').DESIGN_CFG;
 
 const WAVE_DT = 3; //倒计时5秒
 let GOD_UP_CFG = null;
@@ -14,11 +15,14 @@ let FISH_BORN_CFG = null;
 
 class GoddessFishModel extends FishModel {
     constructor (evtor, currentSceneName){
-        super(evtor, currentSceneName);
+        super(evtor, currentSceneName);        
+        this._nextWaveFunc = null;
+        logger.info('welcome goddeess 保卫女神房间 刷鱼');
+    }
 
-    
+    resetAll() {
+        super.resetAll();
         this._startWaveIdx = 0;
-        
         this._curWaveNextFishDt = 0; //当前波下一条鱼生成间隔
         this._curWaveFishCount = 0; //当前波鱼总条数
         this._curWaveFishTotal = 0; //当前波鱼总条数
@@ -32,10 +36,7 @@ class GoddessFishModel extends FishModel {
         this._curWaveRandomFishGroupKey = null;// 当前波随机组idx
         this._fishHurt = {};
         this._curWaveFish = [];
-        
-        this._godWaveCount = configReader.getLength('goddess_defend_cfg');
-        this._nextWaveFunc = null;
-        logger.info('welcome goddeess 保卫女神房间 刷鱼');
+        this._godWaveCount = GAMECFG.goddess_defend_cfg.length;
     }
 
     setNextWaveFunc (func) {

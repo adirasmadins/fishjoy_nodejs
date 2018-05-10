@@ -4,6 +4,8 @@ const redisAccountSync = require('../../../utils/redisAccountSync');
 const mysqlAccountSync = require('../../../utils/mysqlAccountSync');
 const REDISKEY = require('../../../database/consts').REDISKEY;
 const utils = require('../../../utils/utils');
+const tools = require('../../../utils/tools');
+const RewardModel = require('../../../utils/account/RewardModel');
 
 /**
  * 踢出redis缓存中不活跃玩家数据
@@ -15,7 +17,7 @@ class AccountKick extends Task {
 
     /**
      * 踢出非活跃玩家
-     * @param kicked 已经提出的非活跃玩家
+     * @param kicked 已经踢出的非活跃玩家
      * @param kickUids
      * @param finish
      * @private
@@ -30,19 +32,37 @@ class AccountKick extends Task {
                 return;
             }
 
+            let succUids = [];
             for (let i = 0; i < subUids.length; i++) {
-                let account = await redisAccountSync.getAccountAsync(subUids[i]);
-                if (account) {
-                    await mysqlAccountSync.setAccountSync([account]);
+                let uid = subUids[i];
+                try {
+                    let account = await redisAccountSync.getAccountAsync(uid);
+                    if (account) {
+                        await mysqlAccountSync.setAccountSync([account]);
+                    }
+
+                    let mission_task_once = await RewardModel.syncMissionTaskOnce(uid);
+                    mission_task_once = JSON.stringify(mission_task_once);
+                    await tools.SqlUtil.query(
+                        `INSERT INTO tbl_mission (id, mission_task_once) VALUES (?, ?)
+                        ON DUPLICATE KEY UPDATE id=VALUES(id),mission_task_once=VALUES(mission_task_once)`,
+                        [uid, mission_task_once]
+                    );
+
+                } catch (err) {
+                    logger.error(`非活跃玩家${uid}移除REDIS异常:`, err);
+
                 }
+
+                succUids.push(uid);
             }
 
             let next_kick = kicked + this.taskConf.writeLimit;
-            await redisAccountSync.delAccount(subUids);
-            await redisAccountSync.delRank(subUids);
+            await redisAccountSync.delAccount(succUids);
+            await redisAccountSync.delRank(succUids);
             await this._kickAccount(next_kick, kickUids, finish);
-        }catch (err){
-            logger.error("踢人异常:",err);
+        } catch (err) {
+            logger.error("非活跃玩家移除REDIS异常:", err);
         }
     }
 
@@ -51,7 +71,7 @@ class AccountKick extends Task {
      * @private
      */
     _exeTask(cb) {
-        logger.info("执行定时任务accountKick:");
+        logger.error("执行定时任务accountKick:");
         redisAccountSync.getHashValueLimit(REDISKEY.LAST_ONLINE_TIME, 0, this.taskConf.readLimit, (res, next) => {
             if (!!res && res.length > 0) {
                 let kickUids = [];

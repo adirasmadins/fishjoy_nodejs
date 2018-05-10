@@ -5,7 +5,7 @@
 // ATTENTION：引用外部参数不可在该内中修改
 // //--]]
 
-const cacheReader = require('../../../cache/cacheReader');
+const omelo = require('omelo');
 const consts = require('../consts');
 const GAMECFG = require('../../../utils/imports').DESIGN_CFG;
 
@@ -22,6 +22,7 @@ class Cost {
         } else if (DEBUG === 2) {
             this.log = logger.error;
         }
+        logger.error('-----------------Cost')
     }
 
     _getWpLevelCfg(level) {
@@ -40,7 +41,7 @@ class Cost {
      * 抽水系数，全服一个值：休闲周期=1,//吃分周期<1,//出分周期>1
      */
     getPumpWater() {
-        return cacheReader.pumpwater;
+        return omelo.app.entry.instance.cacheReader.pumpwater;
     }
 
     /**
@@ -744,22 +745,19 @@ class Cost {
     }
 
 
-    checkEnough(skillId, curWpLv, account) {
+    checkEnough(skillId, curWpLv, player) {
         let notEnough = 0;
-        let skill = account.skill;
+        let skill = player.getLeftSkill();
         if (skill) {
             const CFG = this._getSkillCfg(skillId);
             if (skillId === consts.SKILL_ID.SK_LASER) {
-                let wpEnergy = account.weapon_energy;
-                if (wpEnergy && curWpLv) {
-                    const wp = this._getWpLevelCfg(curWpLv);
-                    if (!wp || wpEnergy[curWpLv] < wp.needpower) {
-                        notEnough = 3;
-                    }
+                const wp = this._getWpLevelCfg(curWpLv);
+                if (!wp || player.getWeaponEnergy(curWpLv) < wp.needpower) {
+                    notEnough = 3;
                 }
             } else {
                 let ownC = skill[skillId] || 0;
-                notEnough = this.checkWithCost(account, ownC, CFG.cost);
+                notEnough = this.checkWithCost(player.account, ownC, CFG.cost);
             }
         } else {
             notEnough = 2;
@@ -795,23 +793,23 @@ class Cost {
      * 技能消耗
      * 充足则直接扣，反之扣钻石
      */
-    useSkill(skillId, curWpLv, account, isFreeWithInviteDone) {
+    useSkill(skillId, curWpLv, player, isFreeWithInviteDone) {
         let ret = {};
         let notEnough = 0;
-        let skill = account.skill;
+        let skill = player.getLeftSkill();
         let ownC = skill[skillId] || 0;
         if (isFreeWithInviteDone) {
             notEnough = 0;
             ret.skillC = ownC;
         } else {
-            notEnough = this.checkEnough(skillId, curWpLv, account);
+            notEnough = this.checkEnough(skillId, curWpLv, player);
             if (notEnough === 0) {
                 if (ownC > 0) {
                     ownC--;
                 } else {
                     const CFG = this._getSkillCfg(skillId);
                     let cost = CFG.cost;
-                    let temp = this.skillCostWithMoney(account, cost);
+                    let temp = this.skillCostWithMoney(player.account, cost);
                     temp.costPearl >= 0 && (ret.costPearl = temp.costPearl);
                     temp.pearl >= 0 && (ret.pearl = temp.pearl);
                     temp.costGold >= 0 && (ret.costGold = temp.costGold);
@@ -829,10 +827,11 @@ class Cost {
      * 排位赛：技能消耗
      * 不管充足与否，扣除对应金币
      */
-    useSkillWithRmatch(skillId, curWpLv, account, costVal) {
+    useSkillWithRmatch(skillId, curWpLv, player, costVal) {
+        let account = player.account;
         let ret = {};
         let notEnough = this.checkRmatchWithCost(account, costVal);
-        let skill = account.skill;
+        let skill = player.getLeftSkill();
         let ownC = skill[skillId] || 0;
         ret.gold = account.gold;
         ret.costGold = costVal;

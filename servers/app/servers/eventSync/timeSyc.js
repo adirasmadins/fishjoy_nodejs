@@ -1,5 +1,4 @@
 const redisAccountSync = require('../../utils/redisAccountSync');
-const redisClient = require('../../utils/dbclients').redisClient;
 const redisKey = require('../../database/index').dbConsts.REDISKEY;
 const EventEmitter = require('events').EventEmitter;
 const eventType = require('../../consts/eventType');

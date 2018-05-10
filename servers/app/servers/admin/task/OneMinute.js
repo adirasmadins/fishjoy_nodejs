@@ -7,6 +7,8 @@ const REDISKEY = require('../../../database/consts').REDISKEY;
 const RealTimeHandler = require('../services/operation/getSceneCatchRateList');
 const RealTime = require('../configs/consts/RealTime');
 const DailyTask = require('../services/task/DailyTask');
+const addBroadcast = require('../services/gamemgmt/addBroadcast');
+let count = 0;
 
 /**
  * 每分钟任务
@@ -38,6 +40,9 @@ class OneMinuteTask extends Task {
         
         logger.info(`${TAG}执行完成`);
         utils.invokeCallback(cb, null);
+
+        // 1分钟更新一次公告
+        // await addBroadcast.set(count++);
     }
 }
 

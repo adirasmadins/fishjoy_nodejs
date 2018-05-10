@@ -8,8 +8,6 @@ const omelo = require('omelo');
 const rpcSender = require('../../../net/rpcSender');
 const fishCmd = require('../../../cmd/fishCmd');
 const PlayerFactory = require('../entity/playerFactory');
-const mysqlClient = require('../../../utils/dbclients').mysqlClient;
-const redisClient = require('../../../utils/dbclients').redisClient;
 const redisKey = require('../../../database').dbConsts.REDISKEY;
 const Room = require('../entity/room');
 const constDef = require('../../../consts/constDef');
@@ -54,7 +52,7 @@ class RankMatchRoom extends Room {
                     roomType: consts.ROOM_TYPE.RANK_MATCH
                 });
                 this.addMsgChannel(uid, sid);
-                this.addGamePos(uid, this._serverId, {serverId: this._serverId, roomId: this.roomId, time:Date.now()});
+                this.addGamePos(uid, this._serverId, {serverId: this._serverId, roomId: this.roomId, roomType:this.mode, time:Date.now()});
             }
             this._playerMap.set(uid, player);
             i++;
@@ -365,7 +363,7 @@ class RankMatchRoom extends Room {
     _setMatchUnfinish(uid, rankgame_log_id, cb) {
         // 机器人无需设置此字段
         if (uid > 0) {
-            redisClient.cmd.hset(redisKey.MATCH_UNFINISH, uid, rankgame_log_id, cb);
+            redisConnector.cmd.hset(redisKey.MATCH_UNFINISH, uid, rankgame_log_id, cb);
         } else {
             cb();
         }
@@ -428,7 +426,7 @@ class RankMatchRoom extends Room {
         const FUNC = '【room】 _recordRecentEnemy10() --- ';
         // 真实玩家才记录
         if (uid1 > 0) {
-            redisClient.cmd.hget(redisKey.RECENT_ENEMY_10, uid1, function (err, res) {
+            redisConnector.cmd.hget(redisKey.RECENT_ENEMY_10, uid1, function (err, res) {
                 if (err) logger.error(FUNC + 'err:', err);
                 if (!res) {
                     res = '[]';
@@ -438,13 +436,13 @@ class RankMatchRoom extends Room {
                 if (res.length > 10) {
                     res.shift();
                 }
-                redisClient.cmd.hset(redisKey.RECENT_ENEMY_10, uid1, JSON.stringify(res));
+                redisConnector.cmd.hset(redisKey.RECENT_ENEMY_10, uid1, JSON.stringify(res));
             });
         }
     }
 
     _handlePoolQuery(sql, sql_data, FUNC, cb) {
-        mysqlClient.query(sql, sql_data, function (err, results) {
+        mysqlConnector.query(sql, sql_data, function (err, results) {
             if (err) {
                 logger.error(FUNC + 'err:\n', err);
                 logger.error(FUNC + 'sql:\n', sql);

@@ -1,5 +1,5 @@
 const RedisUtil = require('../utils/RedisUtil');
-const buzz_cst_game = require('./cst/buzz_cst_game');
+const buzz_broadcast = require('../../../../common/broadcast/buzz_broadcast');
 const buzz_mail = require('./buzz_mail');
 const redisKeys = require('../../../../database').dbConsts.REDISKEY;
 
@@ -12,19 +12,19 @@ exports.addListener = addListener;
 function addListener() {
 
     redisConnector.sub(redisKeys.CH.BROADCAST_SERVER, function (data) {
-        buzz_cst_game.redisNotifyBroadcast(redisKeys.CH.BROADCAST_SERVER, data);
+        buzz_broadcast.redisNotifyBroadcast(redisKeys.CH.BROADCAST_SERVER, data);
     });
     redisConnector.sub(redisKeys.CH.BROADCAST_GAME_EVENT, function (data) {
-        buzz_cst_game.redisNotifyBroadcast(redisKeys.CH.BROADCAST_GAME_EVENT, data);
+        buzz_broadcast.redisNotifyBroadcast(redisKeys.CH.BROADCAST_GAME_EVENT, data);
     });
     redisConnector.sub(redisKeys.CH.BROADCAST_FAMOUS_ONLINE, function (data) {
-        buzz_cst_game.redisNotifyBroadcast(redisKeys.CH.BROADCAST_FAMOUS_ONLINE, data);
+        buzz_broadcast.redisNotifyBroadcast(redisKeys.CH.BROADCAST_FAMOUS_ONLINE, data);
     });
     redisConnector.sub(redisKeys.CH.BROADCAST_DRAW, function (data) {
-        buzz_cst_game.redisNotifyBroadcast(redisKeys.CH.BROADCAST_DRAW, data);
+        buzz_broadcast.redisNotifyBroadcast(redisKeys.CH.BROADCAST_DRAW, data);
     });
     redisConnector.sub(redisKeys.CH.BROADCAST_REWARD_PEOPLE, function (data) {
-        buzz_cst_game.redisNotifyBroadcast(redisKeys.CH.BROADCAST_REWARD_PEOPLE, data);
+        buzz_broadcast.redisNotifyBroadcast(redisKeys.CH.BROADCAST_REWARD_PEOPLE, data);
     });
 
     // Channel: Mail

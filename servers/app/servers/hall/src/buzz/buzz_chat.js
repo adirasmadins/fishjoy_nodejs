@@ -21,7 +21,6 @@ const DateUtil = require('../../../../utils/DateUtil');
 const privateMsgSize = 20;
 
 
-
 const TAG = "【buzz_chat】";
 
 function sendChat(dataObj, cb) {
@@ -34,7 +33,7 @@ function sendChat(dataObj, cb) {
         cb && cb(ERROR_OBJ.CHAT_ERROR_CANNOT_SEND_MSG_TO_YOURSLEF);
         return;
     }
-   
+
     async.waterfall([
             function (cb) {
                 //检查是否被禁言
@@ -63,7 +62,7 @@ function sendChat(dataObj, cb) {
                         cb(err);
                         return;
                     }
-                   redisConnector.pub(dataObj.platform != 1 ? REDISKEY.CH.WORLD_CHAT + ":2" : REDISKEY.CH.WORLD_CHAT + ":1", JSON.stringify(obj));
+                    redisConnector.pub(dataObj.platform != 1 ? REDISKEY.CH.WORLD_CHAT + ":2" : REDISKEY.CH.WORLD_CHAT + ":1", JSON.stringify(obj));
                     cb(err, ret);
                 });
             } else if (dataObj.type == 0) {
@@ -245,7 +244,15 @@ async function friendAsk(dataObj, cb) {
         cb && cb(ERROR_OBJ.CHAT_ERROR_FRIEND_LIMIT_TARGET);
         return;
     }
-    let key = `${REDISKEY.MSG.ASK_FRIEND}:${id}`;
+    const key = `${REDISKEY.MSG.ASK_FRIEND}:${id}`;
+    const res = await redisConnector.zrangewithscores(key, 0, -1);
+    const len = res.length;
+    for (let i = 0; i < len; i += 2) {
+        if (res[i] == uid) {
+            cb(null, []);
+            return;
+        }
+    }
     RedisUtil.zadd(key, new Date().getTime(), uid);
     cb(null, []);
 }

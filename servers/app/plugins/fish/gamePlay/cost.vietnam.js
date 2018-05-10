@@ -6,7 +6,7 @@
 // //--]]
 
 const Cost = require('./cost');
-const cacheReader = require('../../../cache/cacheReader');
+const omelo = require('omelo');
 const consts = require('../consts');
 const DESIGN_CFG = require('../../../utils/imports').DESIGN_CFG;
 const TAG = 'numberTest ---';
@@ -20,21 +20,21 @@ class VietnamCost extends Cost {
      * 获取全服命中修正
      */
     getGlobalByGM() {
-        return cacheReader.platformCatchRate;
+        return omelo.app.entry.instance.cacheReader.platformCatchRate;
     }
 
     /**
      * 全服提现命中修正
      */
     getGlobalRechargeByGM() {
-        return cacheReader.catchRevise;
+        return omelo.app.entry.instance.cacheReader.catchRevise;
     }
     
     /**
      * 场景命中率修正
      */
     getSceneRateByGM (sceneName) {
-        return cacheReader.getSceneCatchRate(sceneName);
+        return omelo.app.entry.instance.cacheReader.getSceneCatchRate(sceneName);
     }
 
     /**

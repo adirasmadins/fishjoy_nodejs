@@ -1,11 +1,11 @@
 const payConfig = require('../../../../utils/imports').payConfig;
 const constDef = require('../../../../consts/constDef');
-const versions = require('../../../../utils/imports').versions;
+const versionsUtil = require('../../../../utils/imports').versionsUtil;
 
 class PaySdk {
     init(){
         this._sdkMap = new Map();
-        let ver = versions.getVerKey(versions.PUB);
+        let ver = versionsUtil.getVerKey();
         let channelId = constDef.PAY_CHANNEL_ID[`${ver.toUpperCase()}PAY`];
         if(!channelId){
             logger.error('此版本无支付渠道id，注意检查版本');

@@ -2,7 +2,6 @@ const Task = require('../../../utils/task/task');
 const utils = require('../../../utils/utils');
 const moment = require('moment');
 const omelo = require('omelo');
-const mysqlClient = require('../../../utils/dbclients').mysqlClient;
 
 class LogRemove extends Task {
     constructor(conf) {
@@ -33,7 +32,7 @@ class LogRemove extends Task {
 
     // 删除过期表
     async removeExpireTable(task) {
-        let tab = await mysqlClient.query(`SHOW TABLES FROM ${this.bakDBName}`);
+        let tab = await mysqlConnector.query(`SHOW TABLES FROM ${this.bakDBName}`);
         let beforeDay = moment().subtract(task.expiryTime, 'day');
         beforeDay = Number(beforeDay.format('YYYYMMDD'));
 
@@ -42,7 +41,7 @@ class LogRemove extends Task {
             let parts = tablename.split('_');
             let timestamp = parts[parts.length - 2];
             if(Number(timestamp) <= beforeDay){
-                await mysqlClient.query(`DROP TABLE ${this.bakDBName}.${tablename}`);
+                await mysqlConnector.query(`DROP TABLE ${this.bakDBName}.${tablename}`);
             }
         }
     }

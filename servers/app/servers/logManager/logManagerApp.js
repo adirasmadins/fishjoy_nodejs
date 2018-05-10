@@ -1,5 +1,5 @@
 const omelo = require('omelo');
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
+const MysqlConnector = require('../../database/dbclient').MysqlConnector;
 const taskPool = require('../../utils/task').taskPool;
 const LogBackup = require('./task/logBackup');
 const LogRemove = require('./task/logRemove');
@@ -14,7 +14,8 @@ class LogManagerApp {
         this._instance = null;
     }
     async start() {
-        let result = await mysqlClient.start(omelo.app.get('mysql'));
+        this._mysqlConnector = new MysqlConnector();
+        let result = await this._mysqlConnector.start(omelo.app.get('mysql'));
         if (!result) {
             process.exit(0);
             return;
@@ -26,7 +27,7 @@ class LogManagerApp {
 
     stop() {
         taskPool.removeTask();
-        mysqlClient.stop();
+        mysqlConnector.stop();
         logger.info('REDIS数据同步服关闭');
     }
 
@@ -38,4 +39,4 @@ class LogManagerApp {
     }
 }
 
-module.exports = new LogManagerApp();
+module.exports = LogManagerApp;

@@ -1,7 +1,8 @@
-const chatApp = require('./chatApp');
+const ChatApp = require('./chatApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    chatApp.start();
+    app.entry = new ChatApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    chatApp.stop();
+    app.entry.stop();
     cb();
 };
 

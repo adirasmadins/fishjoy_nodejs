@@ -61,6 +61,10 @@ module.exports = {
         route: '/pages/game_data/player_gold_log.html',
         ejs: 'pages/game_data/player_gold_log'
     },
+    goddess_log: {
+        route: '/pages/game_data/goddess_log.html',
+        ejs: 'pages/game_data/goddess_log'
+    },
     player_info: {
         route: '/pages/game_data/player_info.html',
         ejs: 'pages/game_data/player_info'

@@ -113,7 +113,8 @@ class RankMatchPlayer extends BasePlayer {
         this.account.charm_point = this._charmPoint;
         this.account.charm_rank = this._charmRank;
 
-        this._mission ? this._mission.commit() : this.account.commit();
+        this._mission && this._mission.commit();
+        this.account.commit();
 
         //添加到rank有序列表中
         if(this.account.privacy==1) {
@@ -185,7 +186,7 @@ class RankMatchPlayer extends BasePlayer {
                         type: GameEventBroadcast.TYPE.GAME_EVENT.SEASON_END,
                         params: params,
                     };
-                    new GameEventBroadcast(account, content).add();
+                    new GameEventBroadcast(content).extra(account).add();
                 }
 
             } else {
@@ -230,13 +231,13 @@ class RankMatchPlayer extends BasePlayer {
                 if (this._box.id == 12 || this._box.id == 13) {
                     let account = this.account;
                     let boxName = tools.CfgUtil.treasure.getName(this._box.id);
-                    let params = [account.nickname, boxName, account.vip, account.charm]
+                    let params = [account.nickname, boxName, account.vip, account.charm];
                     let content = {
                         // txt: `${account.nickname}在排位赛中获得了稀世罕见的${boxName}宝箱！`,
                         type: GameEventBroadcast.TYPE.GAME_EVENT.SEASON_BOX,
                         params: params,
                     };
-                    new GameEventBroadcast(account, content).add();
+                    new GameEventBroadcast(content).extra(account).add();
                 }
             }
         }
@@ -527,7 +528,7 @@ class RankMatchPlayer extends BasePlayer {
             type: GameEventBroadcast.TYPE.GAME_EVENT.VICTORS,
             params: params,
         };
-        new GameEventBroadcast(account, content).add();
+        new GameEventBroadcast(content).extra(account).add();
     }
 
     /**

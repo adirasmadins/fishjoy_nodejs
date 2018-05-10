@@ -6,5 +6,6 @@ module.exports = {
     activityLog: require('./activityLog'),
     goldLog: require('./goldLog'),
     itemLog: require('./itemLog'),
+    goddessLog: require('./goddessLog'),
     getFreezeReasonList: require('./getFreezeReasonList'),
 };

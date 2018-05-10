@@ -170,3 +170,6 @@ gulp
 cd /opt/auto_deploy
 ./publish.sh
 ./restart.sh
+
+## mysql 远程连接授权
+- grant all privileges  on *.* to root@'%' identified by "root";

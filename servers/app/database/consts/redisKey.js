@@ -111,6 +111,7 @@ module.exports = {
         BROADCAST_FAMOUS_ONLINE: "channel:broadcast:famousonline",
         BROADCAST_DRAW: "channel:broadcast:draw",
         BROADCAST_REWARD_PEOPLE: "channel:broadcast:rewardpeople",
+        BROADCAST_CFGS_UPDATE: "channel:broadcast:cfgsupdate",
 
         MAIL_SEND: "channel:mail:send",
         MAIL_RANK: "channel:mail:rank",

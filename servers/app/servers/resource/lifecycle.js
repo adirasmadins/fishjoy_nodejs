@@ -1,7 +1,8 @@
-const resourceApp = require('./resourceApp');
+const ResourceApp = require('./resourceApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    resourceApp.start();
+    app.entry = new ResourceApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    resourceApp.stop();
+    app.entry.stop();
     cb();
 };
 

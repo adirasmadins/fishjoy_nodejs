@@ -7,7 +7,6 @@ const DaoWeapon = require('./dao_weapon');
 const DaoActivity = require('./dao_activity');
 const DaoCdKey = require('./dao_cdkey');
 const DaoMail = require('./dao_mail');
-const DaoDraw = require('./dao_draw');
 const DaoImage = require('./dao_image');
 const DaoAquarium = require('./dao_aquarium');
 const DaoReward = require('./dao_reward');
@@ -294,10 +293,6 @@ exports.withDbPool = function () {
 
         mailList: function (data, cb) {
             DaoMail.mailList(pool, data, cb);
-        },
-
-        getDraw: function (data, cb) {
-            DaoDraw.getDraw(pool, data, cb);
         },
         
         //---------------------Dao-Image------------------------

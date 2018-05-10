@@ -1,5 +1,4 @@
 const ArrayUtil = require('./ArrayUtil');
-const mysqlClient = require('../dbclients').mysqlClient;
 
 exports.insert = insert;
 exports.query = query;
@@ -12,7 +11,7 @@ exports.showTablesFrom = showTablesFrom;
  * @param {*} fields 
  */
 async function query(sql, fields) {
-    return await mysqlClient.query(sql, fields);
+    return await mysqlConnector.query(sql, fields);
 }
 
 /**
@@ -21,7 +20,7 @@ async function query(sql, fields) {
  */
 function insert(table, rows) {
     return new Promise(function (resolve, reject) {
-        mysqlClient.insert(table, rows, function (err, result) {
+        mysqlConnector.insert(table, rows, function (err, result) {
             if (err) {
                 reject(err);
             } else {

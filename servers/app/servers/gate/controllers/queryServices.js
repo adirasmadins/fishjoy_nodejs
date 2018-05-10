@@ -3,11 +3,8 @@ const dispatcher = require('../../../utils/dispatcher');
 const httpCfg = omelo.app.get('http');
 const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
 const logicResponse = require('../../common/logicResponse');
-const IP_REG = /((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))/;
 const queryGameEntry = require('../internal/queryGameEntry');
 const rpcDefs = require('../../../net/rpcDefs');
-const versions = require('../../../../../servers/config/versions');
-const www_domain = versions.WWW_DOMAIN.indexOf(versions.PUB) !== -1 ? 'www.' : '';
 
 function _getServerCfgTypeId(lists, serverId) {
     for (let i = 0; i < lists.length; i++) {
@@ -25,8 +22,7 @@ function _getList(uid, protocol) {
 
     let resource = dispatcher.dispatchEx(uid, httpCfg.resource);
     serverInfo.RESOURCE = {
-        address: enable ? (IP_REG.test(resource.https.publicHost) ? resource.https.publicHost : www_domain + resource.https.publicHost) :
-            (IP_REG.test(resource.http.publicHost) ? resource.http.publicHost : www_domain + resource.http.publicHost),
+        address: enable ? resource.https.publicHost:resource.http.publicHost,
         port: enable ? resource.https.port : resource.http.port,
     };
 

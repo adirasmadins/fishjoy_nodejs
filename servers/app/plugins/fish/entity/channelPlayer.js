@@ -1,8 +1,8 @@
 const FishPlayer = require('./player');
-const versions = require('../../../utils/imports').versions;
+const versionsUtil = require('../../../utils/imports').versionsUtil;
 
 function getChannelPlayer() {
-    let ver = versions.VER_KEY[versions.PUB];
+    let ver = versionsUtil.getVerKey();
     let ChannelPlayer = null;
     try {
         ChannelPlayer = require(`./player.${ver}`);

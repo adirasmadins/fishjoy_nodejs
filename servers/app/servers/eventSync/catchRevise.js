@@ -1,5 +1,3 @@
-const redisClient = require('../../utils/dbclients').redisClient;
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
 const redisKey = require('../../database/index').dbConsts.REDISKEY;
 const EventEmitter = require('events').EventEmitter;
 const eventType = require('../../consts/eventType');
@@ -20,11 +18,12 @@ class CatchRevise extends EventEmitter {
         this._base = 90000; //门槛
         this._cash_recharege_percet = 0.45; //提现比例系数
         this._sevenDay_ms = 1000 * 60 * 60 * 24 * 7; //7天时长毫秒数
+        logger.error('-------------------------------CatchRevise');
     }
 
     start() {
-        redisClient.sub(redisKey.DATA_EVENT_SYNC.CASH_RECHAREGE_PERCET, this.cash_recharege_percet.bind(this));
-        redisClient.cmd.get(redisKey.PLATFORM_DATA.CASH_RECHAREGE_PERCET, function (err, result) {
+        redisConnector.sub(redisKey.DATA_EVENT_SYNC.CASH_RECHAREGE_PERCET, this.cash_recharege_percet.bind(this));
+        redisConnector.cmd.get(redisKey.PLATFORM_DATA.CASH_RECHAREGE_PERCET, function (err, result) {
             if (err) {
                 logger.error('读取提现比例系数失败', err);
                 return;
@@ -61,7 +60,7 @@ class CatchRevise extends EventEmitter {
      */
     _queryCash(created_at) {
         return new Promise(function (resolve, reject) {
-            mysqlClient.query(this._sql.cash, [created_at], function (err, result) {
+            mysqlConnector.query(this._sql.cash, [created_at], function (err, result) {
                 if (err) {
                     reject(err);
                 } else {
@@ -78,7 +77,7 @@ class CatchRevise extends EventEmitter {
      */
     _queryRecharge(created_at) {
         return new Promise(function (resolve, reject) {
-            mysqlClient.query(this._sql.recharge, [created_at], function (err, result) {
+            mysqlConnector.query(this._sql.recharge, [created_at], function (err, result) {
                 if (err) {
                     reject(err);
                 } else {
@@ -115,9 +114,9 @@ class CatchRevise extends EventEmitter {
         } catch (err) {
             logger.error('定时计算全服捕获修正系数异常', err);
         } finally {
-            redisClient.cmd.set(redisKey.PLATFORM_DATA.PLATFORM_CATCH_REVISE, this._catch_revise);
+            redisConnector.cmd.set(redisKey.PLATFORM_DATA.PLATFORM_CATCH_REVISE, this._catch_revise);
             logger.info('------------revise_value:', this._catch_revise);
-            redisClient.pub(redisKey.DATA_EVENT_SYNC.PLATFORM_CATCH_REVISE, this._catch_revise);
+            redisConnector.pub(redisKey.DATA_EVENT_SYNC.PLATFORM_CATCH_REVISE, this._catch_revise);
         }
     }
 }

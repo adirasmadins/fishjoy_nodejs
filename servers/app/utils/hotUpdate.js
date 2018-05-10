@@ -26,7 +26,7 @@ class HotUpdate {
             if(this._regExps[i].test(file)){
                 log(`配置文件 ${file} 发生变化`);
                 if(this._reload){
-                    let [name, value]= this._reloadFile(file);
+                    let {name, value}= this._reloadFile(file);
                     log(`热更配置文件 ${name} 成功`);
                     if(name && value && this._changeHandler){
                         this._changeHandler(name, value);
@@ -56,7 +56,7 @@ class HotUpdate {
         require.cache[fullpath] = null;
         let name = path.parse(fullpath).name;
         try {
-            return [name, require(fullpath)];
+            return {name:name, value:require(fullpath)};
         } catch (err) {
             log(`热更配置文件 ${name} 异常`, err);
             require.cache[fullpath] = module;

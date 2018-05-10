@@ -1,6 +1,5 @@
 const omelo = require('omelo');
-const redisClient = require('../../utils/dbclients').redisClient;
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
+const {RedisConnector, MysqlConnector} = require('../../database/dbclient');
 const taskPool = require('../../utils/task').taskPool;
 const DailyResetTask = require('./task/dailyResetTask');
 const MonthResetTask = require('./task/monthResetTask');
@@ -17,12 +16,14 @@ class RankingApp {
         this._instance = null;
     }
     async start() {
-        let result = await redisClient.start(omelo.app.get('redis'));
+        this._redisConnector = new RedisConnector();
+        let result = await this._redisConnector.start(omelo.app.get('redis'));
         if (!result) {
             process.exit(0);
             return;
         }
-        result = await mysqlClient.start(omelo.app.get('mysql'));
+        this._mysqlConnector = new MysqlConnector();
+        result = await this._mysqlConnector.start(omelo.app.get('mysql'));
         if (!result) {
             process.exit(0);
             return;
@@ -33,8 +34,8 @@ class RankingApp {
 
     stop() {
         taskPool.removeTask();
-        redisClient.stop();
-        mysqlClient.stop();
+        redisConnector.stop();
+        mysqlConnector.stop();
         logger.info('排行榜服关闭');
     }
 
@@ -56,4 +57,4 @@ class RankingApp {
     }
 }
 
-module.exports = new RankingApp();
+module.exports = RankingApp;

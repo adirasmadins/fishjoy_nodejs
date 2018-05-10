@@ -1,9 +1,7 @@
 const omelo = require('omelo');
 const async = require('async');
 const plugins = require('../../plugins');
-const cache = require('../../cache/cache');
-const redisClient = require('../../utils/dbclients').redisClient;
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
+const {RedisConnector, MysqlConnector} = require('../../database/dbclient');
 const matchingCmd = require('../../cmd/matchingCmd');
 const constDef = require('../../consts/constDef');
 const GAME_TYPE = require('../../utils/imports').sysConfig.GAME_TYPE;
@@ -20,22 +18,29 @@ class GameApp {
     constructor() {
         this._instance = new plugins[GAME_TYPE].Instance();
         this._maxLoad = 200;
+        logger.error('-----------------GameApp') 
+    }
+
+    get instance(){
+        return this._instance;
     }
 
     async start() {
-        let result = await redisClient.start(omelo.app.get('redis'));
+        this._redisConnector = new RedisConnector();
+        let result = await this._redisConnector.start(omelo.app.get('redis'));
         if (!result) {
             process.exit(0);
             return;
         }
-        result = await mysqlClient.start(omelo.app.get('mysql'));
+        this._mysqlConnector = new MysqlConnector();
+        result = await this._mysqlConnector.start(omelo.app.get('mysql'));
         if (!result) {
             process.exit(0);
             return;
         }
+
         omelo.app.game = this;
-        await cache.start();
-        this._instance.start();
+        await this._instance.start();
 
         dropManager.start();
 
@@ -54,8 +59,8 @@ class GameApp {
 
     stop() {
         this._instance.stop();
-        redisClient.stop();
-        mysqlClient.stop();
+        redisConnector.stop();
+        mysqlConnector.stop();
         globalStatusData.clean();
     }
 
@@ -136,7 +141,12 @@ class GameApp {
             if (gamePos.sid != msg.sid) {
                 await rpcSender.invoke(rpcSender.serverType.game, rpcSender.serverModule.playerRemote, fishCmd.remote.leaveGame.route, {uid: msg.uid});
             } else {
-                recoverRoomId = gamePos.roomId;
+                if(msg.roomType && gamePos.roomType != msg.roomType){
+                    await this._instance.leaveGame(msg);
+                }else {
+                    recoverRoomId = gamePos.roomId;
+                }
+
             }
         }
 
@@ -215,4 +225,4 @@ class GameApp {
     }
 }
 
-module.exports = new GameApp();
+module.exports = GameApp;

@@ -1,7 +1,8 @@
-const adminApp = require('./adminApp');
+const AdminApp = require('./adminApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    adminApp.start();
+    app.entry = new AdminApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    adminApp.stop();
+    app.entry.stop();
     cb();
 };
 

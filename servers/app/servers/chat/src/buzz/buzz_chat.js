@@ -20,7 +20,7 @@ function worldChat(channel, message) {
     let messages = (channel == CHANNEL.WORLD_CHAT + ":2") ? messages_ios : messages_other;
     message.time = new Date().getTime();
     // 获取发言者的test值
-    redisConnector.cmd.hget(REDISKEY.TEST, message.sender, function(err, res) {
+    redisConnector.cmd.hget(REDISKEY.TEST, message.sender, function (err, res) {
         message.test = parseInt(res);
         if (messages.length <= maxMessage) {
             messages.push(message);
@@ -126,12 +126,12 @@ function getPrivateMessage(dataObj, cb) {
 function getFriendAskMsg(dataObj, cb) {
     const FUNC = TAG + "getFriendAskMsg() --- ";
     let uid = dataObj.token.split("_")[0];
-    let timestamp = dataObj.applytime;
+    let timestamp = +dataObj.applytime;
     //let timestamp = dataObj.timestamp;
     // logger.info(FUNC + "timestamp:", timestamp);
     let result = [];
     let key = `${MSG.ASK_FRIEND}:${uid}`;
-    redisConnector.cmd.zrangebyscore(key, timestamp, new Date().getTime(), function (err, reply) {
+    redisConnector.cmd.zrangebyscore(key, timestamp + 1, new Date().getTime(), function (err, reply) {
         if (err) {
             logger.error(err);
             cb(err);

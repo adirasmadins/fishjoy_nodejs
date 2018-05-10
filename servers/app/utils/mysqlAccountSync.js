@@ -32,7 +32,7 @@ function getAccount(uid, fields, cb) {
     }
     let fields_obj = {};
     let table = {};
-    if (fields.length > 0) {
+    if (fields && fields.length > 0) {
         for (let i in fields) {
             let f = fields[i];
             fields_obj[f] = 1;

@@ -8,6 +8,7 @@ const redisKeys = require('../../../../database').dbConsts.REDISKEY;
 const dao_social = require('../dao/dao_social');
 const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
 const _ = require("underscore");
+const versionsUtil = require('../../../../utils/imports').versionsUtil;
 
 const TAG = "【buzz_social】";
 
@@ -249,7 +250,7 @@ function _getFriendsCharts(data, cb) {
     let fopenidsMap = {};
     if(fopenids && fopenids.length > 0){
         for (let i = 0; i < fopenids.length; i++) {
-            fopenids[i] += "_" + platform;
+            fopenids[i] = versionsUtil.getOpenid(fopenids[i], platform);
             fopenidsMap[fopenids[i]] = 1;
         }
     }
@@ -291,7 +292,7 @@ function _getFriendsCharts(data, cb) {
                 channel_friend_count:channel_friend_count,
                 game_friend_count:gameFriend.length
             };
-            logger.error('ret=', ret);
+
             cb && cb(null, ret);
         });
     });

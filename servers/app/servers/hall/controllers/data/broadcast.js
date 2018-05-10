@@ -1,4 +1,4 @@
-const buzz_cst_game = require('../../src/buzz/cst/buzz_cst_game');
+const buzz_broadcast = require('../../../../common/broadcast/buzz_broadcast');
 const logicResponse = require('../../../common/logicResponse');
 
 exports.get_broadcast = get_broadcast;
@@ -8,7 +8,7 @@ exports.get_broadcast = get_broadcast;
  */
 async function get_broadcast(data) {
     return new Promise(function(resolve, reject){
-        buzz_cst_game.getBroadcast(data, function (err, gameBroadcast) {
+        buzz_broadcast.getBroadcast(data, function (err, gameBroadcast) {
             if(err){
                 logger.error('返回公告数据失败 err:', err);
                 reject(err);

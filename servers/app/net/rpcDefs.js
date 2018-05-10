@@ -14,7 +14,8 @@ module.exports = {
         eventSync: 'eventSyncSid',
         matching: 'matchingSid',
         rankMatch: 'rankMatchSid',
-        game: 'gameSid'
+        game: 'gameSid',
+        hall:'hallSid'
     },
     serverModule:{
         gate: {},
@@ -30,6 +31,9 @@ module.exports = {
         },
         game: {
             playerRemote: 'playerRemote'
+        },
+        hall: {
+            playerLogin: 'playerLogin'
         }
     }
 };

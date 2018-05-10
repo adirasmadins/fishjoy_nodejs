@@ -12,6 +12,7 @@ const REDISKEY = require('../../../database').dbConsts.REDISKEY;
 const configReader= require('../../../utils/configReader');
 const dropManager = require('../../../utils/DropManager');
 const tools = require('../../../utils/tools');
+const GAMECFG = require('../../../utils/imports').DESIGN_CFG;
 
 const SAVE_DT = 30 * 1000;
 
@@ -238,6 +239,14 @@ class GoddessPlayer extends ChannelPlayer {
     }
 
     /**
+     * 领取海盗任务奖励
+     * 保卫女神不会发生海盗任务领取
+     */
+    c_pirate_reward(data, cb) {
+        utils.invokeCallback(cb, FishCode.PIRATE_NOT_DONE);
+    }
+
+    /**
      * 定时轮序逻辑
      * @param {*轮询时间差，单位秒} dt 
      */
@@ -313,7 +322,7 @@ class GoddessPlayer extends ChannelPlayer {
      * @param {*} godIdx 
      */
     _godPassReward (godIdx) {
-        let totalWave = configReader.getLength('goddess_defend_cfg');
+        let totalWave = GAMECFG.goddess_defend_cfg.length;
         let wave = Math.min(totalWave, this.fishModel.getStart() + 1);
         let defendCfg = configReader.getValue('goddess_defend_cfg', wave);
         let treasureID = defendCfg.treasure[godIdx];

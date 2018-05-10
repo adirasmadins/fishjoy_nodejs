@@ -1,6 +1,6 @@
 const ReqHandler = require('../../common/reqHandler');
 const gateCmd = require('../../../cmd/gateCmd');
-const gateApp = require('../gateApp');
+const omelo = require('omelo');
 
 class GateHandler extends ReqHandler{
     constructor() {
@@ -8,7 +8,7 @@ class GateHandler extends ReqHandler{
     }
 
     request(route, msg, session, next) {
-        gateApp.request(route, msg, session, (err, result)=>{
+        omelo.app.entry.request(route, msg, session, (err, result)=>{
             super.response(err, result, next);
         });
     }

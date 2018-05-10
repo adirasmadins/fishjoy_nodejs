@@ -283,19 +283,25 @@ class FishRoom extends Room{
             return ERROR_OBJ.ROOM_PLAYER_FULL;
         }
 
-        logger.debug('&&&&&&&&&&&&&&&&&&&&& 玩家坐下', uid, 'seat:', seatId);
+        logger.info('&&&&&&&&&&&&&&&&&&&&& 玩家坐下', uid, 'seat:', seatId);
         let sceneCfg = GAMECFG.scene_scenes_cfg[this.sceneId];
-        this._initDIY(player, sceneCfg);
+        let tmps = this.sceneId.split('_');
+        let sceneIdx = -1;
+        if (tmps.length > 0) {
+            sceneIdx = Number(tmps[tmps.length - 1]);
+        }
+        player.joinRoom({
+            sceneCfg: sceneCfg,
+            fishModel: this._fishModel,
+            roomId: this._roomId,
+            seatId: seatId,
+            sceneIdx: sceneIdx,
+        });
         this._playerMap.set(uid, player);
-        player.seatId = seatId;
-        player.fishModel = this._fishModel;
-        player.sceneCfg =  sceneCfg;
-        player.roomId = this._roomId;
         this._addChannel(player);
         this._addPlayerEvent(player);
 
         let players = this.genAllPlayers(uid);
-        players[0].nickname='aaa';
         logger.info('room 玩家加入', player.account.nickname);
         this._broadcast(fishCmd.push.enter_room.route, {
             players: players
@@ -318,7 +324,6 @@ class FishRoom extends Room{
                 gold: player.account.gold,
                 pearl: player.account.pearl,
             };
-            player.clear();
             this._clearPlayerResource(player);
             this._playerMap.delete(uid);
         }
@@ -446,19 +451,13 @@ class FishRoom extends Room{
         player.clear();
     }
 
-    _initDIY(player, sceneCfg) {
-        if (player.account.weapon > sceneCfg.max_level) {
-            player.setDIY('weapon', sceneCfg.max_level);
-        }
-    }
-
     _addChannel(player, isNet = false) {
         switch (player.kindId) {
             case consts.ENTITY_TYPE.PLAYER:
                 super.addMsgChannel(player.uid, player.sid);
                 super.addWorldChannel(player.uid, player.sid, constDef.WORLD_CHANNEL_NAME.BARRAGE);
                 if(!isNet){
-                    super.addGamePos(player.uid, player.sid, {sid:player.sid, roomId:player.roomId});
+                    this.addGamePos(player.uid, player.sid, {sid:player.sid, roomId:player.roomId, roomType:this.mode, time:Date.now()});
                 }
 
                 break;

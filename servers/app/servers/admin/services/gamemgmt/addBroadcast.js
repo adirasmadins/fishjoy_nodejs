@@ -1,5 +1,6 @@
 const SQL_CONFIG = require('../../configs/sql');
 const tools = require('../../../../utils/tools');
+const ServerBroadcast = require('../../../../common/broadcast/ServerBroadcast');
 const REDISKEY = require('../../../../database').dbConsts.REDISKEY;
 
 /**
@@ -31,24 +32,16 @@ exports.get = async function (data, ctx) {
     }
 }
 
-function addBroadcast(content, gap, repeat, startTime, endTime) {
-    let data = {
-        id: tools.ObjUtil.createSalt(),
-        timestamp: new Date().getTime(),
-        content: {
-            txt: content,
-            times: repeat,
-            repeat: repeat,//新增:连播次数
-            gap: gap,//新增:循环间隔时间(秒)
-            startTime: startTime,//新增:开始时间
-            endTime: endTime,//新增:结束时间
-        }
+function addBroadcast(txt, gap, repeat, startTime, endTime) {
+    let content = {
+        txt: txt,
+        times: repeat,
+        repeat: repeat,//新增:连播次数
+        gap: gap,//新增:循环间隔时间(秒)
+        startTime: startTime,//新增:开始时间
+        endTime: endTime,//新增:结束时间
     };
-    let message = JSON.stringify(data);
-
-    redisConnector.pub(REDISKEY.CH.BROADCAST_SERVER, message);
-    // 将历史的服务器公告存储在一个Hash表中
-    tools.RedisUtil.hset(REDISKEY.PLATFORM_DATA.SERVER_BROADCAST, data.id, message);
+    new ServerBroadcast(content).extra(null).add();
 }
 
 exports.set = async function (count) {
@@ -61,15 +54,11 @@ exports.set = async function (count) {
 
     if (ret.length > 0) {
         let idx = count % ret.length;
-        logger.error('------------------idx:', idx);
+        logger.error(`重新设置公告count:${count},ret.length:${ret.length},idx:${idx}`);
         let message = ret[idx];
         let data = JSON.parse(message);
-        data.timestamp = new Date().getTime();
-        message = JSON.stringify(data);
-        // logger.error('------------------message:', message);
-        // logger.error('typeof message:', typeof message);
-        redisConnector.pub(REDISKEY.CH.BROADCAST_SERVER, message);
-        tools.RedisUtil.hset(REDISKEY.PLATFORM_DATA.SERVER_BROADCAST, data.id, message);
+        // TODO: 到了结束时间就将自己删除
+        new ServerBroadcast(data.content).extra(data.id).add();
     }
     else {
         logger.error('没有服务器公告');

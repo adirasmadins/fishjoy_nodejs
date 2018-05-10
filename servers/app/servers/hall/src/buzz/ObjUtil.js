@@ -46,8 +46,8 @@ exports.isEmpty = isEmpty;
 exports.length = length;
 exports.exclude = exclude;
 
-exports.TimeQueue = TimeQueue;// 时间队列对象
-exports.Broadcast = Broadcast;// 公告对象
+// exports.TimeQueue = TimeQueue;// 时间队列对象
+// exports.Broadcast = Broadcast;// 公告对象
 
 //------------------------------------------------------------------------------
 // implement
@@ -325,62 +325,62 @@ exports.clone = function (obj) {
     return obj; 
 };
 
-//----------------------------------------------------------
-// Broadcast
-//----------------------------------------------------------
-function Broadcast(timestamp, content) {
-    this.timestamp = timestamp;
-    this.content = content;
-}
+// //----------------------------------------------------------
+// // Broadcast
+// //----------------------------------------------------------
+// function Broadcast(timestamp, content) {
+//     this.timestamp = timestamp;
+//     this.content = content;
+// }
 
-//----------------------------------------------------------
-// TimeQueue
-//----------------------------------------------------------
-/**
- * timeInterval 检测时间间隔, 单位是毫秒.
- * timeOffset 超过此时间间隔长度的对象将被移除出队列.
- * recentRetLength 返回给客户端的公告内容条数.
- * maxQueueLength 队列的最大长度.
- */
-function TimeQueue(timeInterval, timeOffset, recentRetLength, maxQueueLength) {
-    this.queue = [];
-    this.timeInterval = timeInterval;
-    this.recentRetLength = recentRetLength;
-    this.maxQueueLength = maxQueueLength;
+// //----------------------------------------------------------
+// // TimeQueue
+// //----------------------------------------------------------
+// /**
+//  * timeInterval 检测时间间隔, 单位是毫秒.
+//  * timeOffset 超过此时间间隔长度的对象将被移除出队列.
+//  * recentRetLength 返回给客户端的公告内容条数.
+//  * maxQueueLength 队列的最大长度.
+//  */
+// function TimeQueue(timeInterval, timeOffset, recentRetLength, maxQueueLength) {
+//     this.queue = [];
+//     this.timeInterval = timeInterval;
+//     this.recentRetLength = recentRetLength;
+//     this.maxQueueLength = maxQueueLength;
 
-    var crossQueue = this.queue;
-    setInterval(function () {
-        if (DEBUG) logger.info('检测时间队列');
-        var currentTimesamp = Date.parse(new Date());
-        for (var i = 0; i < crossQueue.length; i++) {
-            var broadcast = crossQueue[i];
-            if (broadcast) {
-                if (currentTimesamp - timeOffset > broadcast.timestamp) {
-                    crossQueue.shift();
-                }
-                else {
-                    break;
-                }
-            }
-        }
-    }, this.timeInterval);
-}
+//     var crossQueue = this.queue;
+//     setInterval(function () {
+//         if (DEBUG) logger.info('检测时间队列');
+//         var currentTimesamp = Date.parse(new Date());
+//         for (var i = 0; i < crossQueue.length; i++) {
+//             var broadcast = crossQueue[i];
+//             if (broadcast) {
+//                 if (currentTimesamp - timeOffset > broadcast.timestamp) {
+//                     crossQueue.shift();
+//                 }
+//                 else {
+//                     break;
+//                 }
+//             }
+//         }
+//     }, this.timeInterval);
+// }
 
-TimeQueue.prototype.push = function (broadcast) {
-    if (this.queue.length >= this.maxQueueLength) {
-        this.queue.shift();
-    }
-    this.queue.push(broadcast);
-};
+// TimeQueue.prototype.push = function (broadcast) {
+//     if (this.queue.length >= this.maxQueueLength) {
+//         this.queue.shift();
+//     }
+//     this.queue.push(broadcast);
+// };
 
-TimeQueue.prototype.getRecent = function (timestamp) {
-    var start = this.queue.length - Math.min(this.recentRetLength, this.queue.length);
-    var ret = [];
-    for (var i = start; i < this.queue.length; i++) {
-        var oneBroadcast = this.queue[i];
-        if (!timestamp || timestamp < oneBroadcast.timestamp) {
-            ret.push(this.queue[i]);
-        }
-    }
-    return ret;
-};
+// TimeQueue.prototype.getRecent = function (timestamp) {
+//     var start = this.queue.length - Math.min(this.recentRetLength, this.queue.length);
+//     var ret = [];
+//     for (var i = start; i < this.queue.length; i++) {
+//         var oneBroadcast = this.queue[i];
+//         if (!timestamp || timestamp < oneBroadcast.timestamp) {
+//             ret.push(this.queue[i]);
+//         }
+//     }
+//     return ret;
+// };

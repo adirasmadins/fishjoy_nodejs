@@ -80,6 +80,11 @@ module.exports = {
         optParams: ['uid'],
         menu: gameData,
     },
+    goddessLog: {
+        params: ['startDate', 'endDate', 'start', 'length'],
+        optParams: ['uid', 'type'],
+        menu: gameData,
+    },
 
     // gameMgmt
     cashRequire: {

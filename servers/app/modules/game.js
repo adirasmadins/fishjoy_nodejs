@@ -6,6 +6,7 @@ class GameModule {
         this.app = opts.app;
         this.type = opts.type || 'pull';
         this.interval = opts.interval || 5;
+        logger.error('-----------------GameModule')
     }
 
     monitorHandler(agent, msg) {
@@ -13,8 +14,8 @@ class GameModule {
             logger.error('not support type: %j', agent.id);
             return;
         }
-        let game = require('../servers/game/gameApp');
-        let loadInfo = game.getLoadInfo();
+        
+        let loadInfo = this.app.entry.getLoadInfo();
 
         agent.notify(module.exports.moduleId, {
             serverId: agent.id,

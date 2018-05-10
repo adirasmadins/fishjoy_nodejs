@@ -70,7 +70,7 @@ function _reward(data, cb) {
                 type: GameEventBroadcast.TYPE.GAME_EVENT.FIRST_RECHARGE,
                 params: params,
             };
-           new GameEventBroadcast(account, content).add();
+           new GameEventBroadcast(content).extra(account).add();
         });
     }
 

@@ -1,7 +1,8 @@
-const gateApp = require('./gateApp');
+const GateApp = require('./gateApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    gateApp.start();
+    app.entry = new GateApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    gateApp.stop();
+    app.entry.stop();
     cb();
 };
 

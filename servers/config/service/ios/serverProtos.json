@@ -157,7 +157,6 @@
                 "optional uInt32 liveC": 5,
                 "optional uInt32 passAll": 6,
                 "optional uInt32 godId": 7,
-
                 "message GoddessReward": {
                     "optional uInt32 times": 1,
                     "repeated string drops": 2,

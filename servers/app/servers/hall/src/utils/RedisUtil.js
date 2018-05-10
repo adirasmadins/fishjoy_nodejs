@@ -74,16 +74,6 @@ exports.incrby = incrby;
 exports.repeatHscan = repeatHscan;
 exports.repeatZscan = repeatZscan;
 exports.tco = tco;
-exports.init = init;
-
-
-const redisClient = require('../../../../utils/dbclients').redisClient;
-
-function init(redis_client) {
-    client = redis_client;
-}
-
-init(redisClient.cmd);
 
 /**
  * ZSCAN 遍历有序集合
@@ -91,7 +81,7 @@ init(redisClient.cmd);
 function zscan(hashkey, start, count, cb) {
     const FUNC = TAG + "zscan() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zscan(hashkey, start, 'COUNT', count, function (err, res) {
+        redisConnector.cmd.zscan(hashkey, start, 'COUNT', count, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -121,7 +111,7 @@ function repeatZscan(hashkey, start, count, op, next) {
  * id递增计数器
  */
 exports.generateNewId = function (cb) {
-    client.incr(redisKeys.KEY_ACC_COUNTER, function (err, count) {
+    redisConnector.cmd.incr(redisKeys.KEY_ACC_COUNTER, function (err, count) {
         cb && cb(count);
     });
 };
@@ -137,7 +127,7 @@ function scan(key, cb) {
 function incr(key, cb) {
     const FUNC = TAG + "hscan() --- ";
     if (isReadyAndConnected(cb)) {
-        client.incr(key, function (err, res) {
+        redisConnector.cmd.incr(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -148,7 +138,7 @@ function incr(key, cb) {
 function hkeys(key, cb) {
     const FUNC = TAG + "hscan() --- ";
     if (isReadyAndConnected(cb)) {
-        client.hkeys(key, function (err, res) {
+        redisConnector.cmd.hkeys(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -162,7 +152,7 @@ function hkeys(key, cb) {
 function hscan(hashkey, start, count, cb) {
     const FUNC = TAG + "hscan() --- ";
     if (isReadyAndConnected(cb)) {
-        client.hscan(hashkey, start, 'COUNT', count, function (err, res) {
+        redisConnector.cmd.hscan(hashkey, start, 'COUNT', count, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -175,7 +165,7 @@ function hscan(hashkey, start, count, cb) {
 function hincr(hashkey, field, cb) {
     const FUNC = TAG + "hincr() --- ";
     if (isReadyAndConnected(cb)) {
-        client.hincrby(hashkey, field, 1, function (err, res) {
+        redisConnector.cmd.hincrby(hashkey, field, 1, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -200,7 +190,7 @@ function hincrby(hashkey, field, num, cb) {
         throw new Error(FUNC + "!num");
     }
     if (isReadyAndConnected(cb)) {
-        client.hincrby(hashkey, field, num, function (err, res) {
+        redisConnector.cmd.hincrby(hashkey, field, num, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -219,7 +209,7 @@ function hincrby(hashkey, field, num, cb) {
 function incrby(key, num, cb) {
     const FUNC = TAG + "incrby() --- ";
     if (isReadyAndConnected(cb)) {
-        client.incrby(key, num, function (err, res) {
+        redisConnector.cmd.incrby(key, num, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -250,11 +240,11 @@ function repeatHscan(hashkey, start, count, op, next) {
 //==============================================================================
 
 function getClient() {
-    return client;
+    return redisConnector;
 }
 
 /**
- * client.set(key,value,callback),callback 函数有2个回调参数,error和response, error表示操作过程中的错误提示值为null表示没有错误,response为布尔值
+ * redisConnector.cmd.set(key,value,callback),callback 函数有2个回调参数,error和response, error表示操作过程中的错误提示值为null表示没有错误,response为布尔值
  * Set Value for Key.
  * client must be ready and connected.
  * @param cb callback(err, res) res usually will return "OK".
@@ -262,7 +252,7 @@ function getClient() {
 function set(key, value, cb) {
     const FUNC = TAG + "set() --- ";
     if (isReadyAndConnected(cb)) {
-        client.set(key, value, cb);
+        redisConnector.cmd.set(key, value, cb);
     }
 }
 
@@ -277,12 +267,12 @@ function set(key, value, cb) {
 function mset(key_value, cb) {
     const FUNC = TAG + "set() --- ";
     if (isReadyAndConnected(cb)) {
-        client.mset(key_value, cb);
+        redisConnector.cmd.mset(key_value, cb);
     }
 }
 
 /**
- * client.get(key,callback),callback 函数有2个回调参数,error和response, error表示操作过程中的错误提示值为null表示没有错误,response为获取到的值,null表示没有获取到数据
+ * redisConnector.cmd.get(key,callback),callback 函数有2个回调参数,error和response, error表示操作过程中的错误提示值为null表示没有错误,response为获取到的值,null表示没有获取到数据
  * Get Value from Key.
  * client must be ready and connected.
  * @param cb callback(err, value) value will be returned.
@@ -290,7 +280,7 @@ function mset(key_value, cb) {
 function get(key, cb) {
     const FUNC = TAG + "get() --- ";
     if (isReadyAndConnected(cb)) {
-        client.get(key, cb);
+        redisConnector.cmd.get(key, cb);
     }
 }
 
@@ -307,12 +297,12 @@ function get(key, cb) {
 function mget(key_list, cb) {
     const FUNC = TAG + "mget() --- ";
     if (isReadyAndConnected(cb)) {
-        client.mget(key_list, cb);
+        redisConnector.cmd.mget(key_list, cb);
     }
 }
 
 /**
- * client.hset(hashkey,field,value,callback) 哈希数据类型, 第一个参数为KEY名称,第二个为需要设置的字段KEY,第三个为值,第四个参数为回调参数,内容和set一致
+ * redisConnector.cmd.hset(hashkey,field,value,callback) 哈希数据类型, 第一个参数为KEY名称,第二个为需要设置的字段KEY,第三个为值,第四个参数为回调参数,内容和set一致
  * Set Hash Value for Key.
  * client must be ready and connected.
  */
@@ -351,10 +341,10 @@ function hset(hashkey, field, value, cb) {
 
     if (isReadyAndConnected(cb)) {
         if (cb) {
-            client.hset(hashkey, field, value, cb);
+            redisConnector.cmd.hset(hashkey, field, value, cb);
         }
         else {
-            client.hset(hashkey, field, value);
+            redisConnector.cmd.hset(hashkey, field, value);
         }
     }
 
@@ -366,14 +356,14 @@ function hset(hashkey, field, value, cb) {
 }
 
 /**
- * client.hmset(hashkey,field,value,field,value ….. callback) 哈希数据类型, 第一个参数为KEY名称,后面的参数为不固定参数,数据格式是 key,value ,key, value
+ * redisConnector.cmd.hmset(hashkey,field,value,field,value ….. callback) 哈希数据类型, 第一个参数为KEY名称,后面的参数为不固定参数,数据格式是 key,value ,key, value
  * Set Multi Value for Key.
  * client must be ready and connected.
  */
 function hmset(hashkey, map, cb) {
     const FUNC = TAG + "hmset() --- ";
     if (isReadyAndConnected(cb)) {
-        client.hmset(hashkey, map, function (err, res) {
+        redisConnector.cmd.hmset(hashkey, map, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -381,14 +371,14 @@ function hmset(hashkey, map, cb) {
 }
 
 /**
- * client.hget(hashkey,field,callback) 获取hash数据中的某一个字段值
+ * redisConnector.cmd.hget(hashkey,field,callback) 获取hash数据中的某一个字段值
  * Set Hash Value from Key.
  * client must be ready and connected.
  */
 function hget(hashkey, field, cb) {
     const FUNC = TAG + "hget() --- ";
     if (isReadyAndConnected(cb)) {
-        client.hget(hashkey, field, cb);
+        redisConnector.cmd.hget(hashkey, field, cb);
     }
 }
 
@@ -404,13 +394,13 @@ function hmget(hashkey, field_list, cb) {
         return;
     }
     if (isReadyAndConnected(cb)) {
-        client.hmget(hashkey, field_list, cb);
+        redisConnector.cmd.hmget(hashkey, field_list, cb);
     }
 }
 
 /**
  * 注意: 产品中不可使用
- * client.hgetall(hashkey,callback) 获取hash数据种所有的数据,包括字段与值
+ * redisConnector.cmd.hgetall(hashkey,callback) 获取hash数据种所有的数据,包括字段与值
  * Get Multi Value from Key.
  * client must be ready and connected.
  * cb(err, res)
@@ -418,7 +408,7 @@ function hmget(hashkey, field_list, cb) {
 function hgetall(hashkey, cb) {
     const FUNC = TAG + "hgetall() --- ";
     if (isReadyAndConnected(cb)) {
-        client.hgetall(hashkey, function (err, res) {
+        redisConnector.cmd.hgetall(hashkey, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -426,7 +416,7 @@ function hgetall(hashkey, cb) {
 }
 
 /**
- * client.lpush(key, value, callback) 队列操作, 左推进入队列
+ * redisConnector.cmd.lpush(key, value, callback) 队列操作, 左推进入队列
  * 示例:
  * lpush("alist", "1")
  * lpush("alist", "2")
@@ -436,7 +426,7 @@ function hgetall(hashkey, cb) {
 function lpush(key, value, cb) {
     const FUNC = TAG + "lpush() --- ";
     if (isReadyAndConnected(cb)) {
-        client.lpush(key, value, function (err, res) {
+        redisConnector.cmd.lpush(key, value, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -444,7 +434,7 @@ function lpush(key, value, cb) {
 }
 
 /**
- * client.lrange(key, min, max, callback) 队列操作, 从左边开始获取队列的元素
+ * redisConnector.cmd.lrange(key, min, max, callback) 队列操作, 从左边开始获取队列的元素
  * 示例:
  * alist:["3","2","1"]
  * lrange("alist", 0, 1) = ["3","2"]
@@ -453,7 +443,7 @@ function lpush(key, value, cb) {
 function lrange(key, min, max, cb) {
     const FUNC = TAG + "lrange() --- ";
     if (isReadyAndConnected(cb)) {
-        client.lrange(key, min, max, function (err, res) {
+        redisConnector.cmd.lrange(key, min, max, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -461,7 +451,7 @@ function lrange(key, min, max, cb) {
 }
 
 /**
- * client.rpush(key, value, callback) 队列操作, 右推进入队列
+ * redisConnector.cmd.rpush(key, value, callback) 队列操作, 右推进入队列
  * 示例:
  * rpush("alist", "1")
  * rpush("alist", "2")
@@ -471,7 +461,7 @@ function lrange(key, min, max, cb) {
 function rpush(key, value, cb) {
     const FUNC = TAG + "rpush() --- ";
     if (isReadyAndConnected(cb)) {
-        client.rpush(key, value, function (err, res) {
+        redisConnector.cmd.rpush(key, value, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -488,7 +478,7 @@ function rpush(key, value, cb) {
 function blpop(key, timeout, cb) {
     const FUNC = TAG + "blpop() --- ";
     if (isReadyAndConnected(cb)) {
-        client.blpop(key, timeout, function (err, res) {
+        redisConnector.cmd.blpop(key, timeout, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -504,7 +494,7 @@ function blpop(key, timeout, cb) {
 function brpop(key, timeout, cb) {
     const FUNC = TAG + "brpop() --- ";
     if (isReadyAndConnected(cb)) {
-        client.brpop(key, timeout, function (err, res) {
+        redisConnector.cmd.brpop(key, timeout, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -519,7 +509,7 @@ function brpop(key, timeout, cb) {
 function sadd(key, member, cb) {
     const FUNC = TAG + "sadd() --- ";
     if (isReadyAndConnected(cb)) {
-        client.sadd(key, member, function (err, res) {
+        redisConnector.cmd.sadd(key, member, function (err, res) {
             if (err) {
                 logger.error("==============================================");
                 logger.error(key);
@@ -537,7 +527,7 @@ function sadd(key, member, cb) {
 function scard(key, cb) {
     const FUNC = TAG + "scard() --- ";
     if (isReadyAndConnected(cb)) {
-        client.scard(key, function (err, res) {
+        redisConnector.cmd.scard(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -551,7 +541,7 @@ function scard(key, cb) {
 function spop(key, cb) {
     const FUNC = TAG + "spop() --- ";
     if (isReadyAndConnected(cb)) {
-        client.spop(key, function (err, res) {
+        redisConnector.cmd.spop(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -564,7 +554,7 @@ function spop(key, cb) {
 function srandmember(key, cb) {
     const FUNC = TAG + "srandmember() --- ";
     if (isReadyAndConnected(cb)) {
-        client.srandmember(key, function (err, res) {
+        redisConnector.cmd.srandmember(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -577,7 +567,7 @@ function srandmember(key, cb) {
 function zadd(key, score, member, cb) {
     const FUNC = TAG + "zadd() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zadd(key, score, member, function (err, res) {
+        redisConnector.cmd.zadd(key, score, member, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -594,7 +584,7 @@ function zadd(key, score, member, cb) {
 function zaddbatch(key, map, cb) {
     const FUNC = TAG + "zaddbatch() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zadd(key, map, function (err, res) {
+        redisConnector.cmd.zadd(key, map, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -607,7 +597,7 @@ function zaddbatch(key, map, cb) {
 function zcount(key, cb) {
     const FUNC = TAG + "zcount() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zcount(key, -Infinity, Infinity, function (err, res) {
+        redisConnector.cmd.zcount(key, -Infinity, Infinity, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -620,7 +610,7 @@ function zcount(key, cb) {
 function zcard(key, cb) {
     const FUNC = TAG + "zcard() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zcard(key, function (err, res) {
+        redisConnector.cmd.zcard(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -634,7 +624,7 @@ function zcard(key, cb) {
 function zrange(key, start, stop, cb) {
     const FUNC = TAG + "zrange() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zrange(key, start, stop, function (err, res) {
+        redisConnector.cmd.zrange(key, start, stop, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -648,7 +638,7 @@ function zrange(key, start, stop, cb) {
 function zrangewithscores(key, start, stop, cb) {
     const FUNC = TAG + "zrangewithscores() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zrange(key, start, stop, 'withscores', function (err, res) {
+        redisConnector.cmd.zrange(key, start, stop, 'withscores', function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -662,7 +652,7 @@ function zrangewithscores(key, start, stop, cb) {
 function zrevrange(key, start, stop, cb) {
     const FUNC = TAG + "zrevrange() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zrevrange(key, start, stop, function (err, res) {
+        redisConnector.cmd.zrevrange(key, start, stop, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -701,7 +691,7 @@ function zrevrangewithscores(key, start, stop, cb) {
             }
             cb && cb(null, ret);
         });
-        // client.zrevrange(key, start, stop, 'withscores', function(err, res) {
+        // redisConnector.cmd.zrevrange(key, start, stop, 'withscores', function(err, res) {
         //     if (!handleErr(FUNC, err, cb)) return;
         //     cb && cb(null, res);
         // });
@@ -714,7 +704,7 @@ function zrevrangewithscores(key, start, stop, cb) {
 function zscore(key, member, cb) {
     const FUNC = TAG + "zscore() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zscore(key, member, function (err, res) {
+        redisConnector.cmd.zscore(key, member, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -728,7 +718,7 @@ function zscore(key, member, cb) {
 function zrank(key, member, cb) {
     const FUNC = TAG + "zrank() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zrank(key, member, function (err, res) {
+        redisConnector.cmd.zrank(key, member, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -742,7 +732,7 @@ function zrank(key, member, cb) {
 function zrevrank(key, member, cb) {
     const FUNC = TAG + "zrevrank() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zrevrank(key, member, function (err, res) {
+        redisConnector.cmd.zrevrank(key, member, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -752,7 +742,7 @@ function zrevrank(key, member, cb) {
 function zrem(key, member, cb) {
     const FUNC = TAG + "zrem() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zrem(key, member, function (err, res) {
+        redisConnector.cmd.zrem(key, member, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -767,7 +757,7 @@ function zrem(key, member, cb) {
 function zremrangebyrank(key, start, stop, cb) {
     const FUNC = TAG + "zremrangebyrank() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zremrangebyrank(key, start, stop, function (err, res) {
+        redisConnector.cmd.zremrangebyrank(key, start, stop, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -781,7 +771,7 @@ function zremrangebyrank(key, start, stop, cb) {
 function zrevremrangebyrank(key, start, stop, cb) {
     const FUNC = TAG + "zrevremrangebyrank() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zcard(key, function (err, count) {
+        redisConnector.cmd.zcard(key, function (err, count) {
             if (!handleErr(FUNC, err, cb)) return;
             if (count <= start) {
                 return cb && cb(null, 0);
@@ -789,7 +779,7 @@ function zrevremrangebyrank(key, start, stop, cb) {
             else {
                 stop = count - start - 1;
                 start = 0;
-                client.zremrangebyrank(key, start, stop, function (err, res) {
+                redisConnector.cmd.zremrangebyrank(key, start, stop, function (err, res) {
                     if (!handleErr(FUNC, err, cb)) return;
                     cb && cb(null, res);
                 });
@@ -837,7 +827,7 @@ function getRankEx(rank_name, platform, start, stop, cb) {
 function ltrim(key, start, end, cb) {
     const FUNC = TAG + "ltrim() --- ";
     if (isReadyAndConnected(cb)) {
-        client.ltrim(key, start, end, function (err, res) {
+        redisConnector.cmd.ltrim(key, start, end, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -850,7 +840,7 @@ function ltrim(key, start, end, cb) {
 function del(key, cb) {
     const FUNC = TAG + "del() --- ";
     if (isReadyAndConnected(cb)) {
-        client.del(key, function (err, res) {
+        redisConnector.cmd.del(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -863,7 +853,7 @@ function del(key, cb) {
 function hdel(key, field, cb) {
     const FUNC = TAG + "hdel() --- ";
     if (isReadyAndConnected(cb)) {
-        client.hdel(key, field, function (err, res) {
+        redisConnector.cmd.hdel(key, field, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -897,7 +887,7 @@ function multi(data, cb) {
         }
     }
     if (isReadyAndConnected(cb)) {
-        client.multi(data).exec(function (err, res) {
+        redisConnector.cmd.multi(data).exec(function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(err, res);
         });
@@ -934,7 +924,7 @@ function handleErr(FUNC, err, cb) {
 function expire(key, time, cb) {
     const FUNC = TAG + "expire() --- ";
     if (isReadyAndConnected(cb)) {
-        client.expire(key, time, function (err, res) {
+        redisConnector.cmd.expire(key, time, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -948,7 +938,7 @@ function expire(key, time, cb) {
 function sismember(key, member, cb) {
     const FUNC = TAG + "sismember() --- ";
     if (isReadyAndConnected(cb)) {
-        client.sismember(key, member, function (err, res) {
+        redisConnector.cmd.sismember(key, member, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -961,7 +951,7 @@ function sismember(key, member, cb) {
 function smembers(key, cb) {
     const FUNC = TAG + "smembers() --- ";
     if (isReadyAndConnected(cb)) {
-        client.smembers(key, function (err, res) {
+        redisConnector.cmd.smembers(key, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -979,7 +969,7 @@ function smembers(key, cb) {
 function lrem(key, count, value, cb) {
     const FUNC = TAG + "lrem() --- ";
     if (isReadyAndConnected(cb)) {
-        client.lrem(key, count, value, function (err, res) {
+        redisConnector.cmd.lrem(key, count, value, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });
@@ -997,7 +987,7 @@ function lrem(key, count, value, cb) {
 function zrangebyscore(key, min, max, cb) {
     const FUNC = TAG + "zrangebyscore() --- ";
     if (isReadyAndConnected(cb)) {
-        client.zrangebyscore(key, min, max, function (err, res) {
+        redisConnector.cmd.zrangebyscore(key, min, max, function (err, res) {
             if (!handleErr(FUNC, err, cb)) return;
             cb && cb(null, res);
         });

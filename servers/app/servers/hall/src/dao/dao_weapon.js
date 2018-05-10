@@ -7,6 +7,7 @@ const CacheWeapon = require('../buzz/cache/CacheWeapon');
 const CacheAccount = require('../buzz/cache/CacheAccount');
 const AccountCommon = require('./account/common');
 const _ = require('underscore');
+const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 
 
 //==============================================================================
@@ -19,7 +20,6 @@ const WEAPON_TYPE = {
 };
 
 const ERROR_OBJ = CstError.ERROR_OBJ;
-const GAME_EVENT_TYPE = buzz_cst_game.GAME_EVENT_TYPE;
 
 const TAG = "【dao_weapon】";
 
@@ -320,7 +320,7 @@ function _updateWeaponTable(pool, account, data, cb, old_vip_weapon, vip_weapon_
     
     pool.query(sql, sql_data, function (err, result) {
         if (err) {
-            logger.info('[ERROR] dao_weapon._updateWeaponTable(): ', err);
+            logger.info('[ERROR] dao_weapon._updateWeapon1Table(): ', err);
             cb(err);
             return;
         }
@@ -337,14 +337,10 @@ function _setBroadcast(account, level) {
         let charm = account.charm_rank && parseInt(account.charm_rank) || 0;
         logger.info(FUNC + "charm_rank:", account.charm_rank);
         let content = {
-            txt: player + ' 升级了' + level + '倍炮',
-            times: 1,
-            type: GAME_EVENT_TYPE.WEAPON_UPGRADE,
+            type: GameEventBroadcast.TYPE.GAME_EVENT.WEAPON_UPGRADE,
             params : [player, level, account.vip, charm],
-            platform: account.platform,
-            uid:account.id
         };
-        buzz_cst_game.addBroadcastGameEvent(content);
+        new GameEventBroadcast(content).extra(account).add();
     }
 }
 

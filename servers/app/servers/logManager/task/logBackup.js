@@ -3,7 +3,6 @@ const Task = require('../../../utils/task/task');
 const utils = require('../../../utils/utils');
 const util = require('util');
 const moment = require('moment');
-const mysqlClient = require('../../../utils/dbclients').mysqlClient;
 
 class LogBackup extends Task {
     constructor(conf) {
@@ -62,7 +61,7 @@ class LogBackup extends Task {
     async _isNeedBak(task) {
         try {
 
-            let result = await mysqlClient.query(`SELECT COUNT(*) as TOTAL FROM ${task.table}`);
+            let result = await mysqlConnector.query(`SELECT COUNT(*) as TOTAL FROM ${task.table}`);
             if (!result || !result[0]) {
                 return false;
             }
@@ -93,7 +92,7 @@ class LogBackup extends Task {
             now.second(0);
             logger.info('_isDailyNeedBak ', now.format('YYYY-MM-DD HH:mm:ss'));
             logger.info('------------------------------------', `SELECT COUNT(*) as TOTAL FROM ${task.table} WHERE ${task.timeRangeColumn} < '${now.format('YYYY-MM-DD HH:mm:ss')}'`);
-            let result = await mysqlClient.query(`SELECT COUNT(*) as TOTAL FROM ${task.table} WHERE ${task.timeRangeColumn} < '${now.format('YYYY-MM-DD HH:mm:ss')}'`);
+            let result = await mysqlConnector.query(`SELECT COUNT(*) as TOTAL FROM ${task.table} WHERE ${task.timeRangeColumn} < '${now.format('YYYY-MM-DD HH:mm:ss')}'`);
             if (!result || !result[0]) {
                 return false;
             }
@@ -116,7 +115,7 @@ class LogBackup extends Task {
 
     //获取备份表名
     async _getTableName(task) {
-        let tab = await mysqlClient.query(`SHOW TABLES FROM ${this.bakDBName}`);
+        let tab = await mysqlConnector.query(`SHOW TABLES FROM ${this.bakDBName}`);
         let today = moment(new Date()).format('YYYYMMDD');
         let index = 1;
         for (let k in tab) {
@@ -131,13 +130,13 @@ class LogBackup extends Task {
     //创建备份表
     async _createBakTable(structure, tablename, cb) {
         let sql = util.format(structure, `${this.bakDBName}.${tablename}`);
-        await mysqlClient.query(sql);
+        await mysqlConnector.query(sql);
     }
 
     //拷贝数据到备份表
     async _moveData(task, tname, skip, limit, cb) {
         let sql = `INSERT INTO ${this.bakDBName}.${tname} SELECT * FROM ${task.table} WHERE id >= ${task.begin_id} AND id <= ${task.end_id} LIMIT ${skip}, ${limit}`;
-        let result = await mysqlClient.query(sql);
+        let result = await mysqlConnector.query(sql);
         logger.error('_moveData count', result.affectedRows);
         let affectedRows = !!result && result.affectedRows ? result.affectedRows : 0;
         return {
@@ -156,7 +155,7 @@ class LogBackup extends Task {
                 dbAffectedRows
             } = await this._moveData(task, tname, skip, task.limit);
             if (dbAffectedRows < task.limit) {
-                await mysqlClient.query(`DELETE FROM ${task.table} WHERE id >= ${task.begin_id} AND id <= ${task.end_id}`);
+                await mysqlConnector.query(`DELETE FROM ${task.table} WHERE id >= ${task.begin_id} AND id <= ${task.end_id}`);
                 break;
             } else {
                 skip = dbSkip;

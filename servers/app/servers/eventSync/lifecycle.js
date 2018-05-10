@@ -1,7 +1,8 @@
-const eventSyncApp = require('./eventSyncApp');
+const EventSyncApp = require('./eventSyncApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    eventSyncApp.start();
+    app.entry = new EventSyncApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    eventSyncApp.stop();
+    app.entry.stop();
     cb();
 };
 

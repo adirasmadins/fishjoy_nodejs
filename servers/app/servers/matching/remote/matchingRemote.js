@@ -1,7 +1,7 @@
 
 const RemoteHandler = require('../../common/remoteHandler');
 const matchingCmd = require('../../../cmd/matchingCmd');
-const matchingApp = require('../matchingApp');
+const omelo = require('omelo');
 
 /**
  * 排位赛远程调用接口
@@ -15,7 +15,7 @@ function matchingRemote(app) {
 
 let remote = matchingCmd.remote;
 for(let k of Object.keys(remote)){
-    RemoteHandler.registe(remote[k].route, matchingRemote.prototype, matchingApp);
+    RemoteHandler.registe(remote[k].route, matchingRemote.prototype, omelo.app.entry);
 }
 
 module.exports = function (app) {

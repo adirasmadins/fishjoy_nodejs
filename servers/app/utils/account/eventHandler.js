@@ -29,15 +29,21 @@ class EventHandler {
             [ACCOUNTKEY.SKILL, 1],
             [ACCOUNTKEY.VIP, 1],
             [ACCOUNTKEY.COMEBACK, 1],
-            [ACCOUNTKEY.MISSION_DAILY_RESET, 1],
-            [ACCOUNTKEY.MISSION_ONLY_ONCE, 1],
         ]);
+        this._missionModel = null;
+    }
+
+    _getChangeFields(fields){
+        let changeFields = [];
+        for(let i = 0; i<fields.length;i++){
+            changeFields.push(fields[i][0]);
+        }
+        return changeFields;
     }
 
     addEvent(type, account, fields) {
         switch (type) {
             case ACCOUNT_EVENT_TYPE.GAIN_LOST:
-
                 if (!this.events[type]) {
                     this.events[type] = EventHandler.genGainLossFunc(account);
                 }
@@ -49,13 +55,12 @@ class EventHandler {
                 break;
             case ACCOUNT_EVENT_TYPE.MISSION:
                 if (!this.events[type]) {
-                    this.events[type] = EventHandler.missionFunc(account);
+                    this.events[type] = this.missionFunc(account);
                 }
                 break;
             case ACCOUNT_EVENT_TYPE.PLAYER_DATA_CHANGE_SYNC:
                 if (omelo.app.getServerType() != rpcSender.serverType.game && !this.events[type]) {
-                    logger.error('PLAYER_DATA_CHANGE_SYNC:', fields);
-                    this.events[type] = EventHandler.playerDataSyncFunc(account);
+                    this.events[type] = EventHandler.playerDataSyncFunc(account, this._getChangeFields(fields));
                 }
                 break;
             default:
@@ -73,7 +78,7 @@ class EventHandler {
                 this.addEvent(ACCOUNT_EVENT_TYPE.MISSION, account);
             }
             if (this.accountChangeKeys.has(tk)) {
-                this.addEvent(ACCOUNT_EVENT_TYPE.PLAYER_DATA_CHANGE_SYNC, account, tk);
+                this.addEvent(ACCOUNT_EVENT_TYPE.PLAYER_DATA_CHANGE_SYNC, account, keys);
             }
         }.bind(this));
     }
@@ -131,34 +136,36 @@ class EventHandler {
         };
     }
 
-    static missionFunc(account) {
+    missionFunc(account) {
         let updates = [];
         updates = updates.concat(account.update);
-        //统计金币变化dfc
-        let mission = null;
 
+        let self = this;
+        //统计金币变化dfc
+        if(!self._missionModel){
+            self._missionModel = new RewardModel(account);
+        }
         return async function () {
-            let mark = false;
             for (let i = 0; i < updates.length; i++) {
                 let key = updates[i][0];
                 let value = updates[i][1];
+
                 if (value && 'gold' == key) {
-                    mission = mission || new RewardModel(account);
-                    value > 0 ? mission.updateProcess(RewardModel.TaskType.GET_GOLD, value) :
-                        mission.updateProcess(RewardModel.TaskType.USE_GOLD, Math.abs(value));
+                    value > 0 ? self._missionModel.updateProcess(RewardModel.TaskType.GET_GOLD, value) :
+                        self._missionModel.updateProcess(RewardModel.TaskType.USE_GOLD, Math.abs(value));
                 }
                 if ('pearl' == key && value < 0) {
-                    mission = mission || new RewardModel(account);
-                    mission.updateProcess(RewardModel.TaskType.USE_DIAMOND, Math.abs(value));
+                    self._missionModel.updateProcess(RewardModel.TaskType.USE_DIAMOND, Math.abs(value));
                 }
             }
-            mission && mission.commit(); //等价account.commit()
+            self._missionModel.commit();
         };
     }
 
-    static playerDataSyncFunc(account) {
+    static playerDataSyncFunc(account, changeFields) {
         return async function () {
-                await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.playerDataChange.route, account.id, {uid: account.id});
+            logger.error(`玩家 uid=${account.id} 数据 fields=${changeFields} 变化通知`);
+            await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.playerDataChange.route, account.id, {uid: account.id, changeFields:changeFields});
         };
     }
 

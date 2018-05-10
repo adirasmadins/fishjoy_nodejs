@@ -52,6 +52,7 @@ const _errorCode = {
     ACTIVITY_FETCHED: 602, //活动已领取
     REWARD_FETCHED: 603, //奖励已领取
     PLAYER_CHEATING: 604, // 玩家作弊
+    GUIDE_REWARD_ALREADY: 605, // 玩家已经领取了新手奖励
 
     SERVICE_SWITCH: -1, //服务关停开关
     API_SWITCH: -2, //功能维护升级中，敬请期待
@@ -569,6 +570,12 @@ const _errorObj = {
     PLAYER_CHEATING: {
         msg: i18n.PLAYER_CHEATING[lan],
         code: _errorCode.PLAYER_CHEATING,
+    },
+
+    GUIDE_REWARD_ALREADY: {
+        msg: '玩家已经领取了新手奖励',
+        // msg: i18n.GUIDE_REWARD_ALREADY[lan],
+        code: _errorCode.GUIDE_REWARD_ALREADY,
     },
 
     SERVICE_SWITCH: {

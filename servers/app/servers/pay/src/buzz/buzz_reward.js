@@ -27,7 +27,6 @@ exports.cost = cost;
 
 exports.guideReward = guideReward;
 exports.dailyReward = dailyReward;
-exports.missionReward = missionReward;
 exports.activeReward = activeReward;
 exports.onekeyReward = onekeyReward;
 exports.resetReward = resetReward;
@@ -81,19 +80,6 @@ function dailyReward(req, dataObj, cb) {
     BuzzUtil.cacheLinkDataApi(dataObj, "daily_reward");
 
     _didDailyReward(req, dataObj, cb);
-
-    function lPrepare(input) {
-        return BuzzUtil.checkParams(input, ['token', 'quest_id'], "buzz_reward", cb);
-    }
-}
-
-function missionReward(req, dataObj, cb) {
-    const FUNC = TAG + "missionReward() --- ";
-    //----------------------------------
-    if (!lPrepare(dataObj)) return;
-    BuzzUtil.cacheLinkDataApi(dataObj, "mission_reward");
-
-    _missionReward(req, dataObj, cb);
 
     function lPrepare(input) {
         return BuzzUtil.checkParams(input, ['token', 'quest_id'], "buzz_reward", cb);
@@ -464,159 +450,6 @@ const QUEST_TYPE = {
     ACHIEVE_ONCE: 1,
 };
 
-/**
- * 任务领奖(每日任务, 成就任务)
- */
-function _missionReward(req, dataObj, cb) {
-    const FUNC = TAG + "_missionReward() --- ";
-    let uid = dataObj.uid;
-    let token = dataObj.token;
-    let qid = dataObj.quest_id;
-    let qcv = dataObj.quest_cur_value; // 可选
-
-    doNextWithAccount(dataObj.account);
-
-    function doNextWithAccount(account) {
-
-        let quest = BuzzUtil.getQuestById(qid);
-        if (!_checkMissionReward1()) return;
-
-        let quest_type = quest.type;
-        let quest_condition = quest.condition;
-        let quest_value1 = quest.value1;
-        let quest_value2 = quest.value2;
-        let quest_precondition = quest.precondition;
-        let mission = _getMissionRecordByType(account, quest_type);
-        if (!_checkMissionReward2()) return;
-        // 更新任务当前值
-        if (typeof (qcv) != "undefined") {
-            mission["" + qid] = qcv;
-        }
-        if (!_checkMissionReward3()) return;
-
-        let quest_reward = quest.reward;
-        let item_list = BuzzUtil.getItemList(quest_reward);
-
-        // 需要将成就点进行更新
-        BuzzUtil.putIntoPack( account, item_list, function (reward) {
-
-            if (0 != quest_precondition) {
-                mission["" + quest_precondition] = qcv;
-                delete mission["" + qid];
-            } else {
-                qcv = -1;
-                mission["" + qid] = -1;
-            }
-
-            _setMissionRecordByType(account, quest_type, mission, reward);
-            //统计成就点数dfc
-            let rewardModel = new RewardModel(account);
-            rewardModel.addProcess(RewardModel.TaskType.GET_ACHIEVE_POINT, reward.achieve_point);//内含account.commit
-            let change = BuzzUtil.getChange(account, reward);
-            let ret = {
-                item_list: item_list,
-                change: change,
-                quest_id: qid,
-                precondition: quest_precondition,
-                quest_cur_value: qcv,
-                mission_only_once: account.mission_only_once,
-                mission_daily_reset: account.mission_daily_reset,
-            };
-            cb(null, ret);
-
-            let scene = common_log_const_cfg.DAILY_GAIN;
-            if (QUEST_TYPE.ACHIEVE_ONCE == quest_type) {
-                scene = common_log_const_cfg.ACHIEVE_GAIN;
-            }
-
-            // yDONE: 金币数据记录
-            let gain = 0;
-            for (let i = 0; i < item_list.length; i++) {
-                let item = item_list[i];
-                let item_id = item.item_id;
-                let item_num = item.item_num;
-                if ('i001' == item_id) {
-                    gain += item_num;
-                }
-            }
-
-            // yDONE: 钻石数据记录
-            let diamondGain = 0;
-            for (let i = 0; i < item_list.length; i++) {
-                let item = item_list[i];
-                let item_id = item.item_id;
-                let item_num = item.item_num;
-                if ('i002' == item_id) {
-                    diamondGain += item_num;
-                }
-            }
-            if (diamondGain > 0) {
-                logger.info(FUNC + uid + ":在任务中获得钻石");
-                logBuilder.addPearlLogEx({
-                    account_id: uid,
-                    log_at: new Date(),
-                    gain: diamondGain,
-                    cost: 0,
-                    total: account.pearl,
-                    scene: scene,
-                    nickname: 0,
-                });
-            }
-        });
-
-        // 校验方法1
-        function _checkMissionReward1() {
-            if (null == quest) {
-                cb(ERROR_OBJ.MISSION_WRONG_QUEST_ID);
-                return false;
-            }
-
-            return true;
-        }
-
-        // 校验方法2
-        function _checkMissionReward2() {
-            if (null == mission) {
-                cb(ERROR_OBJ.MISSION_NULL);
-                return false;
-            }
-
-            let quest_list = BuzzUtil.getQuestListByConditionAndValue1(quest_condition, quest_value1);
-            for (let i = 0; i < quest_list.length; i++) {
-                let check_quest_id = quest_list[i];
-                if (typeof (mission["" + check_quest_id]) != "undefined") {
-                    if (check_quest_id > qid) {
-                        cb(ERROR_OBJ.MISSION_GOTTON);
-                        return false;
-                    }
-                    if (check_quest_id < qid) {
-                        cb(ERROR_OBJ.MISSION_DISATISFY);
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        // 校验方法3
-        function _checkMissionReward3() {
-            if ("undefined" == typeof (mission["" + qid])) {
-                cb(ERROR_OBJ.MISSION_NULL_RECORD);
-                return false;
-            }
-
-            let quest_cur_value = mission["" + qid];
-            if (quest_cur_value < quest_value2) {
-                cb(ERROR_OBJ.MISSION_DISATISFY);
-                return false;
-            }
-
-            return true;
-        }
-    }
-}
-
 function _getMissionRecordByType(account, quest_type) {
     switch (quest_type) {
         case QUEST_TYPE.DAILY_RESET:
@@ -625,19 +458,6 @@ function _getMissionRecordByType(account, quest_type) {
             return account.mission_only_once;
     }
     return null;
-}
-
-function _setMissionRecordByType(account, quest_type, mission, reward) {
-    switch (quest_type) {
-        case QUEST_TYPE.DAILY_RESET:
-            account.mission_daily_reset = mission;
-            CacheAccount.addActivePoint(account, reward.active_point);
-            break;
-        case QUEST_TYPE.ACHIEVE_ONCE:
-            account.mission_only_once = mission;
-            CacheAccount.addAchievePoint(account, reward.achieve_point);
-            break;
-    }
 }
 
 //----------------------------------------------------------

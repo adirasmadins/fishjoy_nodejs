@@ -11,7 +11,7 @@ const CacheAccount = require('../buzz/cache/CacheAccount');
 const CacheUserException = require('../buzz/cache/CacheUserException');
 const common_log_const_cfg = require('../../../../utils/imports').DESIGN_CFG.common_log_const_cfg;
 const ERROR_OBJ = CstError.ERROR_OBJ;
-const GAME_EVENT_TYPE = buzz_cst_game.GAME_EVENT_TYPE;
+const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 
 let DEBUG = 0;
 let ERROR = 1;
@@ -493,24 +493,20 @@ function _didAddGoldLog(pool, account, data, cb, current_total, nickname, isServ
     _setBroadcat(account, bonusList);
 }
 
-function _setBroadcat(my_account, bonusList) {
+function _setBroadcat(account, bonusList) {
     const FUNC = TAG + "_setBroadcat() --- ";
-    let player = ObjUtil.getPlayerName(my_account);
+    let player = ObjUtil.getPlayerName(account);
     for (let i = 0; i < bonusList.length; i++) {
         let oneBonus = bonusList[i];
         if (oneBonus > 500000) {
-            let charm = my_account.charm_rank && parseInt(my_account.charm_rank) || 0;
+            let charm = account.charm_rank && parseInt(account.charm_rank) || 0;
             if (DEBUG) logger.info(FUNC + "****************设置抽奖通告******************");
-            if (DEBUG) logger.info(FUNC + "charm_rank:", my_account.charm_rank);
+            if (DEBUG) logger.info(FUNC + "charm_rank:", account.charm_rank);
             let content = {
-                txt: player + ' 在抽奖时获得' + oneBonus + '金币',
-                times: 1,
-                type: GAME_EVENT_TYPE.GOLDFISH_DRAW,
-                params: [ player, oneBonus, my_account.vip,charm],
-                platform: my_account.platform,
-                uid:my_account.id
+                type: GameEventBroadcast.TYPE.GAME_EVENT.GOLDFISH_DRAW,
+                params: [ player, oneBonus, account.vip,charm],
             };
-            buzz_cst_game.addBroadcastGameEvent(content);
+            new GameEventBroadcast(content).extra(account).add();
         }
     }
 }

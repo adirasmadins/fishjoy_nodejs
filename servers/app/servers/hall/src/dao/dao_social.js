@@ -153,7 +153,6 @@ function getShareStatus(dataObj, cb) {
         ret.share_top_gold = 1;
         let cfg = getShareById(106);
         (!mission) && (mission = new RewardModel(account));
-        mission.resetLoginData(account);
         mission.addProcess(RewardModel.TaskType.GOLD_FIRST, cfg.value2, cfg.value1); //首富标记 0不是，1是，下同//内含account.commit
     }
     logger.info("ret:", ret);
@@ -287,7 +286,7 @@ function getSocialReward(dataObj, cb) {
                     type: GameEventBroadcast.TYPE.GAME_EVENT.COLLECTION,
                     params: params,
                 };
-                new GameEventBroadcast(account, content).add();
+                new GameEventBroadcast(content).extra(account).add();
             } else if (SOCIAL_REWARD_TYPE.FIST_SHARE == type) {
                 scene = common_log_const_cfg.ACTIVE_DRAW;
             }

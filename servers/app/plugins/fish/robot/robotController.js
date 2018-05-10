@@ -1,18 +1,20 @@
 const RobotPlayer = require('./robotPlayer');
 const fishCmd = require('../../../cmd/fishCmd');
-const robotEvent = require('../entity/robotEvent');
+const omelo = require('omelo');
 const config = require('../config');
 const robotBuilder = require('./robotBuilder');
 const consts = require('../consts');
 
 class RobotController {
-    constructor() {
+    constructor(robotEvent) {
         this._robotPlayerMap = new Map();
-        robotEvent.on(fishCmd.request.robot_catch_fish.route.split('.')[2], this.onCatchfish.bind(this));
         this._fireTimer = null;
+        robotEvent.on(fishCmd.request.robot_catch_fish.route.split('.')[2], this.onCatchfish.bind(this));
+        logger.error('-----------------RobotController') 
     }
 
     run() {
+        
         //关闭机器人
         if (!this._fireTimer) {
             this._fireTimer = setInterval(this.robotAction.bind(this), config.ROBOT.FIRE_TIMEOUT);
@@ -155,6 +157,6 @@ class RobotController {
 
 }
 
-module.exports = new RobotController();
+module.exports = RobotController;
 
 

@@ -1,7 +1,8 @@
 const Task = require('../../../utils/task/task');
 const REDISKEY = require('../../../database/consts').REDISKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
-const redisClient = require('../../../utils/dbclients').redisClient;
+const DESIGN_CFG = require('../../../utils/imports').DESIGN_CFG;
+const EXPORT_TOOLS = require('../../../utils/account/RewardModel').EXPORT_TOOLS;
 const async = require('async');
 const utils = require('../../../utils/utils');
 const SUBTASK_TYPE = require('../src/consts').SUBTASK_TYPE;
@@ -16,7 +17,31 @@ class DailyTask extends Task {
         super(conf);
     }
 
-    _resetMysqlKey() {
+    async _resetTaskProcess() {
+        const active_activequest_cfg = DESIGN_CFG.active_activequest_cfg;
+        let cmds = [];
+        for (let i = 0; i < active_activequest_cfg.length; i++) {
+            let item = active_activequest_cfg[i];
+            if (item.repeat == EXPORT_TOOLS.TASK_MAIN_TYPE.DAILY) {
+                let taskKey = EXPORT_TOOLS.getTaskKey(EXPORT_TOOLS.TASK_PREFIX.ACTIVE_TASK_DAILY, item.repeat, item.condition, item.value1);
+                cmds.push(['DEL', taskKey]);
+            }
+        }
+
+        const daily_quest_cfg = DESIGN_CFG.daily_quest_cfg;
+        for (let i = 0; i < daily_quest_cfg.length; i++) {
+            let item = daily_quest_cfg[i];
+            if (item.type == EXPORT_TOOLS.TASK_MAIN_TYPE.DAILY) {
+                let taskKey = EXPORT_TOOLS.getTaskKey(EXPORT_TOOLS.TASK_PREFIX.MISSION_TASK_DAILY, item.type, item.condition, item.value1);
+                cmds.push(['DEL', taskKey]);
+            }
+        }
+
+        try {
+            await redisConnector.multi(cmds);
+        } catch (err) {
+            logger.error('每日重置活动和成就任务异常,err=', err);
+        }
 
     }
 
@@ -30,7 +55,7 @@ class DailyTask extends Task {
             });
 
             async.waterfall([function (cb) {
-                redisClient.cmd.multi(cmds1).exec(function (err, res) {
+                redisConnector.cmd.multi(cmds1).exec(function (err, res) {
                     if (err) {
                         logger.info(`执行GODDESS重置::`, err);
                         cb();
@@ -42,7 +67,7 @@ class DailyTask extends Task {
                                 cmds.push(['hincrby', REDISKEY.GODDESS_CROSSOVER, uids[i], task.value]);
                             }
                         }
-                        redisClient.cmd.multi(cmds).exec(cb);
+                        redisConnector.cmd.multi(cmds).exec(cb);
                     }
                 });
             }], function (err, result) {
@@ -68,8 +93,9 @@ class DailyTask extends Task {
         }
     }
 
-    _exeTask(cb) {
+    async _exeTask(cb) {
         logger.info('按天任务重置开始');
+        await this._resetTaskProcess();
         let tasks = this.taskConf.subTask;
         async.mapSeries(tasks, this._reset.bind(this), function (err, results) {
             logger.info('按天任务重置完成');

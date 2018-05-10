@@ -1,7 +1,8 @@
-const matchingApp = require('./matchingApp');
+const MatchingApp = require('./matchingApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    matchingApp.start();
+    app.entry = new MatchingApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    matchingApp.stop();
+    app.entry.stop();
     cb();
 };
 

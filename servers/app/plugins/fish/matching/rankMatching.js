@@ -1,24 +1,22 @@
+const omelo = require('omelo');
 const config = require('../config');
 const MatchingUser = require('./matchingUser');
 const MatchingRobotUser = require('./matchingRobotUser');
-const omelo = require('omelo');
 const messageService = require('../../../net/messageService');
 const matchingCmd = require('../../../cmd/matchingCmd');
 const managerCmd = require('../../../cmd/loadManagerCmd');
 const rankMatchCmd = require('../../../cmd/rankMatchCmd');
 const robotBuilder = require('../robot/robotBuilder');
 const AiData = require('./AiData');
-const redisClient = require('../../../utils/dbclients').redisClient;
 const REDISKEY = require('../../../database').dbConsts.REDISKEY;
 const fishCode = CONSTS.SYS_CODE;
 const omeloNickname = require('omelo-nickname');
 const consts = require('../consts');
-const versions = require('../../../utils/imports').versions;
+const versionsUtil = require('../../../utils/imports').versionsUtil;
 const rpcSender = require('../../../net/rpcSender');
 const loadManagerCmd = require('../../../cmd/loadManagerCmd');
 const modules = require('../../../modules');
 const configReader = require('../../../utils/configReader');
-const gamePlay = require('../gamePlay/gamePlay');
 const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
 
 class RankMatching {
@@ -26,7 +24,7 @@ class RankMatching {
         this._users = new Map();
         this._canRun = true;
 
-        if (versions.VER_KEY[versions.PUB].search('vietnam') >= 0) {
+        if (versionsUtil.getVerKey().search('vietnam') >= 0) {
             omeloNickname.setLan(omeloNickname.lan.vietnam);
         }
     }
@@ -80,7 +78,7 @@ class RankMatching {
             msg.sid = session.frontendId;
             let user = await MatchingUser.allocUser(msg);            
             let rmMinLevel = configReader.getValue('common_const_cfg', 'RMATCH_OPEN_LIMIT');
-            let curMaxWpLv = gamePlay.cost.getWpLevelMax(user.account.weapon_energy);
+            let curMaxWpLv = omelo.app.entry.instance.gamePlay.cost.getWpLevelMax(user.account.weapon_energy);
             logger.error('有人报名--curMaxWpLv = ', curMaxWpLv);
             if (curMaxWpLv < rmMinLevel || user.account.weapon < rmMinLevel) {
                 utils.invokeCallback(cb, ERROR_OBJ.RM_WEAPON_LEVEL_LIMIT);
@@ -94,8 +92,8 @@ class RankMatching {
             utils.invokeCallback(cb, null, {
                 waitMs: waitMs,
             });
-            cb();
         } catch (err) {
+            logger.error('err:', err);
             cb(err);
         }
     }

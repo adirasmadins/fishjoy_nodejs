@@ -1,53 +1,33 @@
 const downloader = require('../controllers/downloader');
-const versions = require('../../../utils/imports').versions;
-const CHANNEL_TAG = versions.VER_KEY[versions.PUB];
+const versionsUtil = require('../../../utils/imports').versionsUtil;
 const redirect_https = require('../../common/redirect_https');
 const omelo = require('omelo');
 const httpCfg = omelo.app.get('http');
 const logicResponse = require('../../common/logicResponse');
-
-const www_domain = versions.WWW_DOMAIN.indexOf(versions.PUB) !== -1 ? 'www.' : null;
+const www_domain = versionsUtil.getWWWDomain();
 
 module.exports = (router) => {
 	router.prefix = '/';
 
 	//获取游戏首页
 	router.get('/', async (ctx, next) => {
-		ctx.status = 301;
+		ctx.status = 302;
         let host = ctx.host;
-		if(ctx.host.search('www') == -1 && www_domain){
+		if(ctx.host.search('www') == -1 && www_domain && !versionsUtil.isDevelopment()){
             host = www_domain + host;
 		}
-		let redirectUrl = redirect_https.genRedirectUrl(ctx.protocol, host, '/fishjoy/index.html?td_channelid=' + CHANNEL_TAG);
+		let redirectUrl = redirect_https.genRedirectUrl(ctx.protocol, host, '/home/index.html?td_channelid=' + versionsUtil.getVerKey());
 		logger.error('redirect url host=', host);
 		logger.error('redirect url redirectUrl=', redirectUrl);
 
 		ctx.redirect(redirectUrl);
-		// ctx.type = 'html';
-		// if (!gameIndexHtml) {
-		// 	try {
-		// 		gameIndexHtml = fs.readFileSync(path.join(__dirname, '../public/fishjoy/index.html'));
-		// 		ctx.body = gameIndexHtml;
-		// 	} catch (e) {
-		// 		ctx.status = 404;
-		// 	}
-		// }
 
 	});
 
 	//获取游戏声明
 	router.get('/policy', async (ctx, next) => {
-		ctx.status = 301;
+		ctx.status = 302;
 		ctx.redirect(redirect_https.genRedirectUrl(ctx.protocol, ctx.host, 'policy.html'));
-		// ctx.type = 'html';
-		// if (!policyHtml) {
-		// 	try {
-		// 		policyHtml = fs.readFileSync(path.join(__dirname, '../public/fishjoy/policy.html'));
-		// 		ctx.body = policyHtml;
-		// 	} catch (e) {
-		// 		ctx.status = 404;
-		// 	}
-		// }
 	});
 
 	//图片下载

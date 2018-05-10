@@ -1,18 +1,18 @@
 const omelo = require('omelo');
-const redisClient = require('../../utils/dbclients').redisClient;
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
+const {RedisConnector, MysqlConnector} = require('../../database/dbclient');
 const pumpwater = require('./pumpwater');
 //TODO: const timeSyc = require('./timeSyc');
 
 class EventSyncApp {
     async start() {
-        let result = await redisClient.start(omelo.app.get('redis'));
+        this._redisConnector = new RedisConnector();
+        let result = await this._redisConnector.start(omelo.app.get('redis'));
         if (!result) {
             process.exit(0);
             return;
         }
-
-        result = await mysqlClient.start(omelo.app.get('mysql'));
+        this._mysqlConnector = new MysqlConnector();
+        result = await this._mysqlConnector.start(omelo.app.get('mysql'));
         if (!result) {
             process.exit(0);
             return;
@@ -25,11 +25,11 @@ class EventSyncApp {
     }
 
     stop() {
-        mysqlClient.stop();
-        redisClient.stop();
+        mysqlConnector.stop();
+        redisConnector.stop();
         // timeSyc.stop();
         logger.info('数据同步服关闭');
     }
 }
 
-module.exports = new EventSyncApp();
+module.exports = EventSyncApp;

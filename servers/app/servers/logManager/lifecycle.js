@@ -1,7 +1,8 @@
-const logManagerApp = require('./logManagerApp');
+const LogManagerApp = require('./logManagerApp');
 
 module.exports.beforeStartup = function(app, cb) {
-    logManagerApp.start();
+    app.entry = new LogManagerApp();
+    app.entry.start();
     cb();
 };
 
@@ -12,7 +13,7 @@ module.exports.afterStartup = function(app, cb) {
 
 
 module.exports.beforeShutdown = function(app, cb) {
-    logManagerApp.stop();
+    app.entry.stop();
     cb();
 };
 

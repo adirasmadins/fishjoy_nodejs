@@ -34,7 +34,7 @@
       "id": "resource",
       "host": "103.90.220.68",
       "port": 3501,
-      "publicHost": "thosanca.vn",
+      "publicHost": "vncdn1.secureswiftcontent.com",
       "auto-restart": false,
       "args": " --inspect=103.90.220.68:13501"
     }],
@@ -318,7 +318,7 @@
       "id": "resource",
       "host": "103.90.220.68",
       "port": 3501,
-      "publicHost": "thosanca.vn",
+      "publicHost": "vncdn1.secureswiftcontent.com",
       "auto-restart": true
     }],
     "hall": [{

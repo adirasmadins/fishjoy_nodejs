@@ -241,7 +241,7 @@ function _didAddBroadcast(account, type, extra) {
         type: type,
         params: params,
     };
-    new GameEventBroadcast(account, content).add();
+    new GameEventBroadcast(content).extra(account).add();
 }
 
 function _getCharts(dataObj, cb) {

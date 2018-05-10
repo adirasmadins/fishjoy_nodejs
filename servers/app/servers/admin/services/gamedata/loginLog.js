@@ -2,7 +2,7 @@ const SQL_CONFIG = require('../../configs/sql');
 const tools = require('../../../../utils/tools');
 
 /**
- * 获取充值排名接口需要的返回值
+ * 获取登录日志接口需要的返回值
  * @param {*} data {date:'YYYY-MM-DD', start:1, length:100, uid:'1,2,3'} 
  */
 exports.get = async function (data, ctx) {

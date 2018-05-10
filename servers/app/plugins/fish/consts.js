@@ -2,11 +2,11 @@ const ACCOUNTKEY = require('../../database').dbConsts.ACCOUNTKEY;
 
 module.exports = {
     ROOM_TYPE: {
-        SINGLE: 0, //单人模式
-        MULTI_FREE: 1, //多人自由模式
-        RANK_MATCH: 2, //排位赛模式
+        SINGLE: 1, //单人模式
+        MULTI_FREE: 2, //多人自由模式
         GODDESS: 3, //保卫女神模式
-        MULTI_FRIENDS:4, //多人好友模式
+        MULTI_FRIENDS:4, //1v1好友模式
+        RANK_MATCH: 5,//排位赛模式
     },
 
     SKILL_ID: {

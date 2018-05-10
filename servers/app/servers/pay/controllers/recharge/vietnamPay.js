@@ -68,10 +68,6 @@ class VietnamPay extends Pay {
         return "Thẻ nạp tiền";
     }
 
-    getGoodsId(goods_id) {
-        return -1;
-    }
-
     _getCardBusinessInfo(cardType) {
         let cardTypeInfo = shop_businesstype_cfg[cardType];
         if (!cardTypeInfo) {

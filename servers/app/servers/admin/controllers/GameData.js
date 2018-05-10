@@ -47,6 +47,12 @@ class GameData {
         return ask(ret);
     }
 
+    async goddessLog(data, ctx) {
+        tools.BuzzUtil.checkFields(data, 'goddessLog');
+        let ret = await handler.goddessLog.get(data, ctx);
+        return ask(ret);
+    }
+
     async getFreezeReasonList(data, ctx) {
         tools.BuzzUtil.checkFields(data, 'getFreezeReasonList');
         let ret = await handler.getFreezeReasonList.get(data, ctx);

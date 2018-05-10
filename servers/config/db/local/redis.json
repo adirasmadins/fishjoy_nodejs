@@ -1,7 +1,7 @@
 {
     "enable": true,
     "server": {
-        "host": "127.0.0.1",
+        "host": "192.168.35.211",
         "port": 6379,
         "auth": false,
         "password": "",

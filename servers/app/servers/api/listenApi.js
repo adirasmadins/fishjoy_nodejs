@@ -1,7 +1,7 @@
 const httpHandler = require('../common/httpHandler');
 const genAccount = require('../common/genAccount');
-const versions = require('../../../config/versions');
-const VER = versions.VER_KEY[versions.PUB];
+const versionsUtil = require('../../utils/imports').versionsUtil;
+const VER = versionsUtil.getVerKey();
 
 function loadApi(list, dir, tag) {
     try {

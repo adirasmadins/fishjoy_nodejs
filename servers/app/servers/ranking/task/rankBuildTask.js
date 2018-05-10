@@ -175,7 +175,7 @@ class RankBuildTask extends Task {
                 for (let platform of Object.values(REDISKEY.PLATFORM_TYPE)) {
                     let rankKey = `${tasks[i].redisKey}:${platform}`;
                     let result = await redisConnector.zrem(rankKey, blacklist);
-                    logger.error('踢人结果', rankKey, result, blacklist);
+                    // logger.error('踢人结果', rankKey, result, blacklist);
                 }
             } catch (err) {
                 logger.error('踢人异常', err);

@@ -1,2 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
-module.exports = new EventEmitter();
+class RobotEvent extends EventEmitter{
+
+}
+
+module.exports = RobotEvent;

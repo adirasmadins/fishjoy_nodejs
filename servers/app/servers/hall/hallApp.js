@@ -1,4 +1,5 @@
 const buzz_redis = require('./src/buzz/buzz_redis');
+const buzz_broadcast = require('../../common/broadcast/buzz_broadcast');
 const RedisUtil = require('./src/utils/RedisUtil');
 const rankCache = require('./src/rankCache/rankCache');
 const DaoMail = require('./src/dao/dao_mail');
@@ -13,20 +14,21 @@ const Global = require('./src/buzz/pojo/Global');
 
 const dao = require('./src/dao/dao');
 const omelo = require('omelo');
-const redisClient = require('../../utils/dbclients').redisClient;
-const mysqlClient = require('../../utils/dbclients').mysqlClient;
+const { RedisConnector, MysqlConnector } = require('../../database/dbclient');
 const dropManager = require('../../utils/DropManager');
 const serviceCtrl = require('../common/serviceCtrl');
 
 class HallApp {
 
     async start() {
-        let result = await redisClient.start(omelo.app.get('redis'));
+        this._redisConnector = new RedisConnector();
+        let result = await this._redisConnector.start(omelo.app.get('redis'));
         if (!result) {
             process.exit(0);
             return;
         }
-        result = await mysqlClient.start(omelo.app.get('mysql'));
+        this._mysqlConnector = new MysqlConnector();
+        result = await this._mysqlConnector.start(omelo.app.get('mysql'));
         if (!result) {
             process.exit(0);
             return;
@@ -37,15 +39,13 @@ class HallApp {
     }
 
     stop() {
-        redisClient.stop();
-        mysqlClient.stop();
+        redisConnector.stop();
+        mysqlConnector.stop();
         logger.info('大厅服务关闭');
     }
 
     _loadInitData() {
         global.myDao = dao.withDbPool();
-
-        RedisUtil.init(redisConnector.cmd);
         buzz_redis.addListener();
         rankCache.run();
         DaoMail.loadMail(mysqlConnector, function () {
@@ -74,6 +74,21 @@ class HallApp {
             common_mathadjust_const_cfg.reducevalue
         );
     }
+
+    remoteRpc(method, data, cb) {
+        this[method](data, cb);
+    }
+
+    /**
+     * 玩家登录通知
+     * @param data
+     * @param cb
+     */
+    rpc_player_login(data, cb) {
+        let account = data;
+        logger.error(`${account.uid} 登录了`);
+        utils.invokeCallback(cb, null, buzz_broadcast.addFamousOnlineBroadcast(account));
+    }
 }
 
-module.exports = new HallApp();
+module.exports = HallApp;

@@ -1,4 +1,4 @@
-const robotController = require('./robot/robotController');
+const RobotController = require('./robot/robotController');
 const config = require('./config');
 const PlayerFactory = require('./entity/playerFactory');
 const omelo = require('omelo');
@@ -9,8 +9,11 @@ const FishRoom = require('./fishRoom');
 const GoddessRoom = require('./goddess/goddessRoom');
 const ROBOT_EVENT = new Set([fishCmd.request.robot_catch_fish.route.split('.')[2]]);
 const GAMECFG = require('../../utils/imports').DESIGN_CFG;
-const robotEvent = require('./entity/robotEvent');
-const gamePlay = require('./gamePlay/gamePlay');
+const RobotEvent = require('./entity/robotEvent');
+const GamePlay = require('./gamePlay/gamePlay');
+const PlayerEvent = require('./cache/playerEvent');
+const Cache = require('./cache/cache');
+const CacheReader = require('./cache/cacheReader');
 
 class Instance {
     constructor() {
@@ -18,13 +21,40 @@ class Instance {
         this._roomMap = new Map();
         this._assignRobotTimer = null;
         this._kickOfflineTimer = null;
+        this._robotEventEmitter = new RobotEvent();
+        this._robotEventEmitter.setMaxListeners(0);
+        this._playerEventEmitter = new PlayerEvent();
+        this._playerEventEmitter.setMaxListeners(0);
+        this._cache = new Cache();
+        this._cacheReader = new CacheReader(this._cache);
+        this._gamePlay = new GamePlay();
+        logger.error('-----------------fish Instance')
     }
 
-    start() {
+    get gamePlay(){
+        return this._gamePlay;
+    }
+
+    get playerEventEmitter(){
+        return this._playerEventEmitter;
+    }
+
+    get cache(){
+        return this._cache;
+    }
+
+    get cacheReader(){
+        return this._cacheReader;
+    }
+
+    async start() {
+        await this._cache.start();
+
         // if (!this._assignRobotTimer) {
         //     this._assignRobotTimer = setInterval(this._assignRobot.bind(this), config.ROBOT.VACANCY_QUERY_TIMEOUT);
         // }
-        // robotController.run();
+        // this._robotController = new RobotController(this._robotEventEmitter);
+        // this._robotController.run();
 
         if (!this._kickOfflineTimer) {
             this._kickOfflineTimer = setInterval(this._kickOfflinePlayer.bind(this), config.PLAYER.KICK_OFFLINE_CHECK_TIMEOUT);
@@ -41,6 +71,9 @@ class Instance {
             clearInterval(this._kickOfflineTimer);
             this._kickOfflineTimer = null;
         }
+        
+        this._robotEventEmitter.removeAllListeners();
+        this._playerEventEmitter.removeAllListeners();
         // robotController.stop();
     }
 
@@ -168,13 +201,6 @@ class Instance {
                 break;
             case consts.ROOM_TYPE.MULTI_FRIENDS:
                 room = this._createRoom(data.roomType, data.sceneId, FishRoom);
-                break;
-            case consts.ROOM_TYPE.RANK_MATCH: {
-                room = this._matchRoom(data.sceneId);
-                if (!room) {
-                    room = this._createRoom(data.roomType, data.sceneId, FishRoom);
-                }
-            }
                 break;
             default:
                 err = FishCode.NOT_SUPPORT_ROOMMODE;
@@ -330,7 +356,7 @@ class Instance {
         }
 
         //取玩家的最大武器等级
-        let curMaxWpLv = gamePlay.cost.getWpLevelMax(account.weapon_energy);
+        let curMaxWpLv = this._gamePlay.cost.getWpLevelMax(account.weapon_energy);
         if (curMaxWpLv < sceneCfg.min_level) {
             logger.error('maxWp = ', maxWp, ' sceneConfig.min_level = ', sceneCfg.min_level)
             return FishCode.WEAPON_LEVEL_LOW;

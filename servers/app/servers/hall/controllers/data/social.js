@@ -2,6 +2,7 @@ const buzz_social = require('../../src/buzz/buzz_social');
 const logicResponse = require('../../../common/logicResponse');
 const REDISKEY = require('../../../../database').dbConsts.REDISKEY;
 const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
+const versionsUtil = require('../../../../utils/imports').versionsUtil;
 
 exports.getInviteProgress = getInviteProgress;
 exports.getShareStatus = getShareStatus;
@@ -21,7 +22,7 @@ async function _updateChannelFriends(data) {
     let account = data.account;
     let friends = data.channel_friends;
     for (let i = 0; i < friends.length; ++i) {
-        friends[i] += "_" + account.platform;
+        friends[i] = versionsUtil.getOpenid(friends[i], account.platform);
     }
     let friendUids = await redisConnector.hmget(REDISKEY.OPENID_UID, friends);
     let uid_list = [];

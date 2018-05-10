@@ -116,7 +116,7 @@ module.exports = {
             },
             session: {
                 store: dbCfg.redis.server,
-                maxAge: 3600000
+                maxAge: 36000000
             }
         }],
         resource: [{
