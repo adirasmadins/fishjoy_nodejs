@@ -1,11 +1,11 @@
 {
     "enable": true,
     "server": {
-        "host": "192.168.35.211",
+        "host": "127.0.0.1",
         "port": 3306,
         "auth":true,
         "user": "root",
-        "password": "fishjoy",
+        "password": "root",
         "database": "fishjoy",
         "charset": "utf8"
     },
