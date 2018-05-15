@@ -10,7 +10,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50
+      "backups": 100
     },
     "con-log": {
       "type": "file",
@@ -20,7 +20,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "con-log"
     },
     "rpc-log": {
@@ -30,7 +30,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "rpc-log"
     },
     "forward-log": {
@@ -40,7 +40,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "forward-log"
     },
     "rpc-debug": {
@@ -50,7 +50,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "rpc-debug"
     },
     "crash-log": {
@@ -60,7 +60,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "crash-log"
     },
     "admin-log": {
@@ -70,7 +70,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "admin-log"
     },
     "omelo": {
@@ -80,7 +80,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "omelo"
     },
     "omelo-admin": {
@@ -90,7 +90,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "omelo-admin"
     },
     "omelo-rpc": {
@@ -100,7 +100,7 @@
       "layout": {
         "type": "basic"
       },
-      "backups": 50,
+      "backups": 100,
       "category": "omelo-rpc"
     }
   },
