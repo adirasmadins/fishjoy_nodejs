@@ -32,11 +32,11 @@
     }],
     "resource": [{
       "id": "resource",
-      "host": "103.90.220.68",
+      "host": "103.90.220.73",
       "port": 3501,
       "publicHost": "vncdn1.secureswiftcontent.com",
       "auto-restart": false,
-      "args": " --inspect=103.90.220.68:13501"
+      "args": " --inspect=103.90.220.73:13501"
     }],
     "hall": [{
       "id": "hall-1-1",
@@ -316,7 +316,7 @@
     }],
     "resource": [{
       "id": "resource",
-      "host": "103.90.220.68",
+      "host": "103.90.220.73",
       "port": 3501,
       "publicHost": "vncdn1.secureswiftcontent.com",
       "auto-restart": true

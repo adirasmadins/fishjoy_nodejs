@@ -208,7 +208,7 @@ function guideReward(dataObj, cb) {
     account.weapon_energy = wpEng;
     account.weapon = weapon_level_next;
     account.commit();
-    logger.error('--领取新手引导奖励 weapon_level_next ', weapon_level_next)
+    logger.error('--领取新手引导奖励 weapon_level_next ', weapon_level_next);
 
     BuzzUtil.putIntoPack(account, item_list, function (reward) {
         let ret = {};
@@ -237,9 +237,7 @@ function dailyReward(req, dataObj, cb) {
 }
 
 async function missionReward(dataObj, cb) {
-
     if (!lPrepare(dataObj)) return;
-
     let uid = dataObj.uid;
     let account = dataObj.account;
     let qid = dataObj.quest_id;
@@ -266,12 +264,15 @@ async function missionReward(dataObj, cb) {
         return;
     }
     let qcv = mission["" + qid];
+    if(qcv == -1){
+        cb(ERROR_OBJ.MISSION_GOTTON);
+        return;
+    }
     let quest_reward = quest.reward;
     let item_list = BuzzUtil.getItemList(quest_reward);
 
     // 需要将成就点进行更新
-    BuzzUtil.putIntoPack(account, item_list, function (reward) {
-
+    BuzzUtil.putIntoPack(account, item_list, async function (reward) {
         if (0 != quest_precondition) {
             mission["" + quest_precondition] = qcv;
             delete mission["" + qid];
@@ -289,14 +290,16 @@ async function missionReward(dataObj, cb) {
         let change = BuzzUtil.getChange(account, reward);
         account.commit();
 
+        let missionTaskProcessInfo = await RewardModel.getMissionTaskProcessInfo(account);
+    
         let ret = {
             item_list: item_list,
             change: change,
             quest_id: qid,
             precondition: quest_precondition,
             quest_cur_value: qcv,
-            mission_only_once: account.mission_only_once,
-            mission_daily_reset: account.mission_daily_reset,
+            mission_only_once: missionTaskProcessInfo.mission_only_once,
+            mission_daily_reset: missionTaskProcessInfo.mission_daily_reset,
         };
 
         cb(null, ret);
@@ -350,6 +353,7 @@ async function missionReward(dataObj, cb) {
         }
 
         let missionValue = await redisConnector.hget(missionTask_redisKey, uid);
+        logger.error('mission reward uid==', uid);
         logger.error('mission reward ==', missionValue, missionTask_redisKey);
         if (missionValue == null) {
             cb(ERROR_OBJ.MISSION_NULL_RECORD);
@@ -374,8 +378,6 @@ function activeReward(dataObj, cb) {
 }
 
 function onekeyReward(req, dataObj, cb) {
-    const FUNC = TAG + "onekeyReward() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "onekey_reward");
 
@@ -386,48 +388,35 @@ function onekeyReward(req, dataObj, cb) {
     }
 }
 
-//==============================================================================
-// private
-//==============================================================================
-
 /**
  * 查询本月的可签到状态
  * @return
  * {days:?, today:?}
  */
 function _monthSign(dataObj, cb) {
-    const FUNC = TAG + "_monthSign() --- ";
-    let uid = dataObj.uid;
-    let token = dataObj.token;
 
-    doNextWithAccount(dataObj.account);
+    let account = dataObj.account;
+    // 从0开始, 即0为1号
+    let today = new Date().getDate() - 1;
+    // TODO: 玩家签到数据异常判定(可能是回档到上月)
+    let new_month_sign = ArrayUtil.getIntArr(buzz_initdata.initMonthSign());
 
-    function doNextWithAccount(account) {
-
-        // 从0开始, 即0为1号
-        let today = new Date().getDate() - 1;
-        // TODO: 玩家签到数据异常判定(可能是回档到上月)
-        let new_month_sign = ArrayUtil.getIntArr(buzz_initdata.initMonthSign());
-
-        for (let i = 0; i <= today; i++) {
-            if (account.month_sign.length <= i) {
-                break;
-            }
-            new_month_sign[i] = account.month_sign[i];
+    for (let i = 0; i <= today; i++) {
+        if (account.month_sign.length <= i) {
+            break;
         }
-        account.month_sign = new_month_sign;
-
-        let ret = {
-            days: account.month_sign,
-            today: today,
-            extra_states: account.month_sign_extra_reward
-        };
-
-        account.commit();
-
-        cb(null, ret);
-
+        new_month_sign[i] = account.month_sign[i];
     }
+    account.month_sign = new_month_sign;
+
+    let ret = {
+        days: account.month_sign,
+        today: today,
+        extra_states: account.month_sign_extra_reward
+    };
+
+    account.commit();
+    cb(null, ret);
 }
 
 /**
@@ -436,9 +425,6 @@ function _monthSign(dataObj, cb) {
  * {day:?,day_state:?}
  */
 function _getDayReward(dataObj, cb) {
-    const FUNC = TAG + "_monthSign() --- ";
-    let uid = dataObj.uid;
-    let token = dataObj.token;
     let day = dataObj.day;
     let today = new Date().getDate() - 1;
 
@@ -505,7 +491,6 @@ function _getDayReward(dataObj, cb) {
 
 //额外领奖
 function _getDayExtraReward(dataObj, cb) {
-    let token = dataObj.token;
     let id = dataObj.id;
 
     let account = dataObj.account;
@@ -549,7 +534,6 @@ function _getDayExtraReward(dataObj, cb) {
 }
 
 function _checkGetDayReward(account, day, today, cb) {
-    const FUNC = TAG + "_checkGetDayReward() ...";
     let month_sign = account.month_sign;
 
     if (day >= month_sign.length || day < 0) {
@@ -590,8 +574,6 @@ function _getMonthDailypast(day) {
  * desperated
  */
 function _didDailyReward(req, dataObj, cb) {
-    const FUNC = TAG + "_didDailyReward() --- ";
-    let uid = dataObj.uid;
     let token = dataObj.token;
     let pool = req.pool;
 
@@ -617,30 +599,6 @@ const QUEST_TYPE = {
     /** 成就任务, 只能达成一次 */
     ACHIEVE_ONCE: 1,
 };
-
-/**
- * 任务领奖(每日任务, 成就任务)
- */
-function _missionReward(req, dataObj, cb) {
-    const FUNC = TAG + "_missionReward() --- ";
-    let uid = dataObj.uid;
-    let token = dataObj.token;
-    let qid = dataObj.quest_id;
-    let pool = req.pool;
-
-    DaoCommon.checkAccount(pool, token, function (error, account) {
-        if (error) {
-            cb(error);
-            return;
-        }
-        doNextWithAccount(account);
-    });
-
-    function doNextWithAccount(account) {
-
-
-    }
-}
 
 function _getMissionRecordByType(account, quest_type) {
     switch (quest_type) {

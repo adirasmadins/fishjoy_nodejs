@@ -40,7 +40,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function getRows() {
     const RANK = REDISKEY.RANK;

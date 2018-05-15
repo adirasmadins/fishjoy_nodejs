@@ -522,7 +522,7 @@ class RankMatchPlayer extends BasePlayer {
      */
     winstreak2DataServer() {
         let account = this.account;
-        let params = [account.nickname, this._winStreak, account.vip]
+        let params = [account.nickname, this._winStreak, account.vip];
         let content = {
             txt: '玩家' + account.nickname + '连胜' + this._winStreak + '局',
             type: GameEventBroadcast.TYPE.GAME_EVENT.VICTORS,

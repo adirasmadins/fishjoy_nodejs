@@ -288,7 +288,7 @@ function queryCik(cb) {
                 let account = await CacheAccount.getAccountFieldByIdSync(res[i].uid,[ACCOUNTKEY.NICKNAME]);
                 res[i].nickname = account.nickname;
             }catch(err){
-                ;
+                
             }
         }
         cb(null, res);

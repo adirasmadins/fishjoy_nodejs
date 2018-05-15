@@ -10,7 +10,7 @@ const PlayerData = require('../../configs/consts/PlayerData');
 exports.get = async function (data, ctx) {
     // console.log('data:', data);
     try {
-        await modifyData(data.uid, Number(data.key), data.value)
+        await modifyData(data.uid, Number(data.key), data.value);
         return {
             result: true
         };
@@ -21,7 +21,7 @@ exports.get = async function (data, ctx) {
             err: err.toString()
         };
     }
-}
+};
 
 /**
  * 修改玩家数据.

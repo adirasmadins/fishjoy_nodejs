@@ -29,7 +29,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetchData(account) {
     let uid = account.id;
@@ -79,7 +79,7 @@ async function getAccountByUidOrNickname(uidOrNickname) {
         return results[0];
     }
     else {
-        let errMsg = `没有查找到用户:${uidOrNickname}`
+        let errMsg = `没有查找到用户:${uidOrNickname}`;
         logger.error(errMsg);
         throw new Error(errMsg);
     }

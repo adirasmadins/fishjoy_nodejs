@@ -4,6 +4,6 @@ class PlayerEvent extends EventEmitter{
 
 }
 
-logger.error('-----------------PlayerEvent')
+logger.error('-----------------PlayerEvent');
 
 module.exports = PlayerEvent;

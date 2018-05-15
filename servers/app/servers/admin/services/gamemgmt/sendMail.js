@@ -70,7 +70,7 @@ exports.get = async function (data, ctx) {
         console.log('err:', err);
         return { result: false, err: err.toString() };
     }
-}
+};
 
 async function insertMail(type, content, reward, title, receiverUid, delay, addByWho) {
     let receiver = 0;

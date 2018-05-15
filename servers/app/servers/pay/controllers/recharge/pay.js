@@ -410,7 +410,8 @@ class Pay {
                     mission.updateProcess(RewardModel.TaskType.CHARG_PEARL, log_data.price, 0);
                     mission.updateProcess(RewardModel.TaskType.CHARG_PEARL, log_data.price, 1);
                     mission.updateProcess(RewardModel.TaskType.GET_VIP_LV, account.vip);
-                    mission.commit(); //等价account.commit()
+                    mission.commit(); 
+                    account.commit();
                 }
             });
         });

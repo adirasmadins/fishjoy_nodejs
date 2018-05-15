@@ -9,11 +9,11 @@ exports.getInfo = (id) => {
         }
     }
     return null;
-}
+};
 
 exports.getReward = (id) => {
     let info = this.getInfo(id);
     if (info) {
         return info.reward;
     }
-}
+};

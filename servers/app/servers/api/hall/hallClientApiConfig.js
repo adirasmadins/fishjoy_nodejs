@@ -16,6 +16,7 @@ const chat = require('../../hall/controllers/data/chat');
 const city = require('../../hall/controllers/data/city');
 const happy_weekend = require('../../hall/controllers/data/happy_weekend');
 const update = require('../../hall/controllers/data/update');
+const diamond2gold = require('../../hall/controllers/data/diamond2gold');
 
 const api_list = {
     query_cik: {
@@ -343,7 +344,28 @@ const api_list = {
         handler: data_info.queryAccountFields,
         params: [],
         accountFields: []
+    }, diamond_to_gold: {
+        route: '/diamond_to_gold', //钻石兑换金币
+        handler: diamond2gold.exchange,
+        params: [],
+        accountFields: []
+    }, get_newbie_info: {
+        route: '/get_newbie_info', //获取新手狂欢信息
+        handler: data_activity.getNewbieInfo,
+        params: [],
+        accountFields: []
+    }, sync_newbie_progress: {
+        route: '/sync_newbie_progress', //同步新手狂欢进度数据
+        handler: data_activity.syncNewbieProgress,
+        params: [],
+        accountFields: []
+    },goddess_interact_reward: {
+        route: '/goddess_interact_reward', //女神互动奖励(爱抚女神获取奖励)
+        handler: data_goddess.interractReward,
+        params: [],
+        accountFields: []
     }
+    
 };
 
 module.exports = {

@@ -4,7 +4,7 @@ class MatchingInstance{
     constructor(){
         this._rankMatching = new RankMatching();
         this._gamePlay = new GamePlay();
-        logger.error('-----------------MatchingInstance') 
+        logger.error('-----------------MatchingInstance'); 
     }
 
     get gamePlay(){

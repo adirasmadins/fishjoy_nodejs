@@ -22,7 +22,7 @@ exports.get = async function (data, ctx) {
         };
     }
 
-}
+};
 
 async function change(key, value) {
     let redisKey = getRedisKey(key);

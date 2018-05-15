@@ -22,5 +22,5 @@ exports.get = async function (data, ctx) {
         };
     }
 
-}
+};
 

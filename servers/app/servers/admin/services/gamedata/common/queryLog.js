@@ -29,7 +29,7 @@ exports.get = async function (data, ctx) {
         pages: pages,
         chart: rawData
     };
-}
+};
 
 function getQueryTableList(dateList, bak_table) {
     let ret = [];
@@ -197,7 +197,7 @@ exports.queryAccountTopupAndCash = async function(chart) {
         }
     }
     return chart;
-}
+};
 
 function getUidList(list) {
     let uidSet = {};

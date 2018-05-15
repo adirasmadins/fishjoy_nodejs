@@ -23,12 +23,12 @@ const VER_KEY = [
 ];
 
 const CDN_DOMAIN = {};
-// CDN_DOMAIN[GAMEPLAY.VIETNAM_VN] = "vncdn1.secureswiftcontent.com";
+CDN_DOMAIN[GAMEPLAY.VIETNAM_VN] = "vncdn1.secureswiftcontent.com";
 
 module.exports = {
     //配置游戏发行版本
     DEVELOPMENT: true,  //发布时修改为false
-    PUB: GAMEPLAY.VIETNAM_VN, //设置发布版本类型
+    PUB: GAMEPLAY.WANBA, //设置发布版本类型
     SSL: false, //是否启动SSL
 
     //游戏发行版本类型定义

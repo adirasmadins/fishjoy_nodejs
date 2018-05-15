@@ -3,6 +3,7 @@ const redisAccountSync = require('../../utils/redisAccountSync');
 const DESIGN_CFG = require('../imports').DESIGN_CFG;
 const active_activequest_cfg = DESIGN_CFG.active_activequest_cfg;
 const active_active_cfg = DESIGN_CFG.active_active_cfg;
+const active_newbie_cfg = DESIGN_CFG.active_newbie_cfg;
 const daily_quest_cfg = DESIGN_CFG.daily_quest_cfg;
 
 const TASK_PREFIX = {
@@ -10,6 +11,7 @@ const TASK_PREFIX = {
     MISSION_TASK_DAILY: 'mission_task_daily',
     ACTIVE_TASK_ONCE: 'active_task_once',
     ACTIVE_TASK_DAILY: 'active_task_daily',
+    ACTIVE_TASK_NEWBIE: 'active_task_newbie',//新手狂欢活动
 };
 
 const TASK_MAIN_TYPE = {
@@ -34,14 +36,14 @@ for (let i = 0; i < active_activequest_cfg.length; i++) {
 }
 
 const EXPORT_TOOLS = {
-    TASK_PREFIX:TASK_PREFIX,
-    TASK_MAIN_TYPE:TASK_MAIN_TYPE,
-    getTaskKey:getTaskKey
+    TASK_PREFIX: TASK_PREFIX,
+    TASK_MAIN_TYPE: TASK_MAIN_TYPE,
+    getTaskKey: getTaskKey
 };
 
 class MissionModel {
     constructor(account) {
-        logger.error('=========================MissionModel');
+        // logger.error('=========================MissionModel');
         this._uid = account.id;
         this._taskProcessMap = {};
         //判断是否统计
@@ -92,21 +94,54 @@ class MissionModel {
         }
     }
 
-    static async getActivityTaskProcessInfo(account){
+    //获取一次性任务进度数据
+    static async syncMissionTaskOnce(uid) {
+        let account = await redisAccountSync.getAccountAsync(uid);
+        let taskProcessInfo = await this.getMissionTaskProcessInfo(account);
+        let mission_task_once = taskProcessInfo.mission_only_once;
+        // logger.error(`同步任务进度到数据库 ---- ${uid} - mission_task_once:`, mission_task_once);
+        return mission_task_once || {};
+    }
+
+
+    static async delUserMissionInfo(uid) {
+        let cmds = [];
+        for (let i = 0; i < daily_quest_cfg.length; i++) {
+            let item = daily_quest_cfg[i];
+            let taskKey = getTaskKey(item.type == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.MISSION_TASK_DAILY :
+                TASK_PREFIX.MISSION_TASK_ONCE, item.type, item.condition, item.value1);
+            cmds.push(['HDEL', taskKey, uid]);
+        }
+
+        for (let i = 0; i < active_activequest_cfg.length; i++) {
+            let item = active_activequest_cfg[i];
+            let taskKey = getTaskKey(item.repeat == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.ACTIVE_TASK_DAILY :
+                TASK_PREFIX.ACTIVE_TASK_ONCE, item.repeat, item.condition, item.value1);
+            cmds.push(['HDEL', taskKey, uid]);
+        }
+
+        await redisConnector.multi(cmds);
+    }
+
+    /**
+     * 获取活动任务进度数据
+     * @param {*} account 
+     */
+    static async getActivityTaskProcessInfo(account) {
 
         let active_stat_once = account.active_stat_once;
         let active_stat_reset = account.active_stat_reset;
         let cmds = [];
         let linkMap = {};
-        for(let i=0; i< active_activequest_cfg.length; i++){
+        for (let i = 0; i < active_activequest_cfg.length; i++) {
             let item = active_activequest_cfg[i];
             let taskKey = getTaskKey(item.repeat == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.ACTIVE_TASK_DAILY : TASK_PREFIX.ACTIVE_TASK_ONCE, item.repeat, item.condition, item.value1);
             cmds.push(['HGET', taskKey, account.id]);
             linkMap[i] = {
                 mainType: item.repeat,
                 condition: item.condition,
-                value1:item.value1,
-                taskId:item.id
+                value1: item.value1,
+                taskId: item.id
             };
         }
 
@@ -116,42 +151,104 @@ class MissionModel {
             if (redisProcessInfo[i] != null) {
                 let linkInfo = linkMap[i];
                 let processValue = Number(redisProcessInfo[i]);
-                if(Number.isNaN(processValue)){
+                if (Number.isNaN(processValue)) {
                     logger.error('活动任务统计数值异常，无法处理该类型任务进度，taskInfo = ', linkInfo);
                     continue;
                 }
-                if(linkInfo.mainType == TASK_MAIN_TYPE.ONCE){
+                if (linkInfo.mainType == TASK_MAIN_TYPE.ONCE) {
                     once[linkInfo.condition] = once[linkInfo.condition] || {};
 
-                    if(active_stat_once && active_stat_once[linkInfo.taskId] == 1){
+                    if (active_stat_once && active_stat_once[linkInfo.taskId] == 1) {
                         once[linkInfo.condition] = once[linkInfo.condition] = -1;
-                    }else {
+                    } else {
                         once[linkInfo.condition][linkInfo.value1] = processValue;
                     }
-                }else {
+                } else {
                     daily[linkInfo.condition] = daily[linkInfo.condition] || {};
-                    if(active_stat_reset && active_stat_reset[linkInfo.taskId] == 1){
+                    if (active_stat_reset && active_stat_reset[linkInfo.taskId] == 1) {
                         daily[linkInfo.condition][linkInfo.value1] = -1;
-                    }else {
+                    } else {
                         daily[linkInfo.condition][linkInfo.value1] = processValue;
                     }
                 }
             }
         }
 
-        return {active_once:once, active_daily_reset:daily};
-    }
-    
-    //获取一次性任务进度数据
-    static async syncMissionTaskOnce(uid) {
-        let account = await redisAccountSync.getAccountAsync(uid);
-        let taskProcessInfo = await this.getMissionTaskProcessInfo(account);
-        let mission_task_once = taskProcessInfo.mission_only_once;
-        logger.info(`同步任务进度到数据库 ---- ${uid} - mission_task_once:`, mission_task_once);
-        return mission_task_once || {};
+        return { active_once: once, active_daily_reset: daily };
     }
 
-    //获取成就任务进度数据
+    /**
+     * 获取活动任务(新手狂欢活动)进度数据
+     * @param {*} account 
+     */
+    static async getNewbieTaskProcessInfo(account) {
+        let active_stat_newbie = account.active_stat_newbie;
+        logger.error('active_stat_newbie:\n', active_stat_newbie);
+        let cmds = [];
+        let linkMap = {};
+        let notRepeated = {};
+        let linkIndex = 0;
+        for (let i = 0; i < active_newbie_cfg.length; i++) {
+            let item = active_newbie_cfg[i];
+            item.type = TASK_MAIN_TYPE.ONCE;
+            let taskKey = getTaskKey(TASK_PREFIX.ACTIVE_TASK_NEWBIE, item.type, item.condition, item.value1);
+            if (!notRepeated[taskKey]) {
+                cmds.push(['HGET', taskKey, account.id]);
+                linkMap[linkIndex] = {
+                    mainType: item.type,
+                    taskId: item.id,
+                    taskKey: taskKey
+                };
+                linkIndex++;
+                notRepeated[taskKey] = [];
+            }
+            notRepeated[taskKey].push(item.id);
+        }
+        logger.error('cmds:\n', cmds);
+        let redisProcessInfo = await redisConnector.multi(cmds);
+        let newbie = {};
+
+        for (let i = 0; i < redisProcessInfo.length; i++) {
+            if (redisProcessInfo[i] != null) {
+                let linkInfo = linkMap[i];
+                logger.error('linkInfo:\n', linkInfo);
+                let processValue = Number(redisProcessInfo[i]);
+                if (Number.isNaN(processValue)) {
+                    logger.error('新手狂欢活动统计数值异常，无法处理该类型任务进度，taskId = ', linkInfo.taskId);
+                    continue;
+                }
+                if (linkInfo.mainType == TASK_MAIN_TYPE.ONCE) {
+                    if (active_stat_newbie[linkInfo.taskId] != -1) {
+                        let taskIds = notRepeated[linkInfo.taskKey];
+                        let taskId = null;
+                        for (let id in active_stat_newbie) {
+                            let nId = Number(id);
+                            if (isNaN(nId)) continue;
+                            if (taskIds.indexOf(nId) != -1) {
+                                taskId = id;
+                                break;
+                            }
+                        }
+                        if (taskId == null) {
+                            active_stat_newbie[linkInfo.taskId] = 1;
+                            taskId = linkInfo.taskId;
+                        }
+                        newbie[taskId] = processValue;
+                    } else {
+                        newbie[linkInfo.taskId] = -1;
+                    }
+                }
+            }
+        }
+        account.active_stat_newbie = active_stat_newbie;
+        account.commit();
+        return { active_stat_newbie: newbie };
+    }
+
+    /**
+     * 获取成就任务进度数据
+     * @param {*} account 
+     */
     static async getMissionTaskProcessInfo(account) {
         let cmds = [];
         let linkMap = {};
@@ -162,18 +259,18 @@ class MissionModel {
         for (let i = 0; i < daily_quest_cfg.length; i++) {
             let item = daily_quest_cfg[i];
             let taskKey = getTaskKey(item.type == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.MISSION_TASK_DAILY : TASK_PREFIX.MISSION_TASK_ONCE, item.type, item.condition, item.value1);
-            if(!notRepeated[taskKey]){
+            if (!notRepeated[taskKey]) {
                 cmds.push(['HGET', taskKey, account.id]);
                 linkMap[linkIndex] = {
                     mainType: item.type,
                     taskId: item.id,
-                    taskKey:taskKey
+                    taskKey: taskKey
                 };
                 linkIndex++;
                 notRepeated[taskKey] = [];
             }
             notRepeated[taskKey].push(item.id);
-            
+
         }
 
         let once = Object.deepClone(mission_only_once), daily = Object.deepClone(mission_daily_reset);
@@ -185,7 +282,7 @@ class MissionModel {
             if (redisProcessInfo[i] != null) {
                 let linkInfo = linkMap[i];
                 let processValue = Number(redisProcessInfo[i]);
-                if(Number.isNaN(processValue)){
+                if (Number.isNaN(processValue)) {
                     logger.error('成就任务统计数值异常，无法处理该类型任务进度，taskId = ', linkInfo.taskId);
                     continue;
                 }
@@ -193,40 +290,40 @@ class MissionModel {
                     if (mission_only_once[linkInfo.taskId] != -1) {
                         let taskIds = notRepeated[linkInfo.taskKey];
                         let taskId = null;
-                        for(let id in mission_only_once){
+                        for (let id in mission_only_once) {
                             let nId = Number(id);
-                            if(isNaN(nId)) continue;
-                            if(taskIds.indexOf(nId) != -1){
+                            if (isNaN(nId)) continue;
+                            if (taskIds.indexOf(nId) != -1) {
                                 taskId = id;
                                 break;
                             }
                         }
-                        if(taskId == null){
+                        if (taskId == null) {
                             mission_only_once[linkInfo.taskId] = 1;
                             taskId = linkInfo.taskId;
                         }
                         once[taskId] = processValue;
-                    }else {
+                    } else {
                         once[linkInfo.taskId] = -1;
                     }
                 } else {
                     if (mission_daily_reset[linkInfo.taskId] != -1) {
                         let taskIds = notRepeated[linkInfo.taskKey];
                         let taskId = null;
-                        for(let id in mission_daily_reset){
+                        for (let id in mission_daily_reset) {
                             let nId = Number(id);
-                            if(isNaN(nId)) continue;
-                            if(taskIds.indexOf(nId) != -1){
+                            if (isNaN(nId)) continue;
+                            if (taskIds.indexOf(nId) != -1) {
                                 taskId = id;
                                 break;
                             }
                         }
-                        if(taskId == null){
+                        if (taskId == null) {
                             mission_daily_reset[linkInfo.taskId] = 1;
                             taskId = linkInfo.taskId;
                         }
                         daily[taskId] = processValue;
-                    }else {
+                    } else {
                         daily[linkInfo.taskId] = -1;
                     }
                 }
@@ -235,7 +332,7 @@ class MissionModel {
         account.mission_only_once = mission_only_once;
         account.mission_daily_reset = mission_daily_reset;
         account.commit();
-        return {mission_only_once: once, mission_daily_reset: daily};
+        return { mission_only_once: once, mission_daily_reset: daily };
     }
 
     /**
@@ -384,7 +481,7 @@ class MissionModel {
 
     _getNewProcess(taskType, newValue, processInfo) {
         let _newValue = Number(newValue);
-        if(isNaN(_newValue)){
+        if (isNaN(_newValue)) {
             logger.error('成就统计外部输入数值异常, 此次提交无效, newValue =', newValue);
             return processInfo;
         }
@@ -452,9 +549,9 @@ class MissionModel {
                 };
                 max_index++;
             } else {
-                if(!isNaN(Number(processInfo.value))){
+                if (!isNaN(Number(processInfo.value))) {
                     cmds.push(['HINCRBY', key, this._uid, processInfo.value]);
-                }else {
+                } else {
                     logger.error('任务统计提交数值错误, key=', key);
                     logger.error('任务统计提交数值错误, value=', JSON.stringify(processInfo.value));
                     logger.error('任务统计提交数值错误, taskType=', taskType);
@@ -466,23 +563,23 @@ class MissionModel {
         }
 
         if (cmds.length > 0) {
-            logger.error('cmds=', cmds);
+            // logger.error('cmds=', cmds);
             await redisConnector.multi(cmds);
         }
 
         if (max_cmds.length > 0) {
-            logger.error('max_cmds=', max_cmds);
+            // logger.error('max_cmds=', max_cmds);
             let commit_max_cmds = [];
             let redisMaxInfo = await redisConnector.multi(max_cmds);
-            logger.error('redisMaxInfo=', redisMaxInfo);
+            // logger.error('redisMaxInfo=', redisMaxInfo);
             for (let i = 0; i < redisMaxInfo.length; i++) {
                 let redisValue = redisMaxInfo[i] || 0;
                 redisValue = Number(redisValue);
                 let memInfo = max_info[i];
                 if (memInfo.value.value > redisValue) {
-                    if(!isNaN(Number(memInfo.value.value))){
+                    if (!isNaN(Number(memInfo.value.value))) {
                         commit_max_cmds.push(['HSET', memInfo.redisKey, this._uid, memInfo.value.value]);
-                    }else {
+                    } else {
                         logger.error('MAX任务统计提交数值错误, key=', memInfo.redisKey);
                         logger.error('MAX任务统计提交数值错误, value=', JSON.stringify(memInfo.value));
                     }
@@ -490,7 +587,7 @@ class MissionModel {
                 } else {
                     this._taskProcessMap[memInfo.redisKey].value = redisValue;
                 }
-                logger.error('commit_max_cmds=', commit_max_cmds);
+                // logger.error('commit_max_cmds=', commit_max_cmds);
                 await redisConnector.multi(commit_max_cmds);
             }
         }
@@ -541,35 +638,35 @@ MissionModel.TaskType = {
 
 const BASE = {};
 
-BASE[MissionModel.TaskType.CATCH_FISH] = {"incrType": "incr", "multiType": true};
-BASE[MissionModel.TaskType.USE_SKILL] = {"incrType": "incr", "multiType": true};
-BASE[MissionModel.TaskType.UPDATE_USER_LV] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.UPDATE_WEAPON_LV] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.USE_FISH_CATCH_FISH] = {"incrType": "incr", "multiType": true};
-BASE[MissionModel.TaskType.GET_WEAPON_SKIN] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.ONE_CATCH_FISH] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.ONE_GET_GOLD] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.GET_GOLD] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.USE_DIAMOND] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.USE_GOLD] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.SHARE_TIMES] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.CONTINUE_LOGIN] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.GET_RANK_LV] = {"incrType": "incr", "multiType": true};
-BASE[MissionModel.TaskType.GET_VIP_LV] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.GET_ACHIEVE_POINT] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.GOLD_TIMES] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.CHARG_PEARL] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.DEFEND_GODDESS] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.STOCKING_FISH] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.GODDESS_LEVEL] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.PETFISH_TOTAL_LEVEL] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.UNLOCK_GODDESS] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.PLAY_LITTLE_GAME] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.GOLD_FIRST] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.CHALLENGE_POS] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.CHALLENGE_WIN] = {"incrType": "incr", "multiType": false};
-BASE[MissionModel.TaskType.CHALLENGE_DUANWEI] = {"incrType": "max", "multiType": false};
-BASE[MissionModel.TaskType.MAX] = {"incrType": "incr", "multiType": false};
+BASE[MissionModel.TaskType.CATCH_FISH] = { "incrType": "incr", "multiType": true };
+BASE[MissionModel.TaskType.USE_SKILL] = { "incrType": "incr", "multiType": true };
+BASE[MissionModel.TaskType.UPDATE_USER_LV] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.UPDATE_WEAPON_LV] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.USE_FISH_CATCH_FISH] = { "incrType": "incr", "multiType": true };
+BASE[MissionModel.TaskType.GET_WEAPON_SKIN] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.ONE_CATCH_FISH] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.ONE_GET_GOLD] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.GET_GOLD] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.USE_DIAMOND] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.USE_GOLD] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.SHARE_TIMES] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.CONTINUE_LOGIN] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.GET_RANK_LV] = { "incrType": "incr", "multiType": true };
+BASE[MissionModel.TaskType.GET_VIP_LV] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.GET_ACHIEVE_POINT] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.GOLD_TIMES] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.CHARG_PEARL] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.DEFEND_GODDESS] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.STOCKING_FISH] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.GODDESS_LEVEL] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.PETFISH_TOTAL_LEVEL] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.UNLOCK_GODDESS] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.PLAY_LITTLE_GAME] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.GOLD_FIRST] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.CHALLENGE_POS] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.CHALLENGE_WIN] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.CHALLENGE_DUANWEI] = { "incrType": "max", "multiType": false };
+BASE[MissionModel.TaskType.MAX] = { "incrType": "incr", "multiType": false };
 
 
 MissionModel.Base = BASE;

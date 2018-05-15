@@ -43,18 +43,21 @@ class AccountKick extends Task {
 
                     let mission_task_once = await RewardModel.syncMissionTaskOnce(uid);
                     mission_task_once = JSON.stringify(mission_task_once);
+                    // logger.error('保存成就任务信息 mission_task_once=', mission_task_once);
                     await tools.SqlUtil.query(
                         `INSERT INTO tbl_mission (id, mission_task_once) VALUES (?, ?)
                         ON DUPLICATE KEY UPDATE id=VALUES(id),mission_task_once=VALUES(mission_task_once)`,
                         [uid, mission_task_once]
                     );
+                    await RewardModel.delUserMissionInfo(uid);
+                    await redisConnector.hdel(REDISKEY.OPENID_UID, account.channel_account_id);
+
+                    succUids.push(uid);
 
                 } catch (err) {
                     logger.error(`非活跃玩家${uid}移除REDIS异常:`, err);
 
                 }
-
-                succUids.push(uid);
             }
 
             let next_kick = kicked + this.taskConf.writeLimit;

@@ -5,11 +5,11 @@ const drop_drop_cfg = DESIGN_CFG.drop_drop_cfg;
 
 exports.getDropListInfo = (id) => {
     return drop_droplist_cfg[id];
-}
+};
 
 exports.getDropInfo = (id) => {
     return drop_drop_cfg[id];
-}
+};
 
 /**
  * 根据掉落ID获取掉落奖励, 返回值格式[{item_id:*,item_num:*}]
@@ -30,4 +30,4 @@ exports.getReward = (dropid) => {
         }];
     }
     return [];
-}
+};

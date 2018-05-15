@@ -84,8 +84,7 @@ function _exist(uid, cb) {
         if (err) {
             logger.error('_exist ERROR:', err);
             //TODO TEST 
-            let ERROR = Object.deepClone(ERROR_OBJ.DB_ERR);
-            ERROR.msg = "REDIS SDK ERROR" + err
+            let ERROR = Object.deepClone(ERROR_OBJ.DB_REDIS_ERR);
             utils.invokeCallback(cb, ERROR);
             return;
         }
@@ -142,8 +141,7 @@ function _setAccount(id, data, cb) {
     redisConnector.cmd.multi(cmds).exec(function (err, result) {
         if (err) {
             logger.error('SET REDIS OPERATE ERROR:', err);
-            let ERROR = Object.deepClone(ERROR_OBJ.DB_ERR);
-            ERROR.msg = "REDIS SDK ERROR" + err
+            let ERROR = Object.deepClone(ERROR_OBJ.DB_REDIS_ERR);
             utils.invokeCallback(cb, ERROR);
             return;
         }
@@ -172,12 +170,12 @@ function _setAccountAsync(id, data) {
  * @param cb
  */
 function _getAccount(uid, fields, cb) {
-    if (!uid) {
+    if (uid == null) {
         utils.invokeCallback(cb, ERROR_OBJ.PARAM_MISSING);
         return;
     }
 
-    var all = false;
+    let all = false;
     if (typeof (fields) === 'function') {
         cb = fields;
         all = true;
@@ -210,8 +208,7 @@ function _getAccount(uid, fields, cb) {
             redisConnector.cmd.multi(cmds).exec(function (err, docs) {
                 if (err) {
                     logger.error('GET MULTI REDIS OPERATE ERROR:', err);
-                    let ERROR = Object.deepClone(ERROR_OBJ.DB_ERR);
-                    ERROR.msg = "REDIS SDK ERROR" + err
+                    let ERROR = Object.deepClone(ERROR_OBJ.DB_REDIS_ERR);
                     utils.invokeCallback(cb, ERROR);
                     return;
                 }
@@ -226,8 +223,7 @@ function _getAccount(uid, fields, cb) {
             redisConnector.cmd.hget(REDISKEY.getKey(fields[0]), uid, function (err, doc) {
                 if (err) {
                     logger.error('GET REDIS OPERATE ERROR:', err);
-                    let ERROR = Object.deepClone(ERROR_OBJ.DB_ERR);
-                    ERROR.msg = "REDIS SDK ERROR" + err
+                    let ERROR = Object.deepClone(ERROR_OBJ.DB_REDIS_ERR);
                     utils.invokeCallback(cb, ERROR);
                     return;
                 }

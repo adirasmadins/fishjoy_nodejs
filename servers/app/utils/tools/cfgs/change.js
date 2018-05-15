@@ -10,7 +10,7 @@ exports.getInfo = (id) => {
         }
     }
     return null;
-}
+};
 
 exports.getLeftData = () => {
     let ret = {};
@@ -22,7 +22,7 @@ exports.getLeftData = () => {
         };
     }
     return ret;
-}
+};
 
 exports.getDailyLeftData = () => {
     let ret = {};
@@ -31,4 +31,4 @@ exports.getDailyLeftData = () => {
         ret[info.id] = { left: info.count };
     }
     return ret;
-}
+};

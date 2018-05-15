@@ -151,7 +151,6 @@ exports.getNewAccountCharmPointDefault = function (defaultWp, defaultGodId, defa
  */
 exports.getCurrentCharmPoint = function (account, cb) {
     const FUNC = TAG + "getCurrentCharmPoint() --- ";
-    let id = account.id;
     let flowerC = account.flower_receive;
     let friendC = account.game_friend;
     let hornC = account.horn_used;

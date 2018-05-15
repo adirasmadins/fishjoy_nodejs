@@ -22,6 +22,7 @@ const RewardModel = require('../../../../utils/account/RewardModel');
 const pack = require('../../../pay/controllers/data/pack');
 const SCENE = require('../../../../utils/tools/BuzzUtil').SCENE;
 const dropManager = require('../../../../utils/DropManager');
+const RedisUtil = require('../../../../../app/utils/tools/RedisUtil');
 
 const TAG = "【buzz_goddess】";
 
@@ -84,15 +85,19 @@ function getDefend(data, cb) {
 
     // 检查goddess数据
     for (let i = 0; i < goddess.length; i++) {
-        let unlock = goddess[i].unlock;
+        let god = goddess[i];
+        let unlock = god.unlock;
         let goddess_unlock = 1;
         for (let j = 0; j < unlock.length; j++) {
             if (unlock[j] < 2) {
                 goddess_unlock = 0;
             }
         }
-        if (goddess_unlock && goddess[i].level == 0) {
-            goddess[i].level = 1;
+        if (goddess_unlock && god.level == 0) {
+            god.level = 1;
+        }
+        if (god.free >= 0) {
+            delete god.free;
         }
     }
 
@@ -102,6 +107,12 @@ function getDefend(data, cb) {
         first_goddess.unlock = [2, 2, 2, 2, 2, 2, 2, 2, 2];
     }
     account.goddess = goddess;
+    //新增暂离免费次数
+    let pauseAwayFree = account.goddess_free_pause_away;
+    if (!pauseAwayFree) {
+        pauseAwayFree = [0, 0, 0, 0, 0];
+        account.goddess_free_pause_away = pauseAwayFree;
+    }
     account.commit();
     CacheAccount.resetCharmPoint(account, function (chs) { });
     let response = {
@@ -109,6 +120,7 @@ function getDefend(data, cb) {
         gods: goddess,
         free: goddess_free,
         ctimes: goddess_ctimes,
+        pauseAwayFree: pauseAwayFree,
     };
     cb(null, response);
 }
@@ -137,7 +149,7 @@ function interractReward(data, cb) {
     let goddess = _getGoddessById(godList, godId);
 
     // 判断该女神是否已经解锁
-    if (!_isGoddessUnlocked(goddess)) {
+    if (!_isGodUnlocked(goddess)) {
         throw ERROR_OBJ.GODDESS_LOCKED;
     }
 
@@ -192,7 +204,7 @@ function getUnlocked(account) {
     let response = {};
     for (let idx in list) {
         let goddess = list[idx];
-        if (_isGoddessUnlocked(goddess)) {
+        if (_isGodUnlocked(goddess)) {
             response['' + goddess.id] = {
                 lv: goddess.level,
                 state: 0// 0为未放置状态, 这个值稍后由aquarium修改
@@ -212,7 +224,7 @@ function updateLevel(account) {
     for (let idx in list) {
         let goddess = list[idx];
         logger.info(FUNC + "goddess:", goddess);
-        if (_isGoddessUnlocked(goddess)) {
+        if (_isGodUnlocked(goddess)) {
             if (!aquarium_goddess['' + goddess.id]) {
                 aquarium_goddess['' + goddess.id] = {};
             }
@@ -223,32 +235,88 @@ function updateLevel(account) {
     account.commit();
 }
 
+
+function _isGodUnlocked (god) {
+    if (god) {
+        let unlock = god.unlock;
+        for (let i = 0 ; i < unlock.length; i ++) {
+            if (unlock[i] != 2) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
 /**
  * 挑战女神.
  */
 function challengeGoddess(data, cb) {
-    let FUNC = TAG + "challengeGoddess() --- ";
     let account = data.account;
-    // 账户数据中原来的女神数据
-    let uid = data.uid;
+
+    //查找女神并确认女神是否已解锁
+    let gods = account.goddess;
+    let curGod = null;
+    let idx = 0;
+    for (let i = 0; i < gods.length; i ++) {
+        let god = gods[i];
+        if (god.id === data.godId) {
+            curGod = god;
+            idx = i;
+            break;
+        }
+    }
+    for (let i = 0; i < idx; i ++) {
+        let god = gods[i];
+        if (god.isPauseAway) {
+            logger.error('之前的还有女神尚未结束')
+            throw ERROR_OBJ.INVALID_GOD; //前面还有女神未结束
+            return;
+        }
+    }
+    if (!curGod || !_isGodUnlocked(curGod)) {
+        throw ERROR_OBJ.LOCK_GOD;
+    }
+
+    //新增暂离状态免费进入次数限制
+    if (data.isForEnterFree) {
+        if (!curGod.isPauseAway) {
+            throw ERROR_OBJ.INVALID_GOD;
+        }
+        let cfg = common_const_cfg.GODDESS_ENTER_COST;
+        let pauseAwayFree = account.goddess_free_pause_away;
+        let freeTimes = pauseAwayFree[idx];
+        let cost = cfg[freeTimes];
+        if (freeTimes >= cfg.length) {
+            cost = cfg[cfg.length - 1];
+        }
+        if (account.pearl < cost) {
+            cb(null, {
+                pearl_cost: cost
+            });
+            return;
+        }
+        pauseAwayFree[idx] = freeTimes + 1;
+        account.goddess_free_pause_away = pauseAwayFree;
+        account.pearl = -cost;
+        account.commit();
+        cb(null, {
+            pearl: account.pearl,
+        });
+        return;
+    }
+
+    //创建挑战，即非暂离状态进入保卫女神,含免费挑战
     let goddess_free = account.goddess_free;
     let goddess_ctimes = account.goddess_ctimes;
-    logger.info(FUNC + "goddess_free:\n", goddess_free);
-    logger.info(FUNC + "goddess_ctimes:\n", goddess_ctimes);
     if (goddess_free > 0) {
-        logger.info(FUNC + "不消耗钻石");
         goddess_free--;
         account.goddess_free = goddess_free;
-    }
-    else {
-        logger.info(FUNC + "计算消耗钻石");
+    }else {
         let pearl_cost = _getPrice(goddess_ctimes);
-        logger.info(FUNC + "pearl_cost:", pearl_cost);
         // 消耗钻石
         if (account.pearl < pearl_cost) {
-            logger.error(FUNC + "玩家钻石不足, 不能挑战女神");
-            // 客户端无法把这个错误导向钻石购买, 返回一个消耗钻石数
-            // cb(ERROR_OBJ.DIAMOND_NOT_ENOUGH);
             let ret = {
                 pearl_cost: pearl_cost
             };
@@ -258,19 +326,77 @@ function challengeGoddess(data, cb) {
         account.pearl = -pearl_cost;
         goddess_ctimes++;
         account.goddess_ctimes = goddess_ctimes;
-        logBuilder.addItemLog(uid, 'i002', -pearl_cost, account.pearl, common_log_const_cfg.GOD_CHALLENGE, account.level);
+        logBuilder.addItemLog(account.id, 'i002', -pearl_cost, account.pearl, common_log_const_cfg.GOD_CHALLENGE, account.level);
     }
     //统计女神挑战次数dfc
     let mission = new RewardModel(account);
     mission.updateProcess(RewardModel.TaskType.DEFEND_GODDESS, 1);
     mission.updateProcess(RewardModel.TaskType.GODDESS_LEVEL, account.max_wave);
-    mission.commit(); //等价account.commit()
+    mission.commit();
+    account.commit();
     let ret = {
         pearl: account.pearl,
         free: account.goddess_free,
         ctimes: account.goddess_ctimes,
     };
     cb(null, ret);
+    
+    //计算可跳关次数
+    try {
+        _calJumLeft(account);   
+    } catch (error) {
+        logger.error('can not cal jump left.');
+    }
+}
+
+/**
+ * 计算跳关次数
+ */
+async function _calJumLeft (account) {
+    let ranks = [
+        'rank:goddess:result',
+        'rank:charm:result'
+    ];
+    let data = [];
+    for (let i = 0; i < ranks.length; i ++) {
+        let platform = account.platform;
+        let k = ranks[i];
+        data[i] = await RedisUtil.get(`${k}:${platform}`);
+        data[i] = JSON.parse(data[i]);
+    }
+    let goddesTop1 = -1;
+    let rankGoddess = data[0];
+    if (rankGoddess) {
+        let ps = rankGoddess.players;
+        if (ps && ps.length > 0) {
+            let top1 = ps[0];
+            if (top1.uid == account.id) {
+                //自己是第一名，则不能计算跳关
+                return;
+            }
+            goddesTop1 = top1.ext.charm_point; //女神第一名魅力点数
+        }
+    }
+    if (goddesTop1 > 0 && account.charm_point > goddesTop1) {
+        let myCharmRank = 10001;
+        let rankCharm = data[1];
+        if (rankCharm) {
+            let ps = rankCharm.players;
+            if (ps) {
+                for (let i = 0; i < ps.length; i ++) {
+                    let rp = ps[i];
+                    if (rp.uid == account.id) {
+                        myCharmRank = i + 1;
+                        break;
+                    }
+                }
+                let a = Math.floor(Math.pow(Math.max(1, 100 - myCharmRank), 0.4));
+                let jumpLeft = Math.min(5, a); 
+                account.goddess_jump = jumpLeft;
+                account.commit();
+            }
+        }
+    }
 }
 
 /**
@@ -298,7 +424,7 @@ function unlock(dataObj, cb) {
 
     BuzzUtil.removeFromPack(account, item_list, function (cost_info) {
         let change = BuzzUtil.getChange(account, cost_info);
-        let unlock_all = _isGoddessUnlocked(goddess);
+        let unlock_all = _isGodUnlocked(goddess);
         if (unlock_all) {
             goddess.level = 1;
         }
@@ -332,7 +458,8 @@ function unlock(dataObj, cb) {
                     }
                 }
                 let mission = new RewardModel(account);
-                mission.addProcess(RewardModel.TaskType.UNLOCK_GODDESS, count);//内含account.commit
+                mission.addProcess(RewardModel.TaskType.UNLOCK_GODDESS, count);
+                account.commit();
             });
         } else {
             account.goddess = goddess_list;
@@ -554,123 +681,6 @@ function getGoddessTop1(platform) {
 //==============================================================================
 // private
 //==============================================================================
-/**
- * 女神是否已经解锁.
- * @param goddess 女神数据(一个女神的全部数据, 其中的unlock为解锁数组).
- */
-function _isGoddessUnlocked(goddess) {
-    const FUNC = TAG + "_isGoddessUnlocked()---";
-    // logger.info(FUNC + "hao gui yi goddess:\n", goddess);
-
-    let unlock = goddess.unlock;
-
-    // TODO: BUG(20170407【10】)
-    if (unlock == null) {
-        logger.error(FUNC + "goddess:\n", goddess);
-        return false;
-    }
-    for (let i = 0; i < unlock.length; i++) {
-        if (unlock[i] < 2) {
-            // 有一个遮罩没被解锁就返回false
-            return false;
-        }
-    }
-    // 所有遮罩都被解锁返回true
-    return true;
-}
-
-function _didGetDefend(req, data, account, cb) {
-    const FUNC = TAG + "_didGetDefend() --- ";
-
-    let uid = account.id;
-    let goddess = account.goddess;
-    let goddess_free = account.goddess_free;
-    let goddess_ctimes = account.goddess_ctimes;
-
-    // 检查goddess数据
-    for (let i = 0; i < goddess.length; i++) {
-        let unlock = goddess[i].unlock;
-        let goddess_unlock = 1;
-        for (let j = 0; j < unlock.length; j++) {
-            if (unlock[j] < 2) {
-                goddess_unlock = 0;
-            }
-        }
-        if (goddess_unlock && goddess[i].level == 0) {
-            goddess[i].level = 1;
-        }
-    }
-
-    // yDONE: 没有解锁第一个女神的玩家数据设置
-    let first_goddess = goddess[0];
-    if (first_goddess && first_goddess.level == 0) {
-        first_goddess.level = 1;
-        first_goddess.unlock = [2, 2, 2, 2, 2, 2, 2, 2, 2];
-        // CacheAccount.setGoddess(uid, goddess);
-    }
-    CacheAccount.setGoddess(uid, goddess);
-
-    let response = {
-        leftDays: getLeftDays(),
-        gods: goddess,
-        free: goddess_free,
-        ctimes: goddess_ctimes,
-    };
-
-    // logger.info(FUNC + "response:", response);
-
-    cb(null, response);
-
-}
-
-function _didChallengeGoddess(req, data, account, cb) {
-    const FUNC = TAG + "_didChallengeGoddess() --- ";
-
-    // let challenge_goddess_id = data["god_id"];
-
-    // 账户数据中原来的女神数据
-    let uid = account.id;
-    let goddess_free = account.goddess_free;
-    let goddess_ctimes = account.goddess_ctimes;
-    logger.info(FUNC + "goddess_free:\n", goddess_free);
-    logger.info(FUNC + "goddess_ctimes:\n", goddess_ctimes);
-    if (goddess_free > 0) {
-        logger.info(FUNC + "不消耗钻石");
-        goddess_free--;
-        CacheAccount.setGoddessFree(uid, goddess_free);
-    }
-    else {
-        logger.info(FUNC + "计算消耗钻石");
-        let pearl_cost = _getPrice(goddess_ctimes);
-        logger.info(FUNC + "pearl_cost:", pearl_cost);
-        // 消耗钻石
-        if (account.pearl < pearl_cost) {
-            logger.error(FUNC + "玩家钻石不足, 不能挑战女神");
-            // 客户端无法把这个错误导向钻石购买, 返回一个消耗钻石数
-            // cb(ERROR_OBJ.DIAMOND_NOT_ENOUGH);
-            let ret = {
-                pearl_cost: pearl_cost
-            };
-            cb(null, ret);
-            return;
-        }
-        account.pearl = -pearl_cost;
-        goddess_ctimes++;
-        CacheAccount.setGoddessCTimes(uid, goddess_ctimes);
-        logBuilder.addItemLog(uid, 'i002', -pearl_cost, account.pearl, common_log_const_cfg.GOD_CHALLENGE, account.level);
-    }
-    //统计女神挑战次数dfc
-    let mission = new RewardModel(account);
-    mission.updateProcess(RewardModel.TaskType.DEFEND_GODDESS, 1);
-    mission.updateProcess(RewardModel.TaskType.GODDESS_LEVEL, account.max_wave);
-    mission.commit(); //等价account.commit()
-    let ret = {
-        pearl: account.pearl,
-        free: account.goddess_free,
-        ctimes: account.goddess_ctimes,
-    };
-    cb(null, ret);
-}
 
 /**
  * 获取挑战女神消耗的钻石数
@@ -690,7 +700,7 @@ function _initGods() {
             level: 0,
             hp: _getHpByIdAndLv(goddess.id, 0),
             startWaveIdx: 0,
-            free: goddess.free,
+            //free: goddess.free,
             ctimes: 0,
             unlock: [0, 0, 0, 0, 0, 0, 0, 0, 0],//女神解锁
             interactReward: [0, 0, 0, 0],//互动奖励时间戳, 4个，身体四个区域
@@ -779,7 +789,7 @@ function _unlock(req, dataObj, cb) {
 
         BuzzUtil.removeFromPack(account, item_list, function (cost_info) {
             let change = BuzzUtil.getChange(account, cost_info);
-            let unlock_all = _isGoddessUnlocked(goddess);
+            let unlock_all = _isGodUnlocked(goddess);
             if (unlock_all) {
                 goddess.level = 1;
             }

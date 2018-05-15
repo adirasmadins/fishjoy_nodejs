@@ -7,7 +7,7 @@ const omelo = require('omelo');
 class SubGameData {
     constructor() {
         this._pub_data_cb = null;
-        logger.error('-----------------SubGameData')
+        logger.error('-----------------SubGameData');
     }
 
     listen(cb) {

@@ -4,11 +4,11 @@ const shop_card_cfg = DESIGN_CFG.shop_card_cfg;
 exports.getInfo = (id) => {
     for (let i = 0; i < shop_card_cfg.length; i++) {
         if (shop_card_cfg[i].id == id) {
-            return shop_card_cfg[i]
+            return shop_card_cfg[i];
         }
     }
     return null;
-}
+};
 
 /**
  * 获取月卡每日领取的奖励
@@ -28,4 +28,4 @@ exports.getEverydayItemList = (id) => {
         }
     }
     return item_list;
-}
+};

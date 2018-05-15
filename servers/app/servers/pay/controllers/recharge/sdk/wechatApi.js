@@ -53,8 +53,8 @@ class WechatApi {
     }
 
     _getSha256(sigStr, key){
-        console.error('sigStr', sigStr)
-        console.error('key', key)
+        console.error('sigStr', sigStr);
+        console.error('key', key);
         let sha256 = crypto.createHmac('sha256', key);
         sha256.update(sigStr);
         return sha256.digest('hex');
@@ -116,7 +116,7 @@ class WechatApi {
         try{
             let resp = await httpclient.postData(body, util.format(this._config.MIDASPAY, body.access_token));
             if(!resp){
-                logger.error('微信支付返回数据为空')
+                logger.error('微信支付返回数据为空');
                 throw ERROR_OBJ.DATA_NULL_ERROR;
             }
 

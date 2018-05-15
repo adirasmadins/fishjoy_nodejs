@@ -6,4 +6,4 @@ const freezeReason = require('../../configs/freezeReason').freezeReason;
  */
 exports.get = async function (data, ctx) {
     return freezeReason;
-}
+};

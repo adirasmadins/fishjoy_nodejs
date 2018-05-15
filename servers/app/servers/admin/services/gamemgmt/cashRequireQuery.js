@@ -21,7 +21,7 @@ exports.get = async function (data, ctx) {
         };
     }
 
-}
+};
 
 function fetch() {
     return CASH_CONFIG;

@@ -22,7 +22,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function change(type, rate, leftSecond, uid) {
     switch (Number(type)) {

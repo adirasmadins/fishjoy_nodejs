@@ -456,7 +456,8 @@ function setGoddess(uid, cur, cb) {
                 }
             }
             let mission = new RewardModel(account);
-            mission.addProcess(RewardModel.TaskType.UNLOCK_GODDESS, count);//内含account.commit
+            mission.addProcess(RewardModel.TaskType.UNLOCK_GODDESS, count);
+            account.commit();
         }
     });
 
@@ -484,10 +485,9 @@ function setMaxPetfishLevel(account, cur) {
     }
     if (update) {
         let mission = new RewardModel(account);
-        mission.addProcess(RewardModel.TaskType.PETFISH_TOTAL_LEVEL, cur);//内含account.commit
-    }else{
-        account.commit();
+        mission.addProcess(RewardModel.TaskType.PETFISH_TOTAL_LEVEL, cur);
     }
+    account.commit();
     //注释如下内容，直接调用redisutil,防止闭环require
     // buzz_charts.updateRankAquarium(account.platform, account.id, account.petfish_total_level);
     if(account.privacy==1) {
@@ -676,7 +676,8 @@ function setWeaponSkin(account, cur, cb) {
         //统计武器皮肤dfc
         let mission = new RewardModel(account);
         let num = weapon_skin.own.length;
-        mission.addProcess(RewardModel.TaskType.GET_WEAPON_SKIN, num);//内含account.commit
+        mission.addProcess(RewardModel.TaskType.GET_WEAPON_SKIN, num);
+        account.commit();
         resetCharmPoint(account, cb);
     }
     else {

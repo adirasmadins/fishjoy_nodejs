@@ -27,7 +27,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetchData(start, length) {
     let ret = [];

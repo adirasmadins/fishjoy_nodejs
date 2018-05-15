@@ -11,7 +11,7 @@ function _setCity(dataObj, cb) {
     let city = dataObj.city;
     if (typeof(city) === 'string') {
         let account = dataObj.account;
-        logger.error('account = ', account.city, ' tartge = ', city)
+        logger.error('account = ', account.city, ' tartge = ', city);
         account.city = city;
         account.commit();
         cb && cb(null, []);

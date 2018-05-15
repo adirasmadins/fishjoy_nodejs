@@ -65,4 +65,4 @@ exports.getRandomIdx = (probability) => {
         }
     }
     return null;
-}
+};

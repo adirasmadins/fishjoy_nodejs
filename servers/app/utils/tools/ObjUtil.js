@@ -198,11 +198,11 @@ function encodePwd(salt, pwd) {
 
 function createSalt() {
     return crypto.randomBytes(24).toString('hex');
-};
+}
 
 function generateSessionToken(userId) {
     return userId + '_' + crypto.randomBytes(24).toString('hex');
-};
+}
 
 exports.max = max;
 

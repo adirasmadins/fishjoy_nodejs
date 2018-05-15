@@ -22,7 +22,7 @@ class Cost {
         } else if (DEBUG === 2) {
             this.log = logger.error;
         }
-        logger.error('-----------------Cost')
+        logger.error('-----------------Cost');
     }
 
     _getWpLevelCfg(level) {

@@ -21,7 +21,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetchData() {
     return await tools.SqlUtil.query(SQL_CONFIG.getGiftCodeList, []);
@@ -35,7 +35,7 @@ async function makeChart(oriData) {
         let info = oriData[i];
         let time = tools.DateUtil.format(info.created_at, tools.DateUtil.FMT.DT);
         let title = tools.BuzzUtil.getGiftCodeTitleFromId(info.action_id);
-        let addByWho = await tools.BuzzUtil.getNameOfAdmin(info.addByWho)
+        let addByWho = await tools.BuzzUtil.getNameOfAdmin(info.addByWho);
         chart.push({
             time: time,//创建时间
             num: info.num,//创建个数

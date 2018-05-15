@@ -20,7 +20,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 /**
  * 生成礼包码
@@ -69,7 +69,7 @@ function generateCdKey() {
         str += String.fromCharCode(r);
     }
     return str;
-};
+}
 
 function randomInt(maxNum) {
     return Math.floor(Math.random() * maxNum);

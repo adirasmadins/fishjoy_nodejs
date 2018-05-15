@@ -23,7 +23,7 @@ exports.get = async function (data, ctx) {
             err: err.toString()
         };
     }
-}
+};
 
 /**
  * 检查管理人员用户名是否已经存在.

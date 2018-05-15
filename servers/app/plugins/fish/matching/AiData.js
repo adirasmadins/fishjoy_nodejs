@@ -7,7 +7,7 @@ class AiData {
     constructor() {
         this._canRun = true;
         this._CacheIERAvg = {};
-        logger.error('-----------------AiData') 
+        logger.error('-----------------AiData'); 
     }
 
     runTask() {

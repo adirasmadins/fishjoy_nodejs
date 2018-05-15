@@ -6,7 +6,7 @@ class GameModule {
         this.app = opts.app;
         this.type = opts.type || 'pull';
         this.interval = opts.interval || 5;
-        logger.error('-----------------GameModule')
+        logger.error('-----------------GameModule');
     }
 
     monitorHandler(agent, msg) {

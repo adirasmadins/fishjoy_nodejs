@@ -9,7 +9,7 @@ exports.getQuestInfo = (id) => {
         }
     }
     return null;
-}
+};
 
 exports.getQuestReward = (id) => {
     let info = this.getQuestInfo(id);
@@ -19,4 +19,4 @@ exports.getQuestReward = (id) => {
     else {
         return [];
     }
-}
+};

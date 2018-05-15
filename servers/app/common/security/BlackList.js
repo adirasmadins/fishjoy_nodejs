@@ -7,7 +7,7 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY;
  */
 class BlackList {
     constructor() { 
-        logger.error('-----------------BlackList')
+        logger.error('-----------------BlackList');
     }
 
     /**
@@ -37,7 +37,7 @@ class BlackList {
     }
 }
 
-module.exports = new BlackList()
+module.exports = new BlackList();
 
 // 添加到记录在Redis中的黑名单集合中
 async function _addToList(uidList) {

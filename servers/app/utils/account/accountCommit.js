@@ -166,6 +166,19 @@ class AccountCommit {
         return this._value('token');
     }
     set gold(value) {
+        if(Number(value) > 5000000 || value == this.gold){
+            logger.error('玩家超大金币数量提交, 监视其金币信息');
+            let exp_info = {
+                uid:this.__id,
+                gold:this.gold,
+                inc:value,
+                pear:this.pearl,
+                time:Date.now(),
+                serverId:omelo.app.getServerId(),
+                desc:'玩家超大金币数量提交, 监视其金币信息',
+            };
+            redisConnector.sadd(EXCEPTION_LIST, JSON.stringify(exp_info));
+        }
         this._modify('gold', value);
     }
     get gold() {
@@ -178,6 +191,7 @@ class AccountCommit {
                 uid:this.__id,
                 gold:this.gold,
                 pear:this.pearl,
+                inc:value,
                 time:Date.now(),
                 serverId:omelo.app.getServerId(),
                 desc:'玩家超大钻石数量提交, 监视其钻石信息',
@@ -459,6 +473,12 @@ class AccountCommit {
     get active_stat_reset() {
         return this._value('active_stat_reset');
     }
+    set active_stat_newbie(value) {
+        this._modify('active_stat_newbie', value);
+    }
+    get active_stat_newbie() {
+        return this._value('active_stat_newbie');
+    }
     set mail_box(value) {
         this._modify('mail_box', value);
     }
@@ -518,6 +538,18 @@ class AccountCommit {
     }
     get goddess_ongoing() {
         return this._value('goddess_ongoing');
+    }
+    set goddess_jump(value) {
+        this._modify('goddess_jump', value);
+    }
+    get goddess_jump() {
+        return this._value('goddess_jump');
+    }
+    set goddess_free_pause_away(value) {
+        this._modify('goddess_free_pause_away', value);
+    }
+    get goddess_free_pause_away() {
+        return this._value('goddess_free_pause_away');
     }
     set redress_no(value) {
         this._modify('redress_no', value);

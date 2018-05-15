@@ -22,6 +22,7 @@ const GameEventBroadcast = require('../../../common/broadcast/GameEventBroadcast
 const rpcSender = require('../../../net/rpcSender');
 const globalStatusData = require('../../../utils/globalStatusData');
 const constDef = require('../../../consts/constDef');
+const ObjUtil = require('../../../../app/utils/tools/ObjUtil');
 
 const FIRE_DELAY = 50; //开炮事件服务端与客户端的延时,单位毫秒
 const LOG_DT = 30000; //金币钻石日志写入周期，即每隔指定时间插入一条
@@ -710,7 +711,8 @@ class FishPlayer extends Player {
         let pirateData = null;
         let fireFlagGolds = {};
         let gotC = 0;
-        let isDrop = false;
+        let isDropSkill = false;
+        let isDropItem = false;
         for (let fk in ret) {
             let rd = ret[fk];
             let gold = rd.gold;
@@ -740,7 +742,8 @@ class FishPlayer extends Player {
                 let temp = this._missionCoutWithFish(fk, gold, rd.skin);
                 temp.rewardFishFlag === 1 && (rewardFishNum++);
                 temp.pirateFlag > 0 && this._pirate && (pirateData = this._pirate.getProgress());
-                temp.dropKeys.length > 0 && (rd.drops = temp.dropKeys, isDrop = true);
+                temp.dropKeys.length > 0 && (rd.drops = temp.dropKeys, isDropItem = true);
+                isDropSkill = temp.isDropSkill;
                 srcFishId > 0 && (fg.fish_id = srcFishId);
                 gotC++;
             }
@@ -807,7 +810,8 @@ class FishPlayer extends Player {
             };
         }
         pirateData && (res.pirateData = pirateData);
-        //isDrop &&  (res.package = this.getLeftPackage(), res.skill = this.getLeftSkill());
+        isDropSkill &&  (res.skill = this.getLeftSkill());
+        isDropItem &&  (res.package = this.getLeftPackage());
         utils.invokeCallback(cb, null, res);
 
         //打死鱼才广播
@@ -832,8 +836,7 @@ class FishPlayer extends Player {
         let saveData = {
             isRightNow: true,
         };
-        this._curSkill[skillId] = this._curSkill[skillId] || 0;
-        this._curSkill[skillId] -= 1;//消耗一个技能
+        this._changeSkill(skillId, -1);//消耗一个技能
 
         this._mission.updateProcess(RewardModel.TaskType.USE_SKILL, 1, skillId);//使用x技能y次，如果x为0则为任意技能
         
@@ -1591,7 +1594,7 @@ class FishPlayer extends Player {
 
         this.save();
         this._updateRankWithBP();
-        //logger.error('及时写入内存数据，并清空增量')
+       // logger.error('及时写入内存数据，并清空增量')
     }
 
     getWeaponEnergy(wpLevel) {
@@ -1602,7 +1605,7 @@ class FishPlayer extends Player {
      * 当前剩余背包物品
      */
     getLeftPackage() {
-        let tps = this.account.package;
+        let tps = ObjUtil.clone(this.account.package);
         let cps = this._curPackage;
         for (let type in cps) {
             let cp = cps[type];
@@ -1620,18 +1623,32 @@ class FishPlayer extends Player {
     }
 
     /**
+     * 技能变化
+     * @param {*} skillId 
+     * @param {*} itemNum， 变化数量，>0 获得，<0消耗
+     */
+    _changeSkill(skillId, itemNum) {
+        this._curSkill = this._curSkill || {};
+        this._curSkill[skillId] = this._curSkill[skillId] || 0;
+        this._curSkill[skillId] += itemNum;
+        
+        //logger.error('this._curSkill = ', this._curSkill, ' skillId = ', skillId, ' itemNum = ', itemNum)
+    }
+
+    /**
      * 当前剩余技能
      */
     getLeftSkill() {
-        let skill = this.account.skill;
+        let temp = ObjUtil.clone(this.account.skill);
         let csk = this._curSkill;
+       // logger.error('left csk = ', csk)
         for (let id in csk) {
-            skill[id] = skill[id] || 0;
-            skill[id] += csk[id];
-            skill[id] = Math.max(0, skill[id]);
+            temp[id] = temp[id] || 0;
+            temp[id] += csk[id];
+            temp[id] = Math.max(0, temp[id]);
         }
-        //logger.error('skill = ', skill)
-        return skill;
+        //logger.error('left skill = ', temp)
+        return temp;
     }
 
     /**
@@ -1641,7 +1658,9 @@ class FishPlayer extends Player {
         let temp = fk.split('#');
         let fishID = temp[0];
         let cfg = fishID && this.fishModel.getFishCfgWithID(fishID) || null;
-        let data = {};
+        let data = {
+            isDropSkill: false,
+        };
         if (cfg) {
             let star = this.getSkinStar(skin);
             let wpStarCfg = configReader.getWeaponStarData(skin, star);
@@ -1681,7 +1700,21 @@ class FishPlayer extends Player {
             //掉落检查
             let ret = dropManager.try2Drop(this.account, cfg.drop_pack_id, 1, GAMECFG.common_log_const_cfg.GAME_FIGHTING);
             data.dropKeys = ret.dpks;
-            this._checkMiniGame(ret.logItems);
+            let dropLogItems = ret.logItems;
+            this._checkMiniGame(dropLogItems);
+
+            //掉落中是否有技能,有则视为战斗内获得技能
+            const ITEM_ITEM = GAMECFG.item_item_cfg;
+            for (let i = 0; i < dropLogItems.length; i ++) {
+                let drop = dropLogItems[i];
+                if (!drop) continue;
+                let cfg = ITEM_ITEM[drop.item_id];
+                if (cfg && cfg.type === 3 && drop.item_num > 0) {
+                    //logger.error('通过掉落获得技能')
+                    data.isDropSkill = true;
+                }
+            }
+
         }
         return data;
     }
@@ -1886,9 +1919,7 @@ class FishPlayer extends Player {
                 saveData.pearl = saveData.pearl || 0;
                 saveData.pearl += itemNum;
             } else if (type == 3) {
-                let skillId = itemCfg.id;
-                this._curSkill[skillId] = this._curSkill[skillId] || 0;
-                this._curSkill[skillId] += itemNum; //获得技能
+                this._changeSkill(itemCfg.id, itemNum);//获得技能
                 saveData.skill = true;
             } else {
                 let pack = this._curPackage;

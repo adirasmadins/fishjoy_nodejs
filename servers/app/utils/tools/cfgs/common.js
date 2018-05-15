@@ -13,16 +13,16 @@ exports.getPumpWater = (id) => {
         catchRateGive: common_mathadjust_const_cfg.addvalue,
         catchRateGain: common_mathadjust_const_cfg.reducevalue,
     };
-}
+};
 
 exports.getMathAdjustConsts = () => {
     return common_mathadjust_const_cfg;
-}
+};
 
 exports.getLogConsts = () => {
     return common_log_const_cfg;
-}
+};
 
 exports.getConsts = () => {
     return common_const_cfg;
-}
+};

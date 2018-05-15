@@ -2,7 +2,7 @@ const httpHandler = require('../../common/httpHandler');
 const genAccount = require('../../common/genAccount');
 const chatClientApiConfig = require('../api/chatClientApiConfig');
 
-const PREFIX = '/chat/clientApi'
+const PREFIX = '/chat/clientApi';
 
 module.exports = (router) => {
     router.prefix(PREFIX);

@@ -16,7 +16,7 @@ const api_list = {
         accountFields: [],
         ext: {
             getIp: function (ctx) {
-                ctx.request.body.data = ctx.request.body.data || {}
+                ctx.request.body.data = ctx.request.body.data || {};
                 ctx.request.body.data.userIp = ctx.ip;
             }
         }

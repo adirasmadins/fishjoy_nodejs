@@ -18,7 +18,7 @@ class GameApp {
     constructor() {
         this._instance = new plugins[GAME_TYPE].Instance();
         this._maxLoad = 200;
-        logger.error('-----------------GameApp') 
+        logger.error('-----------------GameApp'); 
     }
 
     get instance(){

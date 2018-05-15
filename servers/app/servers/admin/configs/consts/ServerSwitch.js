@@ -1,6 +1,6 @@
 module.exports = {
-    PLATFORM_SERVICE_SWITCH: 1,//·þÎñ¿ª¹Ø
-    PLATFORM_CDKEY_SWITCH: 2,//Àñ°üÂë¿ª¹Ø
-    PLATFORM_CIK_SWITCH: 3,//ÊµÎï¶Ò»»¿ª¹Ø
-    PLATFORM_ACTIVE_SWITCH: 4,//»î¶¯¿ª¹Ø
-}
+    PLATFORM_SERVICE_SWITCH: 1,//ï¿½ï¿½ï¿½ñ¿ª¹ï¿½
+    PLATFORM_CDKEY_SWITCH: 2,//ï¿½ï¿½ï¿½ï¿½ë¿ªï¿½ï¿½
+    PLATFORM_CIK_SWITCH: 3,//Êµï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
+    PLATFORM_ACTIVE_SWITCH: 4,//ï¿½î¶¯ï¿½ï¿½ï¿½ï¿½
+};

@@ -3,7 +3,7 @@ const EventEmitter = require('events').EventEmitter;
 class EventMsgHandler extends EventEmitter{
     constructor(){
         super();
-        logger.error('-----------------EventMsgHandler')
+        logger.error('-----------------EventMsgHandler');
     }
 
     postMsg(type, body){

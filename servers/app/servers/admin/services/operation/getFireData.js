@@ -21,7 +21,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetchData(date, hours) {
     let ret = [];
@@ -80,5 +80,5 @@ async function makeChart(oriData) {
         profitRateToday: dayProfitRate,
         profitRateHistory: historyProfitRate,
         chart: chart
-    }
+    };
 }

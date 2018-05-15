@@ -291,4 +291,4 @@ module.exports =
         switchValid: "update tbl_admin_user set valid=? where uname=?",
         // 修改管理员密码
         modifyPwd: "update tbl_admin_user set salt=?, password=? where uname=?",
-    }
+    };

@@ -20,7 +20,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function switchAuth(uname, auth) {
     await tools.SqlUtil.query(SQL_CONFIG.switchValid, [auth, uname]);

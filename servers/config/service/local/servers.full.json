@@ -95,15 +95,6 @@
       "frontend": true,
       "args": " --inspect=192.168.35.211:14001",
       "maxLoad": 250
-    },{
-      "id": "game-1-2",
-      "host": "192.168.35.211",
-      "port": 4005,
-      "clientHost": "192.168.35.211",
-      "clientPort": 4007,
-      "frontend": true,
-      "args": " --inspect=192.168.35.211:14005",
-      "maxLoad": 250
     }]
   },
   "production": {

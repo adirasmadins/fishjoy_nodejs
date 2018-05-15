@@ -2,8 +2,8 @@ const _ = require('underscore');
 const tools = require('../../../../utils/tools');
 const REDISKEY = require('../../../../database').dbConsts.REDISKEY;
 const rpcSender = require('../../../../net/rpcSender');
-const loadManagerCmd = require('../../../../cmd/loadManagerCmd')
-const modules = require('../../../../modules')
+const loadManagerCmd = require('../../../../cmd/loadManagerCmd');
+const modules = require('../../../../modules');
 
 /**
  * 获取场景捕获率(增加战斗服房间个数和玩家个数)
@@ -18,7 +18,7 @@ exports.get = async function (data, ctx) {
     _.extend(ret, realtimeStatus);
 
     return ret;
-}
+};
 
 /**
  * 数据转换(Redis数据库原始数据 -> 客户端可以处理的数据形式)
@@ -111,7 +111,7 @@ async function getFightStatus() {
             name: '比赛房间数',
             value: rankMatchRoomCount
         }
-    }
+    };
 }
 
 // 获取战斗服状态gameLoad: {

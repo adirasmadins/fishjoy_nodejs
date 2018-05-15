@@ -248,10 +248,6 @@ exports.withDbPool = function () {
             DaoOperation.update(pool, data, cb);
         },
 
-        cancelCik: function (orderid, cb) {
-            DaoChange.cancelCik(pool, orderid, cb);
-        },
-
         updateShipTime: function (params, cb) {
             DaoChange.updateShipTime(pool, params, cb);
         },

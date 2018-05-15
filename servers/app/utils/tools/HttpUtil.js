@@ -1,7 +1,7 @@
 
 let http = require('http');
-exports.post = post
-exports.get = get
+exports.post = post;
+exports.get = get;
 
 async function post(api, host, port, data) {
     return new Promise(function (resolve, reject) {
@@ -71,7 +71,7 @@ async function get(api, host, port) {
             req.on('error', function (e) {
                 reject(e);
             });
-        })
+        });
     });
 
 }

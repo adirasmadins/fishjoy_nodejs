@@ -8,11 +8,11 @@ const goddess_fishborn_cfg = DESIGN_CFG.goddess_fishborn_cfg;
 
 exports.getGoddessInfo = (id) => {
     return this.getInfo(id, goddess_goddess_cfg);
-}
+};
 
 exports.getInteractInfo = (id) => {
     return this.getInfo(id, goddess_interact_cfg);
-}
+};
 
 exports.getInfo = (id, cfg) => {
     for(let i in cfg) {
@@ -22,7 +22,7 @@ exports.getInfo = (id, cfg) => {
         }
     }
     return null;
-}
+};
 
 exports.getGoddessUpInfo = (id, level) => {
     for(let i in goddess_goddessup_cfg) {
@@ -32,7 +32,7 @@ exports.getGoddessUpInfo = (id, level) => {
         }
     }
     return null;
-}
+};
 
 exports.findGodProperty = (godId, godLevel, spId) => {
     for (let level = godLevel; level> 0; level--) {
@@ -42,4 +42,4 @@ exports.findGodProperty = (godId, godLevel, spId) => {
         }
     }
     return false;
-}
+};

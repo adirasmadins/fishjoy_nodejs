@@ -5,7 +5,7 @@ class CacheReader{
     constructor(cache){
        this._data = new Map();
        this._cache = cache;
-       logger.error('-----------------CacheReader')
+       logger.error('-----------------CacheReader');
     }
 
     //读取平台抽水系数

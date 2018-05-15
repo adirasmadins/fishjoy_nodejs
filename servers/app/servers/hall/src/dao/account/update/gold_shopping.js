@@ -152,7 +152,8 @@ function update(data, cb, account) {
 
             //统计金币购买次数dfc
             let mission = new RewardModel(account);
-            mission.addProcess(RewardModel.TaskType.GOLD_TIMES, times);//内含account.commit
+            mission.addProcess(RewardModel.TaskType.GOLD_TIMES, times);
+            account.commit();
 
             // yDONE: 金币数据记录
             // yDONE: 钻石数据记录
@@ -196,8 +197,14 @@ function update(data, cb, account) {
                     logBuilder.addPearlLogEx(costLog);
                 break;
             }
-
-            cb(null, [account]);
+            let ret = {
+                gold: account.gold,
+                pearl: account.pearl,
+                first_buy: account.first_buy,
+                activity_gift: account.activity_gift,
+                gold_shopping: account.gold_shopping,
+            };
+            cb(null, [ret]);
             
         });
     });

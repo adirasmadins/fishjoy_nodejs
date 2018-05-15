@@ -86,7 +86,6 @@ class HallApp {
      */
     rpc_player_login(data, cb) {
         let account = data;
-        logger.error(`${account.uid} 登录了`);
         utils.invokeCallback(cb, null, buzz_broadcast.addFamousOnlineBroadcast(account));
     }
 }

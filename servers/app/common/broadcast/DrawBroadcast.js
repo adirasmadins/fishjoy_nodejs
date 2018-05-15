@@ -12,4 +12,4 @@ class DrawBroadcast extends Broadcast {
     }
 }
 
-module.exports = DrawBroadcast
+module.exports = DrawBroadcast;

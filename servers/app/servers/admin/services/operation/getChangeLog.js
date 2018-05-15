@@ -44,7 +44,7 @@ exports.get = async function (data, ctx) {
         chart: chart,
         editable: editable
     };
-}
+};
 
 async function getBlackList() {
     let blacklist = await tools.RedisUtil.smembers(REDISKEY.GLOBAL_DATA.BLACKLIST);

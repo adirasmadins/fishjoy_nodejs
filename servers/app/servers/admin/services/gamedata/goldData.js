@@ -20,7 +20,7 @@ exports.get = async function (data, ctx) {
             costTotal: 103456,
             cost: cost,
             gain: gain
-        }
+        };
     }
     catch (err) {
         logger.error('err:', err);
@@ -29,7 +29,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetchData(date, type, hours) {
     let ret = [];

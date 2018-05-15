@@ -18,7 +18,7 @@ const VIETNAMERROR_STRING = {
     '-323': 'Tham số truyền vào không đúng',
     '-337': 'Sai định dạng thẻ',
     '-327': 'Không tìm thấy nhà cung cấp phù hợp',
-}
+};
 
 class VietnamApi {
     constructor(config) {

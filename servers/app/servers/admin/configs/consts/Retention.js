@@ -19,4 +19,4 @@ module.exports = [
         mysqlField: 'mrr',
         dayAfter: 29,
     },
-]
+];

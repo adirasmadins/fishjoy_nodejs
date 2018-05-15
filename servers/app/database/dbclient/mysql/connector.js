@@ -12,7 +12,7 @@ const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
 class Connector {
     constructor() {
         this.pool = null;
-        logger.error('-----------------MysqlConnector')
+        logger.error('-----------------MysqlConnector');
     }
 
     start(opts, cb) {

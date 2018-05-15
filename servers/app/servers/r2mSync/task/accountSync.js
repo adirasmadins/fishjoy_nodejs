@@ -64,15 +64,11 @@ class AccountSync extends Task {
      * @private
      */
     _exeTask(cb) {
-        logger.info('---玩家数据同步开始');
-        // console.time('accountSyncFull');
+        logger.error('---玩家数据同步开始');
         this._syncFullData(function () {
-            // console.timeEnd('accountSyncFull');
-            // console.time('accountSync');
             this._syncDeltaData(function () {
-                // console.timeEnd('accountSync');
                 utils.invokeCallback(cb, null);
-                logger.info('----玩家数据同步完成');
+                logger.error('----玩家数据同步完成');
             });
         }.bind(this));
     }
@@ -81,7 +77,7 @@ class AccountSync extends Task {
         let uids = [];
         for (let i = 0; i < res.length; i++) {
             let uid = Number(res[i]);
-            if (!isNaN(uid)) {
+            if (!isNaN(uid) && uid != 0) {
                 uids.push(uid);
             }
         }
@@ -97,12 +93,13 @@ class AccountSync extends Task {
 
     async _syncFullData(cb) {
         do {
-            let res = await redisConnector.sscan(REDISKEY.UPDATED_UIDS, 0, this.taskConf.readLimit);
-            if (!res || 0 == res.length) {
+            let {result} = await redisConnector.sscan(REDISKEY.UPDATED_UIDS, 0, this.taskConf.readLimit);
+            logger.error('_syncFullData, result=', result);
+            if (result.length == 0) {
                 utils.invokeCallback(cb);
                 return;
             }
-            let uids = this._parseUids(res);
+            let uids = this._parseUids(result);
             for (let i = 0; i < uids.length; i++) {
                 try {
                     await this._toMysql(uids[i]);
@@ -112,38 +109,43 @@ class AccountSync extends Task {
                     logger.error(`玩家${uids[i]}数据完整同步失败`, err);
                 }
             }
-
         } while (1);
     }
 
     async _syncDeltaData(cb) {
         do {
-            let res = await redisConnector.sscan(REDISKEY.UPDATED_DELTA_UIDS, 0, this.taskConf.readLimit);
-            if (!res || 0 == res.length) {
+            let {result} = await redisConnector.sscan(REDISKEY.UPDATED_DELTA_UIDS, 0, this.taskConf.readLimit);
+            logger.error('_syncDeltaData, result=', result);
+            if (result.length == 0) {
                 utils.invokeCallback(cb);
                 return;
             }
 
-            let uids = this._parseUids(res);
+            let uids = this._parseUids(result);
             for (let i = 0; i < uids.length; i++) {
+                let key = `${REDISKEY.UPDATED_DELTA_FIELDS}:${uids[i]}`;
                 try {
-                    let key = `${REDISKEY.UPDATED_DELTA_FIELDS}:${uids[i]}`;
-                    let fields = await redisConnector.sscan(key, 0, this.taskConf.readLimit);
-                    if(fields && fields.length > 0){
-                        await this._toMysql(uids[i], fields);
+                    let {result} = await redisConnector.sscan(key, 0, this.taskConf.readLimit);
+                    if(result && result.length > 0){
+                        await this._toMysql(uids[i], result);
                     }
-                    await redisConnector.srem(REDISKEY.UPDATED_DELTA_UIDS, uids[i]);
+                    // await redisConnector.srem(REDISKEY.UPDATED_DELTA_UIDS, uids[i]);
                     await redisConnector.del(key);
                     logger.info(`玩家${uids[i]}数据增量同步成功`);
                 } catch (err) {
                     logger.error(`玩家${uids[i]}数据增量同步失败`, err);
                     if (ERROR_CODE.USER_NOT_EXIST == err.code) {
                         // 从增量任务列表中删除玩家
-                        let key = `${REDISKEY.UPDATED_DELTA_FIELDS}:${uids[i]}`;
                         await redisConnector.del(key);
-                        await redisConnector.srem(REDISKEY.UPDATED_DELTA_UIDS, uids[i]);
+                        // await redisConnector.srem(REDISKEY.UPDATED_DELTA_UIDS, uids[i]);
                     }
                 }
+            }
+
+            try {
+                await redisConnector.srem(REDISKEY.UPDATED_DELTA_UIDS, result);
+            }catch(err){
+                logger.error('_syncDeltaData, redisConnector.srem err=', err);
             }
 
         } while (1);

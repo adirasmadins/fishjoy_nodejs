@@ -12,7 +12,7 @@ exports.get = async function (data, ctx) {
     let account = makeAccount(await fetchData(data.uid));
 
     return account;
-}
+};
 
 /**
  * 数据转换(数据库原始数据 -> 客户端可以处理的数据形式)

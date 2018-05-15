@@ -1,4 +1,3 @@
-
 const moment = require('moment');
 const _ = require("underscore");
 const ArrayUtil = require('../utils/ArrayUtil'),
@@ -14,16 +13,17 @@ const cache = require('../rankCache/cache');
 const buzz_reward = require('./buzz_reward');
 const CacheAccount = require('./cache/CacheAccount');
 const gameConfig = require('../../../../utils/imports').DESIGN_CFG;
-const common_log_const_cfg  = gameConfig.common_log_const_cfg;
+const common_log_const_cfg = gameConfig.common_log_const_cfg;
 const tools = require('../../../../utils/tools');
 const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
+const rankRewardCfg = require('../../../../utils/designCfg/rankRewardCfg');
 
 const TAG = "【buzz_charts】";
 
 exports.updateRankFlower = updateRankFlower;
 exports.getCharts = getCharts;
 exports.getFriendsCharts = getFriendsCharts;
-exports.getUserRank = getUserRank;
+exports.getUserRank = _getUserRank;
 exports.getChartReward = getChartReward;
 
 
@@ -31,20 +31,6 @@ exports.getChartReward = getChartReward;
 
 function updateRankFlower(platform, uid, flowerCount) {
     RedisUtil.updateRank(redisKeys.RANK.FLOWER, platform, flowerCount, uid);
-}
-
-/**
- * 获取玩家历史排名(用于奖励发放, 分类为昨日，上周，上月)
- */
-function getUserRank(dataObj, cb) {
-    if (!lPrepare(dataObj)) return;
-    BuzzUtil.cacheLinkDataApi(dataObj, "get_user_rank");
-
-    _getUserRank(dataObj, cb);
-
-    function lPrepare(input) {
-        return BuzzUtil.checkParams(input, ['token', 'type'], "buzz_charts", cb);
-    }
 }
 
 /**
@@ -97,47 +83,55 @@ async function getFriendsCharts(list, fopenidsMap, skip, limit, cb) {
     let accounts = await CacheAccount.getAccountsFieldsByIdsSync(list, getFriendsChartsFields);
     ArrayUtil.sort(accounts, "match_points", SORT_RULE.DESC, "vip", SORT_RULE.DESC);
     accounts = accounts.slice(skip, skip + limit);
-    for(let i=0;i<accounts.length;++i){
+    for (let i = 0; i < accounts.length; ++i) {
         let account = accounts[i];
-        account.friend = fopenidsMap[account.channel_account_id] ? 2:1;
-        let last_online_minutes  = moment().diff(moment(account.last_online_time),'minutes');
-        if(last_online_minutes < constDef.FRIENDS_ONLINE_LAST_MINUTES){
+        account.friend = fopenidsMap[account.channel_account_id] ? 2 : 1;
+        let last_online_minutes = moment().diff(moment(account.last_online_time), 'minutes');
+        if (last_online_minutes < constDef.FRIENDS_ONLINE_LAST_MINUTES) {
             account.status = 1;
-        }else{
+        } else {
             account.status = 0;
         }
         account.channel_account_id = undefined;
     }
-    
+
     cb && cb(null, accounts);
 }
 
-function _getUserRank(dataObj, cb) {
-    let type = dataObj.type;
+/**
+ * 获取玩家历史排名(用于奖励发放, 分类为昨日，上周，上月)
+ */
+async function _getUserRank(dataObj, cb) {
     let account = dataObj.account;
-    let obj_key = _getRewardKey(type);
-    buzz_reward.getRewardInfo(account, obj_key, function (err, res) {
-        if (err) {
-            cb(err);
-            return;
+    let result = [];
+    for(let type in RANK_TYPE) {
+        let ranktype = RANK_TYPE[type];
+        if (ranktype >= 100) {
+            let obj_key = _getRewardKey(ranktype);
+            //logger.error('obj_key:', obj_key);
+            //logger.error('uid:', account.id);
+            let res = await redisConnector.hget(obj_key, account.id);
+            //logger.error('res:', res);
+            let ret = {
+                my_rank: 10001,
+                reward: 0,
+                type:ranktype
+            };
+            if(res){
+                if (res.rank) {
+                    ret.my_rank = res.rank;
+                }
+                if (res.award && res.award.length > 0) {
+                    ret.reward = 1;
+                }
+                if (res.score) {
+                    ret.score = res.score;
+                }
+            }
+            result.push(ret);
         }
-        let ret = {
-            my_rank: 10001,
-            reward: 0
-        };
-        if (res) {
-            if (res.rank) {
-                ret.my_rank = res.rank;
-            }
-            if (res.award && res.award.length > 0) {
-                ret.reward = 1;
-            }
-            if (res.score) {
-                ret.score = res.score;
-            }
-        }
-        cb(null, ret);
-    });
+    }
+    cb(null, result);
 }
 
 function _getChartReward(dataObj, cb) {
@@ -145,6 +139,29 @@ function _getChartReward(dataObj, cb) {
     let account = dataObj.account;
     _resetReward(type, account, cb);
 }
+
+function _getDailyAward(type, rank) {
+    let list = rankRewardCfg.getAwardCfg(type);
+    for (let i = 0; i < list.length; ++i) {
+        if (rank >= list[i].interval[0] && rank <= list[i].interval[1]) {
+            return list[i].reward;
+        }
+    }
+    return null;
+}
+
+function _getMonthAward(rank, score) {
+    let rankId = rankRewardCfg._getRankIdFromPointsAndRank(score, rank - 1);
+    if (0 == rankId) {
+        rankId = rankRewardCfg._getRankIdFromPoints(score);
+    }
+    return rankRewardCfg._getSeasonRewardFromRankgameCfg(rankId);
+}
+
+function _getWeekAward(rank, wave) {
+    return rankRewardCfg._getWeekAwardGoddess(rank, wave);
+}
+
 
 function _resetReward(type, account, cb) {
     let obj_key = _getRewardKey(type);
@@ -159,12 +176,27 @@ function _resetReward(type, account, cb) {
             // reward: {"award":[["i001",80000],["i400",6]],"rank":7}
             reward = JSON.parse(reward);
         }
-        
+
         //let chartName = _getChartName(type);
         //logger.error('=====================chartName:', chartName);
         //_didAddBroadcast(account, GameEventBroadcast.TYPE.GAME_EVENT.RANK_FIRST, {chartName:chartName});//测试
         if (reward && reward.award) {
-            let item_list = tools.BuzzUtil.getItemList(reward.award);
+            //重写奖励领取
+            const rank = reward.rank;
+            const score = reward.score;
+            let award;
+            if (_isWeekReward(type)) {
+                award = _getWeekAward(rank, score);
+            }
+            // 每月奖励
+            else if (_isMonthReward(type)) {
+                award = _getMonthAward(rank, score);
+            }
+            else {
+                award = _getDailyAward(type % 100 + 1, rank);
+            }
+
+            let item_list = tools.BuzzUtil.getItemList(award);
             BuzzUtil.putIntoPack(account, item_list, function (reward_info) {
                 let change = BuzzUtil.getChange(account, reward_info);
                 let ret = {
@@ -179,7 +211,7 @@ function _resetReward(type, account, cb) {
                 if (reward.score) {
                     value.score = reward.score;
                 }
-                RedisUtil.hset(obj_key, uid, JSON.stringify(value), function (err, res) {
+                redisConnector.cmd.hset(obj_key, uid, JSON.stringify(value), function (err, res) {
                     if (err) {
                         cb(err);
                         return;
@@ -215,7 +247,7 @@ function _addBroadcast(account, type, reward) {
     if (_isDailyReward(type) && 1 == reward.rank) {
         let chartName = _getChartName(type);
         logger.info('chartName:', chartName);
-        _didAddBroadcast(account, GameEventBroadcast.TYPE.GAME_EVENT.RANK_FIRST, {chartName:chartName});
+        _didAddBroadcast(account, GameEventBroadcast.TYPE.GAME_EVENT.RANK_FIRST, {chartName: chartName});
     }
     else if (_isWeekReward(type) && 30 >= reward.rank) {
         _didAddBroadcast(account, GameEventBroadcast.TYPE.GAME_EVENT.GODDESS_REWARD);
@@ -223,7 +255,7 @@ function _addBroadcast(account, type, reward) {
     else if (_isMonthReward(type)) {
         let rankid = tools.CfgUtil.rankgame.getRankIdFromPoints(reward.score);
         if (rankid > 11) {
-            _didAddBroadcast(account, GameEventBroadcast.TYPE.GAME_EVENT.SEASON_REWARD, {rankid:rankid});
+            _didAddBroadcast(account, GameEventBroadcast.TYPE.GAME_EVENT.SEASON_REWARD, {rankid: rankid});
         }
     }
 }
@@ -258,6 +290,7 @@ function _getCharts(dataObj, cb) {
     let stop = offset + ranking_count;
 
     doNextWithAccount(dataObj.account);
+
     function doNextWithAccount(account) {
         if (ranking_count > 100) {
             logger.error(EFUNC + "请求的排名数超过了限制: 最大排名:100, 请求参数:" + ranking_count);
@@ -280,37 +313,37 @@ function _getCharts(dataObj, cb) {
             let chart = cache.getChart(platform, RANK_TYPE.GODDESS, start, stop);
             let my_rank = cache.getRank(platform, RANK_TYPE.GODDESS, account.id);
             my_rank['score'] = account.max_wave;
-            chart_goddess = { "rank": chart, "my_rank": my_rank };
+            chart_goddess = {"rank": chart, "my_rank": my_rank};
         }
         if (RANK_TYPE.ALL == type || RANK_TYPE.RANKING == type) {
             let chart = cache.getChart(platform, RANK_TYPE.MATCH, start, stop);
             let my_rank = cache.getRank(platform, RANK_TYPE.MATCH, account.id);
             my_rank['score'] = account.match_rank;
-            chart_match = { "rank": chart, "my_rank": my_rank };
+            chart_match = {"rank": chart, "my_rank": my_rank};
         }
         if (RANK_TYPE.ALL == type || RANK_TYPE.PETFISH == type) {
             let chart = cache.getChart(platform, RANK_TYPE.AQUARIUM, start, stop);
             let my_rank = cache.getRank(platform, RANK_TYPE.AQUARIUM, account.id);
             my_rank['score'] = account.petfish_total_level;
-            chart_aquarium = { "rank": chart, "my_rank": my_rank };
+            chart_aquarium = {"rank": chart, "my_rank": my_rank};
         }
         if (RANK_TYPE.ALL == type || RANK_TYPE.CHARM == type) {
             let chart = cache.getChart(platform, RANK_TYPE.CHARM, start, stop);
             let my_rank = cache.getRank(platform, RANK_TYPE.CHARM, account.id);
             my_rank['score'] = account.charm_point;
-            chart_charm = { "rank": chart, "my_rank": my_rank };
+            chart_charm = {"rank": chart, "my_rank": my_rank};
         }
         if (RANK_TYPE.ALL == type || RANK_TYPE.BP == type) {
             let chart = cache.getChart(platform, RANK_TYPE.BP, start, stop);
             let my_rank = cache.getRank(platform, RANK_TYPE.BP, account.id);
             my_rank['score'] = account.bp;
-            chart_bp = { "rank": chart, "my_rank": my_rank };
+            chart_bp = {"rank": chart, "my_rank": my_rank};
         }
         if (RANK_TYPE.ALL == type || RANK_TYPE.FLOWER == type) {
             let chart = cache.getChart(platform, RANK_TYPE.FLOWER, start, stop);
             let my_rank = cache.getRank(platform, RANK_TYPE.FLOWER, account.id);
             my_rank['score'] = account.flower_receive_weekly;
-            chart_flower = { "rank": chart, "my_rank": my_rank };
+            chart_flower = {"rank": chart, "my_rank": my_rank};
         }
         let ret = {
             "rankgame": chart_match,

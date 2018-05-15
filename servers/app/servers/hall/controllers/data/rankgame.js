@@ -86,7 +86,7 @@ async function get_ranking(data) {
 async function ongoing(data) {
     let result = {
         status:false
-    }
+    };
     let rankMatchPos = await globalStatusData.queryData(constDef.GLOBAL_STATUS_DATA_TYPE.PLAYER_RANKMATCH_POS, rpcDefs.serverType.rankMatch, data.uid);
     if (rankMatchPos) {
         if(Date.now() - Number(rankMatchPos.time) < constDef.MATCH.MSECONDS){

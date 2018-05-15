@@ -16,7 +16,7 @@ class RankReward {
     _getWeekAward(type, cond) {
         switch (type) {
             case consts.RANK_TYPE.GODDESS:
-                return rankRewardCfg.rankUtils().getWeekAwardGoddess(cond.rank, cond.wave);
+                return rankRewardCfg._getWeekAwardGoddess(cond.rank, cond.wave);
                 break;
         }
     }

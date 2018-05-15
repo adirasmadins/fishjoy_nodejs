@@ -7,4 +7,4 @@ exports.get = (key, defaultValue) => {
     } catch (err) {
         return defaultValue;
     }
-}
+};

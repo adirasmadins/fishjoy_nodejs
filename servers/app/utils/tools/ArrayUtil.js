@@ -27,7 +27,7 @@ function isArray(obj) {
         return true;
     }
     return false;
-};
+}
 
 /**
  * 数组arr中是否存在元素target

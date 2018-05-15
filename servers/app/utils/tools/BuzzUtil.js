@@ -169,28 +169,28 @@ function isSSL() {
  */
 exports.isVersionChina = () => {
     return ArrayUtil.contain(versions.VERSION_CHINA, versions.PUB);
-}
+};
 
 /**
  * 是否为越南版的判断. 用于某些特定的处理.
  */
 exports.isVersionVietnam = () => {
     return ArrayUtil.contain(versions.VERSION_VIETNAM, versions.PUB);
-}
+};
 
 /**
  * 是否为赌博版.
  */
 exports.isVersionGambling = () => {
     return ArrayUtil.contain(versions.VERSION_GAMBLING, versions.PUB);
-}
+};
 
 /**
  * 如果是手动填写订单发货则返回true.
  */
 exports.isVersionCikByHand = () => {
     return ArrayUtil.contain(versions.VERSION_CIK_BY_HAND, versions.PUB);
-}
+};
 
 /**
  * 作弊玩家被阻挡的版本.

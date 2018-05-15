@@ -1,3 +1,4 @@
+// vi /opt/fishjoy/servers/app/servers/hall/src/buzz/buzz_reward_people.js
 /**
  * 打赏
  * Created by zhenghang on 2017/9/8.
@@ -126,7 +127,7 @@ function _give_reward(dataObj, cb) {
                 let nick = account.nickname;
                 let params = [nick, name, itemcount, nick1, account.vip, account.charm_rank];
                 let content = {
-                    type: GameEventBroadcast.TYPE.GAME_EVENT.REWARD_PEOPLE,
+                    type: GameEventBroadcast.TYPE.GAME_EVENT.GUERDON,
                     params: params,
                 };
                 new GameEventBroadcast(content).extra(account).add();

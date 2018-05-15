@@ -1,3 +1,4 @@
+// vi /opt/fishjoy/servers/app/common/broadcast/buzz_broadcast.js
 const FamousOnlineBroadcast = require('./FamousOnlineBroadcast');
 const redisAccountSync = require('../../utils/redisAccountSync');
 const cache = require('../../servers/hall/src/rankCache/cache');
@@ -52,7 +53,7 @@ exports.addFamousOnlineBroadcast = (account) => {
             new FamousOnlineBroadcast(content).extra(account).add();
         }
     }
-}
+};
 
 exports.getBroadcast = (dataObj, cb) => {
     let lServer = _getBroadcastServer(dataObj.server);
@@ -65,8 +66,8 @@ exports.getBroadcast = (dataObj, cb) => {
     let cik_on = 0;
     if (token != null) {
         let uid = token.split('_')[0];
-        redisAccountSync.getAccount(uid, function (err, account) {
-            let res = tools.RedisUtil.get(REDISKEY.SWITCH.CIK);
+        redisAccountSync.getAccount(uid, async function (err, account) {
+            let res = await tools.RedisUtil.get(REDISKEY.SWITCH.CIK);
             if (null == res) {
                 res = 1;
             }
@@ -90,7 +91,7 @@ exports.getBroadcast = (dataObj, cb) => {
             }
         });
     }
-}
+};
 
 exports.redisNotifyBroadcast = (channel, message) => {
     switch (channel) {
@@ -119,7 +120,7 @@ exports.redisNotifyBroadcast = (channel, message) => {
             break;
         }
     }
-}
+};
 
 function getBroadcastQueue(channel, platform) {
     if (REDISKEY.CH.BROADCAST_GAME_EVENT == channel)

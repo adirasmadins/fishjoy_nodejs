@@ -151,8 +151,7 @@ function setAccount(accounts, cb) {
         }
     }
     if (sqlParams.length == 0) {
-        logger.info(FUNC + "数据异常");
-        cb && cb(ERROR_OBJ.DB_ERR);
+        cb && cb(null);
         return;
     }
     // logger.error('数据同步值-------------------------:', sqlParams);

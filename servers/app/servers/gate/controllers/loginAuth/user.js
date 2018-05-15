@@ -83,7 +83,13 @@ class User {
         return new Promise(async function (resolve, reject) {
             let account = await redisAccountSync.getAccountAsync(data.uid);
             if (account) {
-                self.handleAuthCheck(account, data);
+                try {
+                    self.handleAuthCheck(account, data);
+                }
+                catch(err) {
+                    reject(err);
+                    return;
+                }
                 logBuilder.addLoginLog(account.id, data.deviceId, data.ip);
                 self._someOptAfterLogin(account, function (err, account) {
                     resolve(account);

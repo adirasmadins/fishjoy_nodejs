@@ -27,7 +27,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetch(time, ctx) {
     return await tools.SqlUtil.query(SQL_CONFIG.downloadGiftCodeList, [time]);

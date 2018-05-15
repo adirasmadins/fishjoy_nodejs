@@ -13,6 +13,8 @@ const configReader= require('../../../utils/configReader');
 const dropManager = require('../../../utils/DropManager');
 const tools = require('../../../utils/tools');
 const GAMECFG = require('../../../utils/imports').DESIGN_CFG;
+const GameEventBroadcast = require('../../../common/broadcast/GameEventBroadcast');
+const RedisUtil = require('../../../../app/utils/tools/RedisUtil');
 
 const SAVE_DT = 30 * 1000;
 
@@ -23,6 +25,37 @@ class GoddessPlayer extends ChannelPlayer {
         this._godHp = 0;
         this._actionType = 1;
         this._isGodOVerAndSaved = false;
+        this._top1Score = 0; //女神第一名关数
+        this._top1Nick = 'None';
+        if (this.account.goddess_jump > 0) {
+            this.account.goddess_jump = Math.min(this.account.goddess_jump, 5);
+            this._getTop1();
+        }
+    }
+
+    /**
+     * 取得当前保卫女神第一名的关数
+     */
+    async _getTop1 () {
+        let platform = this.account.platform;
+        let k = 'rank:goddess:result';
+        let rankGoddess = await RedisUtil.get(`${k}:${platform}`);
+        try {
+            rankGoddess = JSON.parse(rankGoddess)
+            if (rankGoddess) {
+                let ps = rankGoddess.players;
+                if (ps && ps.length > 0) {
+                    let top1 = ps[0];
+                    if (top1.uid == this.uid) {
+                        return;//自己是保卫女神第一名，则不能跳关
+                    }
+                    this._top1Score = top1.score;
+                    this._top1Nick = top1.ext.nickname;
+                }
+            }   
+        } catch (error) {
+            logger.error('can not parse goddess rank data.');
+        }
     }
 
     static sBaseField () {
@@ -34,6 +67,8 @@ class GoddessPlayer extends ChannelPlayer {
             ACCOUNTKEY.MAX_WAVE,
             ACCOUNTKEY.PLATFORM,
             ACCOUNTKEY.PRIVACY,
+            ACCOUNTKEY.GODDESS_JUMP,
+            ACCOUNTKEY.CHARM_POINT,
         ];
         return baseField.concat(self);
     }
@@ -90,6 +125,7 @@ class GoddessPlayer extends ChannelPlayer {
         let hpPercent = god.hp / cfg.hp;
         utils.invokeCallback(cb, null, {
             hpPercent: hpPercent,
+            jumpLeft: this._top1Score > 0 ? this.account.goddess_jump : 0
         });
         this.emit(fishCmd.push.god_ready.route, {player: this});
     }
@@ -111,7 +147,7 @@ class GoddessPlayer extends ChannelPlayer {
         this.emit(fishCmd.push.god_pause.route, {player: this});
         this.save();
         this._isPaused = true;
-        logger.error('pause')
+        logger.error('pause');
     } 
 
     /**
@@ -247,6 +283,50 @@ class GoddessPlayer extends ChannelPlayer {
     }
 
     /**
+     * 跳关
+     */
+    c_god_jump(data, cb) {
+        let godIdx = data.godIdx;
+        if (!this._isGodUnlocked(godIdx)) {
+            return utils.invokeCallback(cb, FishCode.LOCK_GOD);
+        }
+        if (this._godIdx != godIdx) {
+            return utils.invokeCallback(cb, FishCode.INVALID_GOD);
+        }
+
+        if (this.account.goddess_jump > 0 && this._top1Score > 0) {
+            let goddess = this.account.goddess[godIdx];
+            if (goddess.startWaveIdx + 1 >= this._top1Score - 1) {
+                return utils.invokeCallback(cb, null, {failBeyondTop1: true});
+            }
+
+            goddess.startWaveIdx ++;
+            let totalWave = GAMECFG.goddess_defend_cfg.length;
+            goddess.startWaveIdx = Math.min(goddess.startWaveIdx, totalWave - 1);
+
+            this.account.goddess_jump = this.account.goddess_jump - 1;
+            utils.invokeCallback(cb, null, {
+                clearAll: 1,
+                jumpLeft: this.account.goddess_jump
+            });
+            this.emit(fishCmd.push.god_jump.route, {
+                player: this, 
+            });
+            this.account.commit();
+
+            //成功碾压第一名公告
+            let params = [this.account.nickname, this._top1Nick, this.account.vip];
+            let content = {
+                type: GameEventBroadcast.TYPE.GAME_EVENT.GODDESS_JUMP,
+                params: params,
+            };
+            new GameEventBroadcast(content).extra(this.account).add();
+        }else{
+            utils.invokeCallback(cb, FishCode.INVALID_GOD);
+        }
+    }
+
+    /**
      * 定时轮序逻辑
      * @param {*轮询时间差，单位秒} dt 
      */
@@ -273,16 +353,16 @@ class GoddessPlayer extends ChannelPlayer {
         if (goddess && goddess.length > this._godIdx) {
             let god = goddess[this._godIdx];
             let max_wave = this.account.max_wave;
-            let startWaveIdx = god.startWaveIdx;   
+            let wc = god.startWaveIdx + 1;   
             //注意，每过一波更新最大波数
-            if (!max_wave || max_wave < startWaveIdx) {
-                max_wave = startWaveIdx;
+            if (!max_wave || max_wave < wc) {
+                max_wave = wc;
                 this.account.max_wave = max_wave;
             }
 
             if (this._godHp === 0) {
                 this._actionType = 3;
-                logBuilder.addGoddessLog(this.account.id, startWaveIdx, this._actionType);//女神挑战结算
+                logBuilder.addGoddessLog(this.account.id, wc, this._actionType);//女神挑战结算
 
                 //女神死了，则恢复到默认血量,且暂离失效
                 let cfg = configReader.getGodLevelData(god.id, god.level);
@@ -291,6 +371,7 @@ class GoddessPlayer extends ChannelPlayer {
                 god.startWaveIdx = 0;
                 this.account.goddess_crossover = 0;
                 this.account.goddess_ongoing = 0;
+                this.account.goddess_jump = 0;
                 //更新一次排行榜
                 if (!tools.BuzzUtil.isCheat(this.account)) {
                     max_wave > 0 && redisConnector.cmd.zadd(`${REDISKEY.RANK.GODDESS}:${this.account.platform}`, max_wave, this.account.id);

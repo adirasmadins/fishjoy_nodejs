@@ -214,10 +214,9 @@ function putPetfish(data, cb) {
         let mission = new RewardModel(account);
         mission.updateProcess(RewardModel.TaskType.STOCKING_FISH, count);
         mission.updateProcess(RewardModel.TaskType.PETFISH_TOTAL_LEVEL, account.petfish_total_level);
-        mission.commit(); //等价account.commit()
-    }else {
-        account.commit();
+        mission.commit(); 
     }
+    account.commit();
     cb(null, _currentAquarium(account));// 返回当前水族馆的所有数据
 }
 
@@ -575,10 +574,9 @@ function _checkFish(account, id, cb) {
         let mission = new RewardModel(account);
         mission.updateProcess(RewardModel.TaskType.STOCKING_FISH, count);
         mission.updateProcess(RewardModel.TaskType.PETFISH_TOTAL_LEVEL, account.petfish_total_level);
-        mission.commit(); //等价account.commit()
-    }else {
-        account.commit();
+        mission.commit(); 
     }
+    account.commit();
     cb(null, _currentAquarium(account));// 返回当前水族馆的所有数据
 }
 

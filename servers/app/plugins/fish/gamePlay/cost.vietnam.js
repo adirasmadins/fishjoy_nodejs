@@ -62,7 +62,7 @@ class VietnamCost extends Cost {
         let basPCT = fishbasepct * fishCfg.mapct * weaponspct;
         
         let log = params.isReal && this.log || null;
-        log && log(TAG + '------------fish---start----------------------------1')
+        log && log(TAG + '------------fish---start----------------------------1');
         log && log(TAG + '--fishbasepct = ', fishbasepct);
         log && log(TAG + '--mapct = ', fishCfg.mapct, fireFlag);
 

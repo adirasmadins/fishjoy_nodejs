@@ -5,9 +5,11 @@ const designCfgUtils = require('../app/utils/designCfg/designCfgUtils');
 const redisAccountSync = require('../app/utils/redisAccountSync');
 const REDISKEY = require('../app/database/consts').REDISKEY;
 const {mysql, redis} = require('../config/db');
+const fs = require('fs');
 
 class MissionTaskTransfer {
     async start() {
+        this._total = 0;
         this._redisConnector = new RedisConnector();
         let result = await this._redisConnector.start(redis);
         if (!result) {
@@ -21,12 +23,61 @@ class MissionTaskTransfer {
             process.exit(0);
             return;
         }
+        //
+        // this._transfer_redis(function () {
+        //     logger.error('redis 玩家数据转移完成...');
+        // });
+        //
+        // await this._transfer_mysql(0, 1000);
+//        this._getMissionInfo(19088);
 
-        this._transfer_redis(function () {
-            logger.error('redis 玩家数据转移完成...');
+        this._loadExceptionLog(0, 1000);
+    }
+
+    async sscan(key, skip, limit) {
+        return new Promise(function (resolve, reject) {
+            redisConnector.cmd.sscan(key, skip, 'COUNT', limit, function (err, result) {
+                if (err) {
+                    logger.error('redis sscan err=', err);
+                    reject(err);
+                }
+                else {
+                    resolve({cursor:result[0], results:result[1]});
+                }
+            });
         });
+    }
 
-        await this._transfer_mysql(0, 1000);
+
+    async _loadExceptionLog(skip, limit){
+
+        let res = await this.sscan('log:exception:user', skip, limit);
+        let results = res.results;
+        logger.error('cursor=', res.cursor);
+        logger.error('results.length=', results.length);
+        if(!results || results.length == 0 || res.cursor == 0){
+            logger.error('捞取完成....', this._total);
+            return;
+        }
+        this._total += results.length;
+        for(let i=0; i<results.length;i++){
+            results[i].time = new Date(results[i].time);
+        }
+        fs.appendFileSync('log_exceptions_user.txt', results);
+        this._loadExceptionLog(res.cursor, limit);
+    }
+
+    async _getMissionInfo(uid){
+        try{
+            let account = await redisAccountSync.getAccountAsync(uid);
+            let info = await RewardModel.getMissionTaskProcessInfo(account);
+            logger.error('uid = ', uid);
+            logger.error('mission_only_once = ', account.mission_only_once);
+            logger.error('missionInfo = ', info);
+        }catch(err) {
+            logger.error('err = ', err);
+        }
+
     }
 
     _transfer_redis(cb) {
@@ -66,12 +117,13 @@ class MissionTaskTransfer {
                     }
                 }
                 await redisConnector.multi(cmds);
+                logger.error('成功转移玩家成就REDIS数据到新的数据结构,len= ', cmds);
                 logger.error('成功转移玩家成就REDIS数据到新的数据结构,len= ', cmds.length);
 
-            } else {
                 next();
             }
         }, function () {
+            logger.error('转移完成');
             cb();
         });
     }
@@ -82,7 +134,7 @@ class MissionTaskTransfer {
         if(res.length > 0){
             for(let i = 0; i<res.length;i++){
                 try{
-                    let inser_sql = `INSERT INTO tbl_mission (id, mission_task_once) VALUES (${res[i].id},'${res[i].mission_only_once}') ON DUPLICATE KEY UPDATE id = VALUES(id)`
+                    let inser_sql = `INSERT INTO tbl_mission (id, mission_task_once) VALUES (${res[i].id},'${res[i].mission_only_once}') ON DUPLICATE KEY UPDATE id = VALUES(id)`;
                     await mysqlConnector.query(inser_sql);
                 }catch (err){
                     err;

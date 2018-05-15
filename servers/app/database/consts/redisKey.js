@@ -330,6 +330,7 @@ module.exports = {
     "GODDESS_CTIMES": PREFIX + "goddess_ctimes",
     "GODDESS_CROSSOVER": PREFIX + "goddess_crossover",
     "GODDESS_ONGOING": PREFIX + "goddess_ongoing",
+    "GODDESS_JUMP": PREFIX + "goddess_jump",
     "REDRESS_NO": PREFIX + "redress_no",
     "TEST": PREFIX + "test",
     "RANK_IN_FRIENDS": PREFIX + "rank_in_friends",
@@ -418,6 +419,8 @@ module.exports = {
     "SOCIAL_INVITE_WEEK": PREFIX + "social_invite_week",
     "FREE_BOMB": PREFIX + "free_bomb",
     "PRIVACY": PREFIX + "privacy",
+    "ACTIVE_STAT_NEWBIE": PREFIX + "active_stat_newbie",
+    "GODDESS_FREE_PAUSE_AWAY": PREFIX + "goddess_free_pause_away",
 
     // Set类型的数据scard,sadd,del
     ONLINE_UID_10_MINUTES: "cache:online_uid:10_minutes",//10分钟内在线的玩家

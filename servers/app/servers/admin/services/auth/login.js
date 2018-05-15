@@ -40,4 +40,4 @@ exports.get = async function (data, ctx) {
             err: err.toString(),
         };
     }
-}
+};

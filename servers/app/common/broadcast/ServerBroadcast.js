@@ -1,6 +1,6 @@
-const tools = require('../../utils/tools')
-const Broadcast = require('./Broadcast')
-const REDISKEY = require('../../database').dbConsts.REDISKEY
+const tools = require('../../utils/tools');
+const Broadcast = require('./Broadcast');
+const REDISKEY = require('../../database').dbConsts.REDISKEY;
 
 /**
  * 全服公告类.
@@ -8,20 +8,20 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY
  */
 class ServerBroadcast extends Broadcast {
     constructor(content) {
-        super(content)
-        this.eventType = REDISKEY.CH.BROADCAST_SERVER
+        super(content);
+        this.eventType = REDISKEY.CH.BROADCAST_SERVER;
     }
 
     extra(id) {
-        this.value.id = id ? id : tools.ObjUtil.createSalt()
-        return this
+        this.value.id = id ? id : tools.ObjUtil.createSalt();
+        return this;
     }
 
     add() {
-        super.add()
+        super.add();
         // 全服通告需要记录到Redis中
-        tools.RedisUtil.hset(REDISKEY.PLATFORM_DATA.SERVER_BROADCAST, this.value.id, this.message)
+        tools.RedisUtil.hset(REDISKEY.PLATFORM_DATA.SERVER_BROADCAST, this.value.id, this.message);
     }
 }
 
-module.exports = ServerBroadcast
+module.exports = ServerBroadcast;

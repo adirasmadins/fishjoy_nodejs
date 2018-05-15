@@ -10,7 +10,7 @@ class RobotController {
         this._robotPlayerMap = new Map();
         this._fireTimer = null;
         robotEvent.on(fishCmd.request.robot_catch_fish.route.split('.')[2], this.onCatchfish.bind(this));
-        logger.error('-----------------RobotController') 
+        logger.error('-----------------RobotController'); 
     }
 
     run() {

@@ -22,7 +22,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetchData() {
     let pumpInfo = await tools.RedisUtil.get(REDISKEY.PLATFORM_DATA.PUMPWATER);

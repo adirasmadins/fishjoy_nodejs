@@ -68,6 +68,7 @@ module.exports = {
             { redisKey: REDISKEY.CIK_TIME, type: SUBTASK_TYPE.DEL },
 
             { redisKey: REDISKEY.LOG.G_DAY_DROP, type: SUBTASK_TYPE.DEL },
+            { redisKey: REDISKEY.GODDESS_FREE_PAUSE_AWAY, type: SUBTASK_TYPE.DEL },
         ]
     },
     //按周重置
@@ -111,7 +112,7 @@ module.exports = {
                 range: 10000,
                 limit: 1000,
                 showDetail: 100,
-                ext: [ACCOUNTKEY.NICKNAME, ACCOUNTKEY.FIGURE_URL, ACCOUNTKEY.SEX, ACCOUNTKEY.WEAPON_SKIN, ACCOUNTKEY.VIP, ACCOUNTKEY.CHARM_RANK]
+                ext: [ACCOUNTKEY.NICKNAME, ACCOUNTKEY.FIGURE_URL, ACCOUNTKEY.SEX, ACCOUNTKEY.WEAPON_SKIN, ACCOUNTKEY.VIP, ACCOUNTKEY.CHARM_RANK, ACCOUNTKEY.CHARM_POINT]
             },
             {
                 redisKey: REDISKEY.RANK.MATCH,

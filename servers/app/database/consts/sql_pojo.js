@@ -838,6 +838,12 @@ exports.fields = {
         "type": "string",
         "table": "tbl_account",
         "name": "city"
+    },
+    "game_friend":{
+        "def": "",
+        "type": "object",
+        "table": "tbl_account",
+        "name": "game_friend"
     }
 };
 
@@ -1240,7 +1246,6 @@ exports.tbl_account = {
             "level": 1,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
             "ctimes": 0,
             "unlock": [2, 2, 2, 2, 2, 2, 2, 2, 2],
             "interactReward": [0, 0, 0, 0],
@@ -1250,7 +1255,6 @@ exports.tbl_account = {
             "level": 0,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -1260,7 +1264,6 @@ exports.tbl_account = {
             "level": 0,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -1270,7 +1273,6 @@ exports.tbl_account = {
             "level": 0,
             "hp": 200,
             "startWaveIdx": 0,
-            "free": 1,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -1280,7 +1282,6 @@ exports.tbl_account = {
             "level": 0,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -1359,6 +1360,11 @@ exports.tbl_account = {
         "def": "",
         "type": "string",
         "name": "city"
+    },
+    "game_friend":{
+        "def": "",
+        "type": "object",
+        "name": "game_friend"
     }
 };
 exports.tbl_img = {

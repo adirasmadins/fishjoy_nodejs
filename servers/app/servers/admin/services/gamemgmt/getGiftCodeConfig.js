@@ -18,7 +18,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 function makeChart() {
     let chart = [];
     for (let i = 0; i < tools.BuzzUtil.CDKEY_LIST.length; i++) {

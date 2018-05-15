@@ -25,7 +25,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function cancelCash(orderId, ctx) {
     let order = (await tools.SqlUtil.query(SQL_CONFIG.getChangeLogByOrderId, [orderId]))[0];

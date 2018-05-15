@@ -22,7 +22,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 function cancelBroadcast(id) {
     // 从Hash表中删除公告

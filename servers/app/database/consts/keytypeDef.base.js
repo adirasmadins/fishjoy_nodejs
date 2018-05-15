@@ -300,6 +300,10 @@ module.exports.AccountDef = {
         "def": {},
         "type": "object"
     },
+    "active_stat_newbie": {
+        "def": {},
+        "type": "object"
+    },
     "mail_box": {
         "def": [],
         "type": "object"
@@ -329,7 +333,7 @@ module.exports.AccountDef = {
             "level": 1,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
+            //"free": 0,
             "ctimes": 0,
             "unlock": [2, 2, 2, 2, 2, 2, 2, 2, 2],
             "interactReward": [0, 0, 0, 0],
@@ -339,7 +343,7 @@ module.exports.AccountDef = {
             "level": 0,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
+            //"free": 0,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -349,7 +353,7 @@ module.exports.AccountDef = {
             "level": 0,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
+            //"free": 0,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -359,7 +363,7 @@ module.exports.AccountDef = {
             "level": 0,
             "hp": 200,
             "startWaveIdx": 0,
-            "free": 1,
+            //"free": 0,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -369,7 +373,7 @@ module.exports.AccountDef = {
             "level": 0,
             "hp": 100,
             "startWaveIdx": 0,
-            "free": 1,
+            //"free": 0,
             "ctimes": 0,
             "unlock": [0, 0, 0, 0, 0, 0, 0, 0, 0],
             "interactReward": [0, 0, 0, 0],
@@ -394,6 +398,10 @@ module.exports.AccountDef = {
         "type": "number"
     },
     "goddess_ongoing": {
+        "def": 0,
+        "type": "number"
+    },
+    "goddess_jump": {
         "def": 0,
         "type": "number"
     },
@@ -739,6 +747,10 @@ exports.OtherDef = {
     //玩家扩展数据
     "extend":{
         "def": {},
+        "type": "object",
+    },
+    "goddess_free_pause_away":{
+        "def": [0, 0, 0, 0, 0],
         "type": "object",
     }
 };

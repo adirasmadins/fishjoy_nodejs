@@ -15,11 +15,11 @@ class MatchReward extends RankReward {
      * @private
      */
     _getMonthAward(rank, score) {
-        let rankId = rankRewardCfg.rankUtils().getRankIdFromPointsAndRank(score, rank - 1);
+        let rankId = rankRewardCfg._getRankIdFromPointsAndRank(score, rank - 1);
         if (0 == rankId) {
-            rankId = rankRewardCfg.rankUtils().getRankIdFromPoints(score);
+            rankId = rankRewardCfg._getRankIdFromPoints(score);
         }
-        return rankRewardCfg.rankUtils().getSeasonRewardFromRankgameCfg(rankId);
+        return rankRewardCfg._getSeasonRewardFromRankgameCfg(rankId);
     }
 
     async _getMatchInfo(uids) {

@@ -19,4 +19,4 @@ module.exports = {
     WEAPON: 18,
     CARD: 19,
     GET_CARD: 20,
-}
+};

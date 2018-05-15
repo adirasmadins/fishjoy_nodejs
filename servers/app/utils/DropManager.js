@@ -146,7 +146,7 @@ class DropManager {
                                 item_id: itemId,
                                 item_num: num,
                             });
-                            logger.info('成功放入背包 = ', itemId, ' DROP.item_num = ', num, ' itemTimes = ', itemTimes)
+                            logger.info('成功放入背包 = ', itemId, ' DROP.item_num = ', num, ' itemTimes = ', itemTimes);
                             okC = 3;
                         }
                         dpks.push(dpKey);
@@ -254,7 +254,7 @@ class DropManager {
             doneKeys.push({
                 dpKey: dpKey,
                 ret: ret,
-            })
+            });
         }
         return doneKeys;
     }

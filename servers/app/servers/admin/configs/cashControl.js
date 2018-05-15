@@ -147,4 +147,4 @@ module.exports = [
 		desc : "Mobifone预付卡500000是否自动",    //--描述
 		redis : "cash:require:automaticMF500000",    //--redis
 	},
-]
+];

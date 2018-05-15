@@ -73,7 +73,7 @@ class RankMatchInstance {
     }
 
     rpc_query_playerInfo(data, cb){
-        logger.error('rpc_query_playerInfo=', data)
+        logger.error('rpc_query_playerInfo=', data);
         this._rpcInfo(data, function(code, room) {
             if (code != 0) {
                 cb && cb();

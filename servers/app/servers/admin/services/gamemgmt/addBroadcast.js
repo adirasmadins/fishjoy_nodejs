@@ -30,7 +30,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 function addBroadcast(txt, gap, repeat, startTime, endTime) {
     let content = {
@@ -64,4 +64,4 @@ exports.set = async function (count) {
         logger.error('没有服务器公告');
     }
 
-}
+};

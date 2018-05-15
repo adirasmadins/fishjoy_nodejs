@@ -6,9 +6,9 @@ const ArrayUtil = require('../utils/ArrayUtil');
 const BuzzUtil = require('../utils/BuzzUtil');
 const RedisUtil = require('../utils/RedisUtil');
 const RandomUtil = require('../utils/RandomUtil');
-const HttpUtil = require('../utils/HttpUtil');
 const DaoUtil = require('../utils/DaoUtil');
 const DaoOperation = require('../dao/dao_operation');
+const DaoChange = require('../dao/dao_change');
 const CacheAccount = require('./cache/CacheAccount');
 const REDISKEY = require('../../../../database/consts').REDISKEY;
 const gameConfig = require('../../../../utils/imports').DESIGN_CFG;
@@ -17,16 +17,13 @@ const SCENE = gameConfig.common_log_const_cfg;
 const goldfish_goldlevel_cfg = gameConfig.goldfish_goldlevel_cfg;
 const goldfish_goldfish_cfg = gameConfig.goldfish_goldfish_cfg;
 const common_const_cfg = gameConfig.common_const_cfg;
-const item_item_cfg = gameConfig.item_item_cfg;
-const item_itemtype_cfg = gameConfig.item_itemtype_cfg;
-const item_mix_cfg = gameConfig.item_mix_cfg;
 const string_strings_cfg = gameConfig.string_strings_cfg;
 const change_change_cfg = gameConfig.change_change_cfg;
 const vip_vip_cfg = gameConfig.vip_vip_cfg;
 const shop_shop_buy_type_cfg = gameConfig.shop_shop_buy_type_cfg;
 const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
-
-const CacheChange = require('./cache/CacheChange');
+const pack = require('../../controllers/data/pack');
+const itemDef = require('../../../../consts/itemDef');
 const buzz_cik = require('./buzz_cik');
 
 //==============================================================================
@@ -36,14 +33,6 @@ let DEBUG = 0;
 let ERROR = 1;
 const TAG = "【buzz_recieve】";
 
-
-//==============================================================================
-// public
-//==============================================================================
-
-//------------------------------------------------------------------------------
-// definition
-//------------------------------------------------------------------------------
 exports.turntableDraw = turntableDraw;
 exports.changeInKind = changeInKind;
 exports.getCikLog = getCikLog;
@@ -53,16 +42,11 @@ exports.cancelCik = cancelCik;
 exports.buyVipGift = buyVipGift;
 exports.vipDailyReward = vipDailyReward;
 
-//------------------------------------------------------------------------------
-// implement
-//------------------------------------------------------------------------------
 
 /**
  * 转盘抽奖.
  */
 function turntableDraw(dataObj, cb) {
-    const FUNC = TAG + "turntableDraw() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "turntable_draw");
 
@@ -74,8 +58,6 @@ function turntableDraw(dataObj, cb) {
 }
 
 function changeInKind(dataObj, cb) {
-    const FUNC = TAG + "changeInKind() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "change_in_kind");
 
@@ -87,8 +69,6 @@ function changeInKind(dataObj, cb) {
 }
 
 function getCikLog(dataObj, cb) {
-    const FUNC = TAG + "getCikLog() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "get_cik_log");
 
@@ -100,8 +80,6 @@ function getCikLog(dataObj, cb) {
 }
 
 function getCikInfo(dataObj, cb) {
-    const FUNC = TAG + "getCikInfo() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "get_cik_info");
 
@@ -113,8 +91,6 @@ function getCikInfo(dataObj, cb) {
 }
 
 function cancelCik(dataObj, cb) {
-    const FUNC = TAG + "cancelCik() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "cancel_cik");
 
@@ -128,8 +104,6 @@ function cancelCik(dataObj, cb) {
 //----------------------------------------------------------
 
 function buyVipGift(dataObj, cb) {
-    const FUNC = TAG + "buyVipGift() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "buy_vip_gift");
 
@@ -141,8 +115,6 @@ function buyVipGift(dataObj, cb) {
 }
 
 function vipDailyReward(dataObj, cb) {
-    const FUNC = TAG + "vipDailyReward() --- ";
-    //----------------------------------
     if (!lPrepare(dataObj)) return;
     BuzzUtil.cacheLinkDataApi(dataObj, "vip_daily_reward");
 
@@ -154,23 +126,13 @@ function vipDailyReward(dataObj, cb) {
 
 }
 
-//----------------------------------------------------------
-
-
-//==============================================================================
-// private
-//==============================================================================
-//----------------------------------------------------------
-
-//----------------------------------------------------------
 // 转盘抽奖
-
 function _didTurntableDraw(dataObj, cb) {
     const FUNC = TAG + "_didTurntableDraw() --- ";
     let uid = dataObj.uid;
 
     if (!dataObj.goldlevel) {
-        return cb && cb(ERROR_OBJ.PARAM_MISSING)
+        return cb && cb(ERROR_OBJ.PARAM_MISSING);
     }
 
     let goldlevel = "" + dataObj.goldlevel;
@@ -212,7 +174,7 @@ function _didTurntableDraw(dataObj, cb) {
         let item_list = [{
             item_id: goldfish_info.item_id,
             item_num: goldfish_info.item_count,
-        }, ];
+        },];
 
         // 清除奖金鱼数据
         CacheAccount.setBonus(uid, {
@@ -235,7 +197,6 @@ function _didTurntableDraw(dataObj, cb) {
             logBuilder.addGoldAndItemLog(item_list, account, SCENE.GOLDFISH_GAIN);
         });
     }
-
 }
 
 /**
@@ -296,122 +257,7 @@ function _getRewardProbability(reward_list) {
     return probability;
 }
 
-class ChangeConditionLock {
-    constructor() {
-        this._changeMap = new Map();
-        setInterval(this.kick.bind(this), 3000);
-    }
 
-    _syncGold(uid, gold) {
-        return new Promise(function (resolve, reject) {
-            RedisUtil.hincrby('pair:uid:gold', uid, gold, function (err, result) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            })
-        });
-    }
-
-    /**
-     * 
-     * @param {拥有金币} ownGold 
-     * @param {消耗金币} costGold 
-     * @return {}
-     */
-    async _freezeGold(uid, ownGold, costGold) {
-        let enough = ownGold - costGold >= common_const_cfg.CHANGE_CASH_1;
-        if (enough) {
-            try {
-                let realGold = await this._syncGold(uid, -costGold);
-                if (realGold < common_const_cfg.CHANGE_CASH_1) {
-                    await this._syncGold(uid, costGold);
-                    return -1;
-                }
-                return realGold;
-            } catch (err) {
-                console.error('资产冻结失败', err);
-                return -1;
-            }
-        }
-        return -1;
-    }
-
-    //踢出提现用户
-    async kick() {
-        // console.log('timer', this._changeMap.size);
-        let now = Date.now();
-        for (let [k, v] of this._changeMap) {
-            // console.log(k, v);
-            if (now - v.timeout >= 60 * common_const_cfg.CHANGE_CD_1 * 1000) {
-                // if (now - v.timeout >= 10 * 1000) {
-                if (v.state == ChangeConditionLock.LOCK_STATE.WAIT) {
-                    await this._syncGold(k, v.costGold)
-                    // console.log('kick:', await this._syncGold(k, v.costGold));
-                    this._changeMap.delete(k);
-                } else if (v.state == ChangeConditionLock.LOCK_STATE.OK) {
-                    this._changeMap.delete(k);
-                }
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param {用户对象} account 
-     * @param {消耗金币} costGold 
-     */
-    async lock(account, costGold) {
-        let v = this._changeMap.get(account.id);
-        if (!!v) {
-            console.error('提现操作太频繁,拒绝提现')
-            return ERROR_OBJ.CIK_ORDER_TOO_OFTEN;
-        }
-        this._changeMap.set(account.id, {});
-
-        let realGold = await this._freezeGold(account.id, account.gold, costGold);
-        if (-1 == realGold) {
-            this._changeMap.delete(account.id);
-            console.error('金币不足，冻结失败')
-            return ERROR_OBJ.CIK_GOLD_NOT_ENOUGH;
-        }
-        // console.log('realGold', realGold);
-        account._gold = realGold;
-        this._changeMap.set(account.id, {
-            costGold: costGold,
-            timeout: Date.now(),
-            state: ChangeConditionLock.LOCK_STATE.WAIT
-        });
-
-        return null; //ERROR_OBJ.CIK_GOLD_NOT_ENOUGH;
-    }
-
-    async unLock(uid, state) {
-        if (state < 0 && state > 2) {
-            console.error('提现锁状态值非法');
-            return;
-        }
-
-        let v = this._changeMap.get(uid);
-        if (!!v) {
-            if (state == ChangeConditionLock.LOCK_STATE.FAIL) {
-                await this._freezeGold(uid, v.costGold);
-                this._changeMap.delete(uid);
-            } else {
-                v.state = state;
-            }
-        }
-    }
-}
-
-ChangeConditionLock.LOCK_STATE = {
-    WAIT: 0,
-    OK: 1,
-    FAIL: 2
-}
-
-const changeConditionLock = new ChangeConditionLock();
 //----------------------------------------------------------
 // 实物兑换
 
@@ -448,57 +294,59 @@ function _didChangeInKind(dataObj, cb) {
             }
 
             if (change_info.type == 1 || change_info.type == 2) {
-                try {
-                    let ret = await changeConditionLock.lock(account, change_info.cost[0][1]);
-                    if (!!ret) {
-                        cb(ret);
-                        return;
-                    }
-
-                    let payFromLast3Days = await getPayFromLast3Days(account.id) || 0;
-                    let cashFromLast3Days = await getCashFromLast3Days(account.id) || 0;
-                    //加入订单信息，后台管理员处理，不能自动发货
-                    // let isHand = payFromLast3Days * common_const_cfg.CHANGE_CASH_3 <= (cashFromLast3Days + change_info.cost) * common_const_cfg.CHANGE_CASH_4;
-                    let isHand = payFromLast3Days <= (cashFromLast3Days + change_info.cost[0][1]) / common_const_cfg.CHANGE_CASH_4;
-                    // WARNING: 临时处理，全部改为手动发货.
-                    isHand = true;
-                    let isCikAuto = await getCikAuto();
-                    // if (!isCikAuto) {
-                    if (isHand || !isCikAuto) {
-                        status = 0;
-                    } else {
-                        // let responseContent = await buyCardTest(change_info, account);
-                        let responseContent = await buyCard(change_info, account);
-                        let card_arr = JSON.parse(responseContent);
-                        card_num = card_arr[0].Serial;
-                        card_pwd = card_arr[0].Pin;
-
-                        status = 2;
-                        account.cash = change_info.value; // 自动发货时才会增加此变量
-                    }
-                    // console.log('uid:', account.id);
-
-                    await changeConditionLock.unLock(account.id, ChangeConditionLock.LOCK_STATE.OK);
-
-                    // 添加公告22-生成提现订单成功
-                    let itemName = tools.CfgUtil.item_item.getName(item_key);
-                    let params = [account.nickname, itemName];
-                    let content = {
-                        type: GameEventBroadcast.TYPE.GAME_EVENT.NOTIFY_CHANGE_CARD,
-                        params: params,
-                    };
-                    new GameEventBroadcast(content).extra(account).add();
-
-                } catch (err) {
-                    logger.error('err:', err);
-                    cb({
-                        code: 1172,
-                        msg: 'Mệnh giá thẻ này đang nâng cấp. Vui lòng đổi thẻ khác.'
-                    });
-
-                    await changeConditionLock.setLockState(ChangeConditionLock.LOCK_STATE.FAIL);
-                    return;
-                }
+                cb(ERROR_OBJ.NOT_SUPPORT_SERVICE);
+                return;
+                // try {
+                //     let ret = await changeConditionLock.lock(account, change_info.cost[0][1]);
+                //     if (ret) {
+                //         cb(ret);
+                //         return;
+                //     }
+                //
+                //     let payFromLast3Days = await getPayFromLast3Days(account.id) || 0;
+                //     let cashFromLast3Days = await getCashFromLast3Days(account.id) || 0;
+                //     //加入订单信息，后台管理员处理，不能自动发货
+                //     // let isHand = payFromLast3Days * common_const_cfg.CHANGE_CASH_3 <= (cashFromLast3Days + change_info.cost) * common_const_cfg.CHANGE_CASH_4;
+                //     let isHand = payFromLast3Days <= (cashFromLast3Days + change_info.cost[0][1]) / common_const_cfg.CHANGE_CASH_4;
+                //     // WARNING: 临时处理，全部改为手动发货.
+                //     isHand = true;
+                //     let isCikAuto = await getCikAuto();
+                //     // if (!isCikAuto) {
+                //     if (isHand || !isCikAuto) {
+                //         status = 0;
+                //     } else {
+                //         // let responseContent = await buyCardTest(change_info, account);
+                //         let responseContent = await buyCard(change_info, account);
+                //         let card_arr = JSON.parse(responseContent);
+                //         card_num = card_arr[0].Serial;
+                //         card_pwd = card_arr[0].Pin;
+                //
+                //         status = 2;
+                //         account.cash = change_info.value; // 自动发货时才会增加此变量
+                //     }
+                //     // console.log('uid:', account.id);
+                //
+                //     await changeConditionLock.unLock(account.id, ChangeConditionLock.LOCK_STATE.OK);
+                //
+                //     // 添加公告22-生成提现订单成功
+                //     let itemName = tools.CfgUtil.item_item.getName(item_key);
+                //     let params = [account.nickname, itemName];
+                //     let content = {
+                //         type: GameEventBroadcast.TYPE.GAME_EVENT.NOTIFY_CHANGE_CARD,
+                //         params: params,
+                //     };
+                //     new GameEventBroadcast(content).extra(account).add();
+                //
+                // } catch (err) {
+                //     logger.error('err:', err);
+                //     cb({
+                //         code: 1172,
+                //         msg: 'Mệnh giá thẻ này đang nâng cấp. Vui lòng đổi thẻ khác.'
+                //     });
+                //
+                //     await changeConditionLock.setLockState(ChangeConditionLock.LOCK_STATE.FAIL);
+                //     return;
+                // }
             } else {
                 let item_list = [{
                     item_id: item_key,
@@ -511,19 +359,19 @@ function _didChangeInKind(dataObj, cb) {
                             account.gold = item_num;
                             break;
                         }
-                        // 兑换钻石
+                    // 兑换钻石
                     case ItemType.PEARL:
                         {
                             account.pearl = item_num;
                             break;
                         }
-                        // 兑换实物
+                    // 兑换实物
                     case ItemType.CHANGE_FARE:
                     case ItemType.CHANGE_PHONE:
                         {
                             break;
                         }
-                        // 兑换游戏道具
+                    // 兑换游戏道具
                     default:
                         {
                             if (typeof (account.package[item_type]) == "undefined") {
@@ -542,7 +390,7 @@ function _didChangeInKind(dataObj, cb) {
 
             let exchange_cost = change_info.cost[0];
             let cost = exchange_cost[1];
-            if (exchange_cost[0] == "i001") {
+            if (exchange_cost[0] == itemDef.GOLD) {
                 // 扣除相应的金币
                 let logInfo = {
                     account_id: account.id,
@@ -557,13 +405,13 @@ function _didChangeInKind(dataObj, cb) {
                 };
                 logBuilder.addGoldLogEx(logInfo);
                 account.gold -= cost;
-            } else if (exchange_cost[0] == "i003") {
+            } else if (exchange_cost[0] == itemDef.HUAFEIQUAN) {
                 // 扣除相应的兑换券
-                let tokens = account.package[ItemType.TOKENS]["i003"];
+                let tokens = account.package[ItemType.TOKENS][itemDef.HUAFEIQUAN];
                 logger.info(FUNC + "需要消耗兑换券:", cost);
-                account.package[ItemType.TOKENS]["i003"] -= cost;
+                account.package[ItemType.TOKENS][itemDef.HUAFEIQUAN] -= cost;
                 let costItemList = {
-                    item_id: "i003",
+                    item_id: itemDef.HUAFEIQUAN,
                     item_num: -cost,
                 };
                 logBuilder.addGameLog(costItemList, account, SCENE.CIK, "话费券兑换时消耗");
@@ -614,7 +462,7 @@ function _didChangeInKind(dataObj, cb) {
                 ret.change = {};
                 ret.change.package = {
                     "9": {
-                        "i003": account.package[ItemType.TOKENS]["i003"]
+                        "i003": account.package[ItemType.TOKENS][itemDef.HUAFEIQUAN]
                     },
                 };
                 logger.info(FUNC + "item_type:", item_type);
@@ -630,7 +478,7 @@ function _didChangeInKind(dataObj, cb) {
                             ret.change.pearl = account.pearl;
                             break;
                         }
-                        // 兑换实物
+                    // 兑换实物
                     case ItemType.CHANGE_FARE:
                     case ItemType.CHANGE_PHONE:
                         {
@@ -717,11 +565,11 @@ function _checkChangeInKind1(account, change_id, cb) {
         cb(ERROR_OBJ.CIK_TOKEN_NOT_ENOUGH);
         return false;
     }
-    if (typeof (account.package[ItemType.TOKENS]["i003"]) == "undefined") {
+    if (typeof (account.package[ItemType.TOKENS][itemDef.HUAFEIQUAN]) == "undefined") {
         cb(ERROR_OBJ.CIK_TOKEN_NOT_ENOUGH);
         return false;
     }
-    tokens = account.package[ItemType.TOKENS]["i003"];
+    tokens = account.package[ItemType.TOKENS][itemDef.HUAFEIQUAN];
 
     // 需要的话费券是否足够判断
     logger.info(FUNC + "需要消耗兑换券:", change_info.cost[0][1]);
@@ -739,36 +587,12 @@ function _checkChangeInKind1(account, change_id, cb) {
  * 检查实物兑换是否满足条件.
  */
 function _checkChangeInKind2(account, change_id, cb, next) {
-    const FUNC = TAG + "_checkChangeInKind2() --- ";
-
-    // let count = CacheOperation.findValueByCid(change_info.id, 1);
-    // let total = CacheOperation.findValueByCid(change_info.id, 2);
 
     let change_info = getChangeInfoFromId(change_id);
     let data = {
         cid: change_info.id
     };
-    // HttpUtil.postBalance('/server_api/find_values_by_cid', data, function(ret) {
-    //     HttpUtil.handleReturn(ret, function(err, values) {
-    //         let count = values.count;
-    //         let total = values.total;
 
-    //         // 判断总库存是否足够
-    //         if (total > 0) {
-    //             cb(ERROR_OBJ.CIK_TOTAL_NOT_ENOUGH);
-    //             return;
-    //         }
-
-    //         // 判断有没有库存
-    //         if (count > 0) {
-    //             cb(ERROR_OBJ.CIK_COUNT_NOT_ENOUGH);
-    //             return;
-    //         }
-
-    //         next();
-    //         // return true;
-    //     });
-    // });
     // yxlTODO: 判断总库存是否足够
     buzz_cik.findValuesByCid(data, function (err, values) {
         let count = values.count;
@@ -804,7 +628,6 @@ function getChangeInfoFromId(change_id) {
  * 获取实物兑换记录
  */
 function _didGetCikLog(dataObj, cb) {
-    const FUNC = TAG + "_didGetCikLog() --- ";
     let data = {
         uid: dataObj.uid
     };
@@ -835,53 +658,41 @@ async function _didGetCikInfo(dataObj, cb) {
 /**
  * 玩家取消实物兑换
  */
-function _didCancelCik(dataObj, cb) {
-    const FUNC = TAG + "_didCancelCik() --- ";
-    let uid = dataObj.uid;
+async function _didCancelCik(dataObj, cb) {
     let orderid = dataObj.orderid;
+    let account = dataObj.account;
 
-    doNext(dataObj.account);
+    let orderData = await tools.SqlUtil.query('select * from tbl_change_log where id=?', [orderid]);
+    let orderInfo = orderData[0];
+    logger.error('orderInfo:', orderInfo);
 
-    function doNext(account) {
+    DaoChange.cancelCik(orderid, function (err, result) {
 
-        // TODO: 调用负载均衡服的接口获取此数据
-        // 均衡服返回订单内容, 失败返回NULL
-        let data = {
-            uid: uid,
-            orderid: orderid,
+        if (err) {
+            cb(ERROR_OBJ.CIK_CANCEL_FAIL);
+            return;
+        }
+
+        logger.error('result:', result);
+
+        // 返回兑换券
+        let change_info = BuzzUtil.getChangeById(orderInfo.cid);
+        let cost = change_info.cost[0][1];
+        let item_list = [{
+            item_id: itemDef.HUAFEIQUAN,
+            item_num: cost,
+        }];
+
+        pack.exchange(dataObj, [], item_list, 56);
+        // pack.exchange(dataObj, [], item_list, common_log_const_cfg.CHANGE_CANCEL);
+        let ret = {
+            item_list: item_list,
+            change: {
+                package: account.package
+            },
         };
-
-        buzz_cik.cancelCik(data, function (err, changeSuccess) {
-            if (changeSuccess) {
-
-                myDao.cancelCik(orderid, function (err, result) {
-
-                    // 返回兑换券
-                    let change = CacheChange.findChangeByUidAndOrderId(uid, orderid);
-                    logger.error('change:', change);
-                    let cid = change.cid;
-                    logger.error('cid:', cid);
-                    let change_info = BuzzUtil.getChangeById(cid);
-                    let cost = change_info.cost[0][1];
-                    let item_list = [{
-                        item_id: "i003",
-                        item_num: cost,
-                    }];
-
-                    BuzzUtil.putIntoPack(account, item_list, function (reward_info) {
-                        let change = BuzzUtil.getChange(account, reward_info);
-                        let ret = {
-                            item_list: item_list,
-                            change: change,
-                        };
-                        cb(null, ret);
-                    });
-                });
-            } else {
-                cb(ERROR_OBJ.CIK_CANCEL_FAIL);
-            }
-        });
-    }
+        cb(null, ret);
+    });
 }
 
 /**
@@ -892,7 +703,6 @@ function _didCancelCik(dataObj, cb) {
 function _buyVipGift(dataObj, cb) {
     const FUNC = TAG + "_buyVipGift() --- ";
     let uid = dataObj.uid;
-    let token = dataObj.token;
     let buyLevel = dataObj.buyLevel; //购买礼包的等级
 
     if (undefined == buyLevel) {
@@ -1074,7 +884,7 @@ function getCikAuto() {
                 resolve(res);
             }
         });
-    })
+    });
 }
 
 //查询最近三天充值额度
@@ -1087,8 +897,8 @@ function getPayFromLast3Days(id) {
             } else {
                 resolve(res[0].sum);
             }
-        })
-    })
+        });
+    });
 }
 
 //查询最近三天兑换额度
@@ -1101,8 +911,8 @@ function getCashFromLast3Days(id) {
             } else {
                 resolve(res[0].cost);
             }
-        })
-    })
+        });
+    });
 }
 
 

@@ -11,7 +11,7 @@ exports.get = async function (data, ctx) {
     // logger.error('data:', data);
     try {
         checkRange(data.value);
-        await modifyData(data.key, Number(data.value))
+        await modifyData(data.key, Number(data.value));
         return {
             result: true
         };
@@ -23,7 +23,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 /**
  * 场景捕获率设置范围检测.

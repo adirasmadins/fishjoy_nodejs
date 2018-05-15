@@ -13,4 +13,4 @@ module.exports = {
     daily: require('./cfgs/daily'),
     goddess: require('./cfgs/goddess'),
     drop: require('./cfgs/drop'),
-}
+};

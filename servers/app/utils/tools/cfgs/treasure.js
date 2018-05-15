@@ -10,11 +10,11 @@ exports.getInfo = (id) => {
         }
     }
     return null;
-}
+};
 
 exports.getName = (id) => {
     let info = this.getInfo(id);
     if (info) {
         return string_strings_cfg[info.name].cn;
     }
-}
+};

@@ -6,7 +6,7 @@ class OnlineUserModule {
         this.app = opts.app;
         this.type = opts.type || 'pull';
         this.interval = opts.interval || 5;
-        logger.error('-----------------OnlineUserModule')
+        logger.error('-----------------OnlineUserModule');
     }
 
     monitorHandler(agent, msg) {

@@ -31,7 +31,6 @@ exports.cikReduce = cikReduce;
 exports.findValuesByCid = findValuesByCid;
 exports.getCikLog = getCikLog;
 exports.getCikInfo = getCikInfo;
-exports.cancelCik = cancelCik;
 
 //------------------------------------------------------------------------------
 // implement
@@ -64,12 +63,6 @@ function getCikInfo(dataObj, cb) {
     const FUNC = TAG + "getCikInfo() --- ";
     //----------------------------------
     _didGetCikInfo(dataObj, cb);
-}
-
-function cancelCik(dataObj, cb) {
-    const FUNC = TAG + "cancelCik() --- ";
-    //----------------------------------
-    _didCancelCik(dataObj, cb);
 }
 
 
@@ -143,15 +136,4 @@ function _didGetCikInfo(dataObj, cb) {
     // var uid = dataObj.uid;
     var ret = CacheOperation.getChangeDailyLeft();
     cb(null, ret);
-}
-
-/**
- * 玩家取消实物兑换
- */
-function _didCancelCik(dataObj, cb) {
-    const FUNC = TAG + "_didCancelCik() --- ";
-    var uid = dataObj.uid;
-    var orderid = dataObj.orderid;
-    var change = CacheChange.cancelCik(uid, orderid);
-    cb(null, change);
 }

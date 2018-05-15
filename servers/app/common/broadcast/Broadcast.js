@@ -5,30 +5,30 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY;
  */
 class Broadcast {
     constructor(content) {
-        this.content = content
-        this.eventType = REDISKEY.CH.BROADCAST_GAME_EVENT
-        this.content.txt = this.content.txt ? this.content.txt : ''
-        this.content.times = this.content.times ? this.content.times : 1
-        this.value = {}
+        this.content = content;
+        this.eventType = REDISKEY.CH.BROADCAST_GAME_EVENT;
+        this.content.txt = this.content.txt ? this.content.txt : '';
+        this.content.times = this.content.times ? this.content.times : 1;
+        this.value = {};
     }
 
     extra(account) {
-        this.content.platform = account.platform
-        this.content.uid = account.id
-        return this
+        this.content.platform = account.platform;
+        this.content.uid = account.id;
+        return this;
     }
 
     add() {
-        this.value.content = this.content
-        this.value.timestamp = (new Date()).valueOf()
+        this.value.content = this.content;
+        this.value.timestamp = (new Date()).valueOf();
 
         // logger.error('------------------------------------------发布公告');
-        this.message = JSON.stringify(this.value)
-        redisConnector.pub(this.eventType, this.message)
+        this.message = JSON.stringify(this.value);
+        redisConnector.pub(this.eventType, this.message);
     }
 }
 
-module.exports = Broadcast
+module.exports = Broadcast;
 
 Broadcast.TYPE = {
     GAME_EVENT: {
@@ -56,6 +56,7 @@ Broadcast.TYPE = {
         NOTIFY_CHANGE_CARD: 22, // 提现话费卡订单生成成功发公告
         MONTH_CARD2: 23,        // 周卡
         CFGS_CHANGED: 24,       // 配置文件更新
+        GODDESS_JUMP: 25,       // 女神跳关，碾压第一名
     },
     FAMOUS_ONLINE: {
         GOLD: 1,        // 金币最多
@@ -74,4 +75,4 @@ Broadcast.TYPE = {
     CFGS_UPDATE: {
         UNKNOWN: 0,     // 未知文件
     },
-}
+};

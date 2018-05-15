@@ -28,6 +28,16 @@ class GoddessRoom extends FishRoom {
         this._fishModel = fishModel;
     }
     
+    /**
+     * 重新开始
+     */
+    _replayAgain() {
+        this._isPause = true;
+        //注意：保卫女神无需保留离线前的数据， 即重新开始，清除之前已有的数据
+        this._isStarted = false;
+        this._fishModel.resetAll();
+    }
+
     _addPlayerEvent(player) {
         super._addPlayerEvent(player);
 
@@ -36,10 +46,7 @@ class GoddessRoom extends FishRoom {
         });
 
         player.on(fishCmd.push.god_ready.route, function (event) {
-            this._isPause = true;
-            //注意：保卫女神无需保留离线前的数据， 即重新开始，清除之前已有的数据
-            this._isStarted = false;
-            this._fishModel.resetAll();
+            this._replayAgain();
         }.bind(this));
 
         player.on(fishCmd.push.god_pause.route, function (event) {
@@ -64,6 +71,10 @@ class GoddessRoom extends FishRoom {
                 this._fishModel.pass(false, event.player.getCurGod().id, event.reward);
             }
             logger.debug('left count = ', this._fishModel.getActorTotal());
+        }.bind(this));
+
+        player.on(fishCmd.push.god_jump.route, function (event) {
+            this._replayAgain();
         }.bind(this));
     }
 }

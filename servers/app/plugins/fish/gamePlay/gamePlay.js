@@ -10,7 +10,7 @@ class GamePlay {
         }catch (err){
             this._cost = new Cost();
         }
-        logger.error('-----------------GamePlay')
+        logger.error('-----------------GamePlay');
     }
 
     get cost() {

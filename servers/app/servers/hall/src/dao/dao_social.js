@@ -146,15 +146,16 @@ function getShareStatus(dataObj, cb) {
         ret.share_top_rank = 1;
         let cfg = getShareById(107);
         mission = new RewardModel(account);
-        mission.addProcess(RewardModel.TaskType.CHALLENGE_POS, cfg.value2, cfg.value1); //最强王者标记//内含account.commit
+        mission.addProcess(RewardModel.TaskType.CHALLENGE_POS, cfg.value2, cfg.value1); //最强王者标记
     }
     let charm = cache.getRank(account.platform, RANK_TYPE.CHARM, uid);
     if (charm.my_rank < 11) {
         ret.share_top_gold = 1;
         let cfg = getShareById(106);
         (!mission) && (mission = new RewardModel(account));
-        mission.addProcess(RewardModel.TaskType.GOLD_FIRST, cfg.value2, cfg.value1); //首富标记 0不是，1是，下同//内含account.commit
+        mission.addProcess(RewardModel.TaskType.GOLD_FIRST, cfg.value2, cfg.value1); //首富标记 0不是，1是，下同
     }
+    account.commit();
     logger.info("ret:", ret);
     cb(null, ret);
 }

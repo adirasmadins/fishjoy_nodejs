@@ -74,7 +74,7 @@ async function _updateOrderInfo(game_order_id, objs) {
 
     let sql_data = [];
     for (let key in objs) {
-        sql += '`' + key + '`' + ' = ?,'
+        sql += '`' + key + '`' + ' = ?,';
         sql_data.push(objs[key]);
     }
     sql = sql.substring(0, sql.length - 1);

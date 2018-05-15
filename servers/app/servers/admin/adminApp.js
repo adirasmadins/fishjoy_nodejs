@@ -12,7 +12,7 @@ const redirect_https = require('../common/redirect_https');
 // https://admin.szhlsg.com/index.html
 class AdminApp {
     constructor() { 
-        logger.error('-----------------AdminApp') 
+        logger.error('-----------------AdminApp'); 
     }
 
     async start() {

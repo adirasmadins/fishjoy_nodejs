@@ -28,7 +28,7 @@ class Instance {
         this._cache = new Cache();
         this._cacheReader = new CacheReader(this._cache);
         this._gamePlay = new GamePlay();
-        logger.error('-----------------fish Instance')
+        logger.error('-----------------fish Instance');
     }
 
     get gamePlay(){
@@ -358,7 +358,7 @@ class Instance {
         //取玩家的最大武器等级
         let curMaxWpLv = this._gamePlay.cost.getWpLevelMax(account.weapon_energy);
         if (curMaxWpLv < sceneCfg.min_level) {
-            logger.error('maxWp = ', maxWp, ' sceneConfig.min_level = ', sceneCfg.min_level)
+            logger.error('maxWp = ', maxWp, ' sceneConfig.min_level = ', sceneCfg.min_level);
             return FishCode.WEAPON_LEVEL_LOW;
         }
         return null;

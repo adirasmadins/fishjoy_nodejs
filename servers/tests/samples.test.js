@@ -24,7 +24,7 @@ describe('mocha sampele1', () => {
         expect(samples.getObj('lisi',100)).to.be.an('object');
     });
 
-})
+});
 
 
 describe('mocha sampele2', () => {
@@ -33,9 +33,9 @@ describe('mocha sampele2', () => {
             expect(err).equal(null);
             expect(result).to.be.a('string');
             done();
-        })
+        });
     });
-})
+});
 
 describe('http test samples3', ()=>{
     it('get baidu info', (done)=>{
@@ -48,5 +48,5 @@ describe('http test samples3', ()=>{
             expect(res).to.be.an('object');
             done();
         });
-    })
-})
+    });
+});

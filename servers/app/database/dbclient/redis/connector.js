@@ -9,7 +9,7 @@ class Connector {
         this._pubClient = null;
         this.events = {};
         this.opts = null;
-        logger.error('-----------------RedisConnector')
+        logger.error('-----------------RedisConnector');
     }
 
     start(opts, cb) {
@@ -38,7 +38,7 @@ class Connector {
                     utils.invokeCallback(cb, err);
                     resolve(false);
                 } else {
-                    logger.info('redis 连接成功');
+                    logger.error('redis 连接成功');
                 }
             });
 
@@ -48,7 +48,7 @@ class Connector {
                     utils.invokeCallback(cb, err);
                     resolve(false);
                 } else {
-                    logger.info('redis 数据库准备就绪');
+                    logger.error('redis 数据库准备就绪');
                     global.redisConnector = this;
                     utils.invokeCallback(cb, null, this);
                     resolve(true);
@@ -255,6 +255,24 @@ class Connector {
         });
     }
 
+    async hdel(key, member) {
+        if (key == null || member == null) {
+            return;
+        }
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self._cmdClient.hdel(key, member, function (err, result) {
+                if (err) {
+                    logger.error('redis hdel err=', err);
+                    reject(ERROR_OBJ.DB_REDIS_ERR);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
     async hgetall(key) {
         let self = this;
         return new Promise(function (resolve, reject) {
@@ -394,7 +412,7 @@ class Connector {
                     reject(ERROR_OBJ.DB_REDIS_ERR);
                 }
                 else {
-                    resolve(result[1]);
+                    resolve({cursor : result[0], result:result[1]});
                 }
             });
         });

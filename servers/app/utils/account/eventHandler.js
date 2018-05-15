@@ -164,7 +164,7 @@ class EventHandler {
 
     static playerDataSyncFunc(account, changeFields) {
         return async function () {
-            logger.error(`玩家 uid=${account.id} 数据 fields=${changeFields} 变化通知`);
+            // logger.error(`玩家 uid=${account.id} 数据 fields=${changeFields} 变化通知`);
             await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.playerDataChange.route, account.id, {uid: account.id, changeFields:changeFields});
         };
     }

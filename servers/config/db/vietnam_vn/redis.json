@@ -1,7 +1,7 @@
 {
     "enable": true,
     "server": {
-        "host": "103.90.220.70",
+        "host": "103.90.220.106",
         "port": 6730,
         "auth": true,
         "password": "Vnet@9999Khanh_(CM)",

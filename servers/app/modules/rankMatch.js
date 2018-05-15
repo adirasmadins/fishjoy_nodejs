@@ -6,7 +6,7 @@ class RankMatchModule {
         this.app = opts.app;
         this.type = opts.type || 'pull';
         this.interval = opts.interval || 5;
-        logger.error('-----------------RankMatchModule')
+        logger.error('-----------------RankMatchModule');
     }
 
     monitorHandler(agent, msg) {

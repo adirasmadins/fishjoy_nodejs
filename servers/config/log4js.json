@@ -6,21 +6,21 @@
     "file": {
       "type": "file",
       "filename": "${opts:base}/logs/con-log-${opts:serverId}.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30
+      "backups": 50
     },
     "con-log": {
       "type": "file",
       "filename": "${opts:base}/logs/con-log-${opts:serverId}.log",
       "pattern": "connector",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "con-log"
     },
     "rpc-log": {

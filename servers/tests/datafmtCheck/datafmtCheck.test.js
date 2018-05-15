@@ -10,5 +10,5 @@ describe('month_sign test', () => {
         //boolean
         expect('ok').to.be.ok;
         expect(false).to.not.be.ok;
-    })
-})
+    });
+});

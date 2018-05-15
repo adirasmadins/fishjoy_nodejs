@@ -2,7 +2,6 @@ const Reward = require('../buzz/pojo/Reward');
 const ObjUtil = require('../buzz/ObjUtil');
 const buzz_limit_items = require('../buzz/buzz_limit_items');
 const ItemTypeC = require('../buzz/pojo/Item').ItemTypeC;
-const DaoGold = require('./dao_gold');
 const _ = require('underscore');
 
 

@@ -18,7 +18,7 @@ exports.get = async function (data, ctx) {
         pages: pages,
         chart: chart
     };
-}
+};
 
 /**
  * 填充tbl_login_log缺失的数据如: nickname, recharge, deviceId, loginTimesToday, loginTimesTotal

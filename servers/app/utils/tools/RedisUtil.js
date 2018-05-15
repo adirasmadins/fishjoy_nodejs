@@ -313,7 +313,7 @@ function multi(data) {
             } else {
                 resolve(res);
             }
-        })
+        });
     });
 }
 
@@ -330,7 +330,7 @@ function set(key, field) {
             } else {
                 resolve(res);
             }
-        })
+        });
     });
 }
 
@@ -347,7 +347,7 @@ function get(key) {
             } else {
                 resolve(res);
             }
-        })
+        });
     });
 }
 
@@ -364,7 +364,7 @@ function hget(hashkey, field) {
             } else {
                 resolve(res);
             }
-        })
+        });
     });
 }
 
@@ -407,7 +407,7 @@ function hgetall(hashkey) {
             } else {
                 resolve(res);
             }
-        })
+        });
     });
 }
 
@@ -424,6 +424,6 @@ function hset(hashkey, field, value) {
             } else {
                 resolve(res);
             }
-        })
+        });
     });
 }

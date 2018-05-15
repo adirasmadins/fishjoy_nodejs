@@ -1,5 +1,4 @@
 const BuzzUtil = require('../../utils/BuzzUtil');
-const AccountUpdateGoldShopping = require('./update/gold_shopping.js');
 const AccountUpdateGuide = require('./update/guide.js');
 
 const UPDATE_TYPE_GOLD_SHOPPING = 8; // 每日购买金币的次数
@@ -32,12 +31,7 @@ function updateAccount(data, account, cb) {
 //==============================================================================
 
 function _handleUpdate(data, cb, type, my_account) {
-
-    if (type == UPDATE_TYPE_GOLD_SHOPPING) {
-        BuzzUtil.cacheLinkDataApi(data, "update_account_gold_shopping");
-        AccountUpdateGoldShopping.update(data, cb, my_account);
-    }
-    else if (type == UPDATE_TYPE_GUIDE) {
+    if (type == UPDATE_TYPE_GUIDE) {
         BuzzUtil.cacheLinkDataApi(data, "update_account_guide");
         AccountUpdateGuide.update(data, cb, my_account);
     }

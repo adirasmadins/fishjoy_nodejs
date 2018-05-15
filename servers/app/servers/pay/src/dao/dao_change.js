@@ -12,6 +12,7 @@
 var ObjUtil = require('../buzz/ObjUtil');
 var ArrayUtil = require('../utils/ArrayUtil');
 var buzz_cst_error = require('../../../../consts/fish_error');
+const tools = require('../../../../utils/tools');
 
 var ERROR_OBJ = buzz_cst_error.ERROR_OBJ;
 
@@ -171,7 +172,7 @@ function insert(pool, data, cb) {
     });
 }
 
-function cancelCik(pool, orderid, cb) {
+async function cancelCik(orderid, cb) {
     const FUNC = TAG + "cancelCik() --- ";
     //----------------------------------
     var sql = "";
@@ -181,7 +182,9 @@ function cancelCik(pool, orderid, cb) {
 
     var sql_data = [orderid];
 
-    handleQuery(pool, sql, sql_data, cb);
+    let ret = await tools.SqlUtil.query(sql, sql_data);
+
+    cb && cb(null, ret);
 }
 
 function updateShipTime(pool, params, cb) {

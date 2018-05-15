@@ -53,4 +53,6 @@ module.exports = {
 	52: "闪电鱼点击所得(Fish Flash)",
 	53: "VIP每日福利",
 	54: "礼品码领取(Giftcode)",
+	55: "女神互动(Goddess Interact)",
+	56: "玩家取消实物兑换(Cik Cancel)",
 };

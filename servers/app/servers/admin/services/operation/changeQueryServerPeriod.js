@@ -31,7 +31,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function changeData(key, value) {
     await tools.RedisUtil.set(MAP[key], value);

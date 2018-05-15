@@ -34,7 +34,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetchData(start, length, type) {
     switch (Number(type)) {
@@ -83,7 +83,7 @@ async function makeChart(oriData) {
         ACCOUNTKEY.COST,
         ACCOUNTKEY.TEST,
         ACCOUNTKEY.PLAYER_CATCH_RATE
-    ]
+    ];
     for (let i = 0; i < oriData.length; i += 2) {
         let id = oriData[i];
         let profit = oriData[i + 1];
@@ -110,7 +110,7 @@ async function makeChart(oriData) {
                 isFreeze: account.test < 0,
                 catchRate: account.player_catch_rate || 1,
                 gold: account.gold,
-            }
+            };
             chart.push(gain_data);
         }
     }

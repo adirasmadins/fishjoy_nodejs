@@ -423,6 +423,18 @@ class FishCmd extends SysCmd {
         };
 
         /**
+         * 保卫女神：跳关
+         */
+        this._req.god_jump = {
+            route: 'game.fishHandler.c_god_jump',
+            msg: {
+                enc: 'aes',
+                data: {}
+            },
+            res: {}
+        };
+
+        /**
          * 海盗任务：查询进度
          */
         this._req.query_pirate = {
@@ -758,6 +770,15 @@ class FishCmd extends SysCmd {
 
         this._push.god_hurt = {
             route: 's_god_hurt',
+            msg: {
+                enc: 'aes',
+                data: {}
+            },
+            res: {}
+        };
+
+        this._push.god_jump = {
+            route: 's_god_jump',
             msg: {
                 enc: 'aes',
                 data: {}

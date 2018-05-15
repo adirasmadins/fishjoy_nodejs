@@ -1,5 +1,5 @@
 const Broadcast = require('./Broadcast');
-const REDISKEY = require('../../database').dbConsts.REDISKEY
+const REDISKEY = require('../../database').dbConsts.REDISKEY;
 
 /**
  * 配置文件更新公告类.
@@ -7,9 +7,9 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY
  */
 class CfgsUpdateBroadcast extends Broadcast {
     constructor(content) {
-        super(content)
-        this.eventType = REDISKEY.CH.BROADCAST_CFGS_UPDATE
+        super(content);
+        this.eventType = REDISKEY.CH.BROADCAST_CFGS_UPDATE;
     }
 }
 
-module.exports = CfgsUpdateBroadcast
+module.exports = CfgsUpdateBroadcast;

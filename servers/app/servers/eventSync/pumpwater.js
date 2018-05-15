@@ -204,7 +204,7 @@ class Pumpwater extends EventEmitter {
 
     _countDown(target_pump_water, timeout) {
         this.period_duration = timeout;
-        logger.error('-------------- _mathWater', target_pump_water)
+        logger.error('-------------- _mathWater', target_pump_water);
         this.pumpWater = target_pump_water;
         setTimeout(function () {
             this.period_duration = this.weight_time1 - timeout;

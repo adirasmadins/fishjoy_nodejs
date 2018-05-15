@@ -7,9 +7,9 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY;
  */
 class GameEventBroadcast extends Broadcast {
     constructor(content) {
-        super(content)
-        this.eventType = REDISKEY.CH.BROADCAST_GAME_EVENT
+        super(content);
+        this.eventType = REDISKEY.CH.BROADCAST_GAME_EVENT;
     }
 }
 
-module.exports = GameEventBroadcast
+module.exports = GameEventBroadcast;

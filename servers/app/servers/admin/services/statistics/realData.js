@@ -14,7 +14,7 @@ exports.get = async function (data, ctx) {
         daily: daily,
         chart: chart
     };
-}
+};
 
 /**
  * 获取统计信息(今日, 历史最高, 历史平均)

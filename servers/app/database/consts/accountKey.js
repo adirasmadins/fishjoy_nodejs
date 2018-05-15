@@ -74,6 +74,7 @@ module.exports = {
     "GODDESS_CTIMES": "goddess_ctimes",
     "GODDESS_CROSSOVER": "goddess_crossover",
     "GODDESS_ONGOING": "goddess_ongoing",
+    "GODDESS_JUMP": "goddess_jump",
     "REDRESS_NO": "redress_no",
     "TEST": "test",
     "RANK_IN_FRIENDS": "rank_in_friends",

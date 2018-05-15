@@ -11,7 +11,7 @@ exports.get = async function (data, ctx) {
     let mailList = await getMailList(data.startDate, data.endDate, data.mailId);
     // console.log('mailList:', mailList);
     return makeChart(mailList);
-}
+};
 
 async function getMailList(startDate, endDate, mailId) {
     let sql = SQL_CONFIG.getMailData;

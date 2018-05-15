@@ -1,5 +1,5 @@
 const Broadcast = require('./Broadcast');
-const REDISKEY = require('../../database').dbConsts.REDISKEY
+const REDISKEY = require('../../database').dbConsts.REDISKEY;
 
 /**
  * 名人上线公告类.
@@ -7,9 +7,9 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY
  */
 class FamousOnlineBroadcast extends Broadcast {
     constructor(content) {
-        super(content)
-        this.eventType = REDISKEY.CH.BROADCAST_FAMOUS_ONLINE
+        super(content);
+        this.eventType = REDISKEY.CH.BROADCAST_FAMOUS_ONLINE;
     }
 }
 
-module.exports = FamousOnlineBroadcast
+module.exports = FamousOnlineBroadcast;

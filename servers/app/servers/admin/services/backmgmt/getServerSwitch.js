@@ -23,7 +23,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function getSwitch(type) {
     switch (type) {

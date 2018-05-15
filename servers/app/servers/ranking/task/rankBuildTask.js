@@ -36,9 +36,9 @@ class RankBuildTask extends Task {
                 }
                 player.ext = account;
                 if (player.ext.match_rank) {
-                    let rankId = rankRewardCfg.rankUtils().getRankIdFromPointsAndRank(player.score, account.match_rank);
+                    let rankId = rankRewardCfg._getRankIdFromPointsAndRank(player.score, account.match_rank);
                     if (0 == rankId) {
-                        rankId = rankRewardCfg.rankUtils().getRankIdFromPoints(player.score);
+                        rankId = rankRewardCfg._getRankIdFromPoints(player.score);
                     }
                     player.ext.match_rank = rankId;
                 }
@@ -53,9 +53,9 @@ class RankBuildTask extends Task {
             if (account) {
                 player.ext = account.toJSON();
                 if (player.ext.match_rank) {
-                    let rankId = rankRewardCfg.rankUtils().getRankIdFromPointsAndRank(player.score, i);
+                    let rankId = rankRewardCfg._getRankIdFromPointsAndRank(player.score, i);
                     if (0 == rankId) {
-                        rankId = rankRewardCfg.rankUtils().getRankIdFromPoints(player.score);
+                        rankId = rankRewardCfg._getRankIdFromPoints(player.score);
                     }
                     player.ext.match_rank = rankId;
                 }

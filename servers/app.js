@@ -237,7 +237,7 @@ app.configure('production|development', 'hall', function () {
     httpLockFilter.addRoute('/hall/clientApi/reward_petfish');
     httpLockFilter.addRoute('/hall/clientApi/get_activity_reward');
     httpLockFilter.addRoute('/hall/clientApi/get_day_extra_reward');
-    httpLockFilter.addRoute('/hall/clientApi/update_account');
+    httpLockFilter.addRoute('/hall/clientApi/diamond_to_gold');
     httpLockFilter.addRoute('/hall/clientApi/get_weekend_reward');
     httpLockFilter.addRoute('/hall/clientApi/weapon_buy_skin');
     omeloHttpPlugin.filter(httpLockFilter);

@@ -4,8 +4,8 @@ const item_item_cfg = DESIGN_CFG.item_item_cfg;
 const string_strings_cfg = DESIGN_CFG.string_strings_cfg;
 
 exports.getInfo = (id) => {
-    return item_item_cfg[id]
-}
+    return item_item_cfg[id];
+};
 
 /**
  * 获取物品名名字(不仅是物品名的id)
@@ -15,14 +15,14 @@ exports.getName = (id) => {
     const info = this.getInfo(id);
     if (info) {
         let name = info.name;
-        return string_strings_cfg[name].cn
+        return string_strings_cfg[name].cn;
     }
-    return null
-}
+    return null;
+};
 
 exports.ITEM_TYPE = () => {
     return item_itemtype_cfg;
-}
+};
 
 exports.getType = (id) => {
     const info = this.getInfo(id);
@@ -30,7 +30,7 @@ exports.getType = (id) => {
         return info.type;
     }
     return null;
-}
+};
 
 exports.getSkillId = (id) => {
     const info = this.getInfo(id);
@@ -38,4 +38,4 @@ exports.getSkillId = (id) => {
         return info.id;
     }
     return null;
-}
+};

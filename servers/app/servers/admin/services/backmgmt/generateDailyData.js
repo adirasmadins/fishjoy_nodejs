@@ -15,7 +15,7 @@ exports.get = async function (data, ctx) {
             err: err,
         };
     }
-}
+};
 
 async function generate(startDate, endDate) {
     let dateList = tools.DateUtil.getDateList(startDate, endDate, tools.DateUtil.FMT.D);

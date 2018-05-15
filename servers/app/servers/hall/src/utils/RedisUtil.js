@@ -65,7 +65,6 @@ exports.lrem = lrem;
 exports.zrangebyscore = zrangebyscore;
 exports.scan = scan;
 exports.hscan = hscan;
-// exports.sscan = sscan;
 exports.zscan = zscan;
 exports.hincr = hincr;
 exports.hincrby = hincrby;

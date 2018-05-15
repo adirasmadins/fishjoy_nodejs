@@ -33,7 +33,7 @@ exports.get = async function (data, ctx) {
         pages: pages,
         chart: chart
     };
-}
+};
 
 
 /**

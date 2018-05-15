@@ -6,7 +6,7 @@ const SubGameData = require('./subGameData');
 class Cache{
     constructor(){
         this._data = new Map();
-        logger.error('-----------------Cache')
+        logger.error('-----------------Cache');
     }
 
     async start(){

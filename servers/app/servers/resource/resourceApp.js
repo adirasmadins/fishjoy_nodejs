@@ -31,7 +31,7 @@ class ResourceApp {
                 new GameEventBroadcast({
                     type: GameEventBroadcast.TYPE.GAME_EVENT.CFGS_CHANGED,
                 }).add();
-                logger.error('客户端可以更新配置了')
+                logger.error('客户端可以更新配置了');
             });
         }
 

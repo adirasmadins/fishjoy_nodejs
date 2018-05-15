@@ -135,7 +135,7 @@ class RankMatchRoom extends Room {
             if (this._runSettlementDt <= 0) {
                 this.roomBroadcast(rankMatchCmd.push.pkResult.route, {settlementTimeout: 1});
                 this._matchFinish();
-                logger.error('结算超时')
+                logger.error('结算超时');
             }
         } 
     }
@@ -339,7 +339,7 @@ class RankMatchRoom extends Room {
         this._addRankgameLog([data], 1, function (err, rows) {
             if (err) {
                 this._matchFinish();
-                logger.error('---db error = ', err)
+                logger.error('---db error = ', err);
                 return;
             }
             if (!rows) {

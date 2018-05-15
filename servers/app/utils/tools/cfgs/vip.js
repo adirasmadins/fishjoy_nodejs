@@ -9,7 +9,7 @@ exports.getInfo = (vip_level) => {
         }
     }
     return null;
-}
+};
 
 exports.getVipFromRmb = (rmb) => {
     let curr_vip = 0;
@@ -20,4 +20,4 @@ exports.getVipFromRmb = (rmb) => {
         }
     }
     return curr_vip;
-}
+};

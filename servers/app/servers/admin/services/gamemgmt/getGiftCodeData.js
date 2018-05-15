@@ -21,7 +21,7 @@ exports.get = async function (data, ctx) {
             err: err
         };
     }
-}
+};
 
 async function fetch(giftCode) {
     let list = giftCode.split(',');
