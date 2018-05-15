@@ -34,37 +34,17 @@ class MissionTaskTransfer {
         this._loadExceptionLog(0, 1000);
     }
 
-    async sscan(key, skip, limit) {
-        return new Promise(function (resolve, reject) {
-            redisConnector.cmd.sscan(key, skip, 'COUNT', limit, function (err, result) {
-                if (err) {
-                    logger.error('redis sscan err=', err);
-                    reject(err);
-                }
-                else {
-                    resolve({cursor:result[0], results:result[1]});
-                }
-            });
-        });
-    }
-
-
     async _loadExceptionLog(skip, limit){
 
-        let res = await this.sscan('log:exception:user', skip, limit);
-        let results = res.results;
-        logger.error('cursor=', res.cursor);
-        logger.error('results.length=', results.length);
-        if(!results || results.length == 0 || res.cursor == 0){
-            logger.error('捞取完成....', this._total);
+        let {cursor, result} = await redisConnector.sscan('log:exception:user', skip, limit);
+        skip = cursor;
+        this._total += result.length;
+        fs.appendFileSync('log_exceptions_user.txt', result);
+        if(skip == 0){
+            logger.error('log_exceptions_user.txt 捞取完成....', this._total);
             return;
         }
-        this._total += results.length;
-        for(let i=0; i<results.length;i++){
-            results[i].time = new Date(results[i].time);
-        }
-        fs.appendFileSync('log_exceptions_user.txt', results);
-        this._loadExceptionLog(res.cursor, limit);
+        this._loadExceptionLog(skip, limit);
     }
 
     async _getMissionInfo(uid){
