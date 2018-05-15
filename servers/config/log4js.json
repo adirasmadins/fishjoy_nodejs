@@ -26,81 +26,81 @@
     "rpc-log": {
       "type": "file",
       "filename": "${opts:base}/logs/rpc-log-${opts:serverId}.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "rpc-log"
     },
     "forward-log": {
       "type": "file",
       "filename": "${opts:base}/logs/forward-log-${opts:serverId}.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "forward-log"
     },
     "rpc-debug": {
       "type": "file",
       "filename": "${opts:base}/logs/rpc-debug-${opts:serverId}.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "rpc-debug"
     },
     "crash-log": {
       "type": "file",
       "filename": "${opts:base}/logs/crash.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "crash-log"
     },
     "admin-log": {
       "type": "file",
       "filename": "${opts:base}/logs/admin.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "admin-log"
     },
     "omelo": {
       "type": "file",
       "filename": "${opts:base}/logs/omelo-${opts:serverId}.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "omelo"
     },
     "omelo-admin": {
       "type": "file",
       "filename": "${opts:base}/logs/omelo-admin.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "omelo-admin"
     },
     "omelo-rpc": {
       "type": "file",
       "filename": "${opts:base}/logs/omelo-rpc-${opts:serverId}.log",
-      "maxLogSize": 2097152,
+      "maxLogSize": 10485760,
       "layout": {
         "type": "basic"
       },
-      "backups": 30,
+      "backups": 50,
       "category": "omelo-rpc"
     }
   },
