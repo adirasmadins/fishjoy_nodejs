@@ -5,7 +5,7 @@ module.exports = {
         SINGLE: 1, //单人模式
         MULTI_FREE: 2, //多人自由模式
         GODDESS: 3, //保卫女神模式
-        MULTI_FRIENDS:4, //1v1好友模式
+        ARENA_MATCH:4, //1v1竞技模式
         RANK_MATCH: 5,//排位赛模式
     },
 

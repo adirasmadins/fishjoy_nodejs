@@ -7,6 +7,13 @@
       "frontend": true,
       "args": " --inspect=192.168.35.234:13001"
     }],
+    "arena": [{
+      "id": "arena-1-1",
+      "host": "192.168.35.234",
+      "port": 4401,
+      "publicHost": "192.168.35.234",
+      "args": " --inspect=192.168.35.234:14401"
+    }],
     "loadManager": [{
       "id": "loadManager",
       "host": "192.168.35.234",

@@ -28,6 +28,7 @@ class Instance {
         this._cache = new Cache();
         this._cacheReader = new CacheReader(this._cache);
         this._gamePlay = new GamePlay();
+        this._playerFactory = new PlayerFactory();
         logger.error('-----------------fish Instance');
     }
 
@@ -136,7 +137,7 @@ class Instance {
 
         let player = null;
         try{
-            player = await PlayerFactory.createPlayer(data);
+            player = await this._playerFactory.createPlayer(data);
         }catch(err){
             return [err];
         }
@@ -170,7 +171,7 @@ class Instance {
 
         let player = null;
         try{
-            player = await PlayerFactory.createPlayer(data);
+            player = await this._playerFactory.createPlayer(data);
         }catch(err){
             return [err];
         }
@@ -199,7 +200,7 @@ class Instance {
                 }
             }
                 break;
-            case consts.ROOM_TYPE.MULTI_FRIENDS:
+            case consts.ROOM_TYPE.ARENA_MATCH:
                 room = this._createRoom(data.roomType, data.sceneId, FishRoom);
                 break;
             default:

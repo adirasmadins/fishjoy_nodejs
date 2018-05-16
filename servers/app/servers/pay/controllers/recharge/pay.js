@@ -439,7 +439,7 @@ Pay.BUY_TYPE_CFG_MAP[Pay.BUY_TYPE.COMEBACK] = gameConfig.shop_fund_cfg;
 Pay.ORDER_STATUS = {
     SUCCESS: 0, //成功
     FAIL: 1, //失败
-    PROCESSING: 1 //处理中
+    PROCESSING: 2 //处理中
 };
 
 Pay.ITEM_TYPE = payConsts.ITEM_TYPE;

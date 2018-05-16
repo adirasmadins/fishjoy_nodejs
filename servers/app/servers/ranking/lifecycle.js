@@ -1,8 +1,8 @@
 const RankingApp = require('./rankingApp');
 
-module.exports.beforeStartup = function(app, cb) {
+module.exports.beforeStartup = async function(app, cb) {
     app.entry = new RankingApp();
-    app.entry.start();
+    await app.entry.start();
     cb();
 };
 

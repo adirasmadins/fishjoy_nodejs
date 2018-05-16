@@ -1,7 +1,7 @@
-const RankMatchApp = require('./rankMatchApp');
+const ArenaApp = require('./arenaApp');
 
 module.exports.beforeStartup = async function(app, cb) {
-    app.entry = new RankMatchApp();
+    app.entry = new ArenaApp();
     await app.entry.start();
     cb();
 };

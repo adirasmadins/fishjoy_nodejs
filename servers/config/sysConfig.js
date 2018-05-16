@@ -1,4 +1,3 @@
-const fs = require('fs');
 const versions = require('./versions');
 
 module.exports = {

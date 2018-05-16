@@ -1,7 +1,7 @@
 const ChannelPlayer =  require('./channelPlayer');
 const GoddessPlayer = require('../goddess/goddessPlayer');
 const RankMatchPlayer = require('../rankMatch/rankMatchPlayer');
-
+const ArenaPlayer = require('../arena/arenaPlayer');
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const consts = require('../consts');
 
@@ -59,6 +59,8 @@ class PlayerFactory{
                 return ChannelPlayer;
             case consts.ROOM_TYPE.RANK_MATCH:
                 return RankMatchPlayer;
+            case consts.ROOM_TYPE.ARENA_MATCH:
+                return ArenaPlayer;
             default:
             break;
         }
@@ -66,4 +68,4 @@ class PlayerFactory{
     }
 }
 
-module.exports = new PlayerFactory();
+module.exports = PlayerFactory;

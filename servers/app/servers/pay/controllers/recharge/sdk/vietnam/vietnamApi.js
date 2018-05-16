@@ -120,7 +120,6 @@ class VietnamApi {
     }
 
     async buyCard(cardType, amount, quantity, accountName, orderNo) {
-        logger.info('--buyCard:', cardType, amount, quantity, accountName, orderNo);
         let buyCard = new BuyCardProtocol(cardType, amount, quantity, accountName, orderNo);
         return await this._buyCardHandler(buyCard);
     }

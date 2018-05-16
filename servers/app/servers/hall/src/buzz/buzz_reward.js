@@ -238,10 +238,11 @@ function dailyReward(req, dataObj, cb) {
 
 async function missionReward(dataObj, cb) {
     if (!lPrepare(dataObj)) return;
+
     let uid = dataObj.uid;
     let account = dataObj.account;
     let qid = dataObj.quest_id;
-    let quest = BuzzUtil.getQuestById(qid);
+    let quest = tools.CfgUtil.daily.getQuestInfo(qid);
     if (null == quest) {
         cb(ERROR_OBJ.MISSION_WRONG_QUEST_ID);
         return;
@@ -309,20 +310,6 @@ async function missionReward(dataObj, cb) {
             scene = common_log_const_cfg.ACHIEVE_GAIN;
         }
         logBuilder.addGoldAndItemLog(item_list, account, scene);
-        // yDONE: 金币数据记录
-        let gain = 0;
-        for (let i = 0; i < item_list.length; i++) {
-            let item = item_list[i];
-            let item_id = item.item_id;
-            let item_num = item.item_num;
-            if ('i001' == item_id) {
-                gain += item_num;
-            }
-        }
-        if (gain > 0) {
-            logger.info(uid + ":在任务中获得金币");
-            logBuilder.addGoldLog(uid, gain, 0, account.gold, scene, account.level, 0);
-        }
     });
 
 
@@ -353,7 +340,6 @@ async function missionReward(dataObj, cb) {
         }
 
         let missionValue = await redisConnector.hget(missionTask_redisKey, uid);
-        logger.error('mission reward uid==', uid);
         logger.error('mission reward ==', missionValue, missionTask_redisKey);
         if (missionValue == null) {
             cb(ERROR_OBJ.MISSION_NULL_RECORD);

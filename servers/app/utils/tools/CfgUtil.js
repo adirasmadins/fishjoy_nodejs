@@ -13,4 +13,6 @@ module.exports = {
     daily: require('./cfgs/daily'),
     goddess: require('./cfgs/goddess'),
     drop: require('./cfgs/drop'),
+    active: require('./cfgs/active'),
+    mission: require('./cfgs/mission'),
 };

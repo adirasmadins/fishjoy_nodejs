@@ -7,7 +7,6 @@ const RankMatchRobotPlayer = require('./rankMatchRobotPlayer');
 const omelo = require('omelo');
 const rpcSender = require('../../../net/rpcSender');
 const fishCmd = require('../../../cmd/fishCmd');
-const PlayerFactory = require('../entity/playerFactory');
 const redisKey = require('../../../database').dbConsts.REDISKEY;
 const Room = require('../entity/room');
 const constDef = require('../../../consts/constDef');
@@ -23,8 +22,6 @@ class RankMatchRoom extends Room {
         this._robot = null;
         this._serverId = opts.serverId || omelo.app.getServerId();
         this._runSettlementDt = 10 * 1000; //结算超时时间,毫秒
-
-        this._init(opts.users);
         this._runSettlement = false;
     }
 
@@ -36,7 +33,7 @@ class RankMatchRoom extends Room {
         return this._state;
     }
 
-    _init(users) {
+    init(users, playerFactory) {
         super.start();
         let i = 0;
         users.forEach(async function (user) {
@@ -46,7 +43,7 @@ class RankMatchRoom extends Room {
                 player = this._genRobot(user);
             } else {
                 let sid = user.sid;
-                player = await PlayerFactory.createPlayer({
+                player = await playerFactory.createPlayer({
                     uid: uid,
                     sid: sid,
                     roomType: consts.ROOM_TYPE.RANK_MATCH

@@ -73,7 +73,7 @@ const _errorCode = {
     UID_INVALID: 1014, //客户端传入的用户uid在数据库中没有找到
     UID_CANNOT_FIND: 1015, //用户ID无法找到
     PLAYER_CHEAT: 1016, //账号因为作弊行为被封禁，有疑问请联系客服微信：gamekefu01
-    DB_REDIS_ERR:1017, //REDIS数据库操作错误
+    DB_REDIS_ERR: 1017, //REDIS数据库操作错误
 
     NOT_SUPPORT_SERVICE: 1017, //不支持此服务
     NOT_SUPPORT_CHANNEL_LOGIN: 1018, //不支持此渠道用户登录
@@ -223,7 +223,7 @@ const _errorCode = {
     NOT_SUPPORT_CHANNEL_PAY: 1275, // 不支持此渠道支付
     BUY_GOODS_ILLEGAL: 1276, // 购买物品非法
     AMOUNT_NOT_ENOUGH: 1277, // 余额不足
-    SDK_ACCESS_TOKEN_INVALID:1288, //第三方SDK接口凭证无效
+    SDK_ACCESS_TOKEN_INVALID: 1288, //第三方SDK接口凭证无效
 
 
     // 排行榜相关
@@ -231,6 +231,8 @@ const _errorCode = {
 
     // 活动奖励领取
     ACTIVE_CLICK_TOO_QUICK: 1301, // 你点击得太快了
+    ACTIVE_NEWBIE_END: 1302, // 新手狂欢活动已经结束
+    ACTIVE_NEWBIE_REWARD_NOT_SATISFIED: 1303, // 新手狂欢活动奖励领取条件不满足
 
     // 激光
     LASER_CHEAT: 1481, // 激光能量数据异常, 无法发射
@@ -1201,6 +1203,18 @@ const _errorObj = {
     ACTIVE_CLICK_TOO_QUICK: {
         code: _errorCode.ACTIVE_CLICK_TOO_QUICK,
         msg: i18n.ACTIVE_CLICK_TOO_QUICK[lan]
+    },
+
+    ACTIVE_NEWBIE_END: {
+        code: _errorCode.ACTIVE_NEWBIE_END,
+        msg: "新手狂欢活动已经结束"
+        // msg: i18n.ACTIVE_NEWBIE_END[lan]
+    },
+
+    ACTIVE_NEWBIE_REWARD_NOT_SATISFIED: {
+        code: _errorCode.ACTIVE_NEWBIE_REWARD_NOT_SATISFIED,
+        msg: "新手狂欢活动奖励领取条件不满足"
+        // msg: i18n.ACTIVE_NEWBIE_END[lan]
     },
 
     // 激光

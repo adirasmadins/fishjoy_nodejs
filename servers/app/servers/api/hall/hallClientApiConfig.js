@@ -354,9 +354,14 @@ const api_list = {
         handler: data_activity.getNewbieInfo,
         params: [],
         accountFields: []
-    }, sync_newbie_progress: {
-        route: '/sync_newbie_progress', //同步新手狂欢进度数据
-        handler: data_activity.syncNewbieProgress,
+    }, sync_mission_progress: {
+        route: '/sync_mission_progress', //同步新手狂欢进度数据
+        handler: data_activity.syncMissionProgress,
+        params: [],
+        accountFields: []
+    }, newbie_reward: {
+        route: '/newbie_reward', //同步新手狂欢进度数据
+        handler: data_activity.getNewbieReward,
         params: [],
         accountFields: []
     },goddess_interact_reward: {
@@ -365,7 +370,6 @@ const api_list = {
         params: [],
         accountFields: []
     }
-    
 };
 
 module.exports = {

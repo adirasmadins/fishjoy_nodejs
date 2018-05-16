@@ -32,7 +32,7 @@ class VietnamPay extends Pay {
         try {
             amount = await this.callSdk(data);
         } catch (err) {
-            logger.error('越南渠道支付失败:', err);
+            logger.error('越南渠道SDK调用返回支付失败err=', err);
             await dao_shop.updateOrderInfo(data.orderid, {
                 status: Pay.ORDER_STATUS.FAIL,
                 channel_cb: JSON.stringify({err: err})
@@ -41,21 +41,30 @@ class VietnamPay extends Pay {
             throw err;
         }
 
-        await dao_shop.updateOrderInfo(data.orderid, {money: amount});
+        try {
+            let shop_gold = BuzzUtil.getShopGoldByAmount(amount);
+            if (!shop_gold) {
+                throw ERROR_OBJ.CARD_AMOUNT_WRONG;
+            }
 
-        let shop_gold = BuzzUtil.getShopGoldByAmount(amount);
-        if (!shop_gold) {
-            throw ERROR_OBJ.CARD_AMOUNT_WRONG;
+            await dao_shop.updateOrderInfo(data.orderid, {money: amount});
+
+            await dao_shop.updateOrderInfo(data.orderid, {
+                goods_name: shop_gold.name,
+                status: Pay.ORDER_STATUS.SUCCESS,
+                channel_cb: JSON.stringify({}),
+                goods_id: shop_gold.id
+            });
+            logger.error('越南渠道订单支付成功');
+            return await this.buySuccess(data, shop_gold.id, data.orderid, data.itemtype);
+
+        }catch(err){
+            logger.error('越南渠道订单处理校验失败 err=', err);
+            await dao_shop.updateOrderInfo(data.orderid, {
+                status: Pay.ORDER_STATUS.FAIL,
+                channel_cb: JSON.stringify({err: err})
+            });
         }
-
-        await dao_shop.updateOrderInfo(data.orderid, {
-            goods_name: shop_gold.name,
-            status: Pay.ORDER_STATUS.SUCCESS,
-            channel_cb: JSON.stringify({}),
-            goods_id: shop_gold.id
-        });
-
-        return await this.buySuccess(data, shop_gold.id, data.orderid, data.itemtype);
     }
 
 

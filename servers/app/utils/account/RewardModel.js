@@ -11,7 +11,6 @@ const TASK_PREFIX = {
     MISSION_TASK_DAILY: 'mission_task_daily',
     ACTIVE_TASK_ONCE: 'active_task_once',
     ACTIVE_TASK_DAILY: 'active_task_daily',
-    ACTIVE_TASK_NEWBIE: 'active_task_newbie',//新手狂欢活动
 };
 
 const TASK_MAIN_TYPE = {
@@ -23,16 +22,24 @@ function getTaskKey(prefix, mainType, taskType, subTaskType) {
     return `${prefix}:${mainType}_${taskType}_${subTaskType}`;
 }
 
+function getMissionPrefix(type) {
+    return type == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.MISSION_TASK_DAILY : TASK_PREFIX.MISSION_TASK_ONCE;
+}
+
+function getActivePrefix(type) {
+    return type == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.ACTIVE_TASK_DAILY : TASK_PREFIX.ACTIVE_TASK_ONCE;
+}
+
 //支持的任务类型
 const supportTaskMap = {};
 for (let i = 0; i < daily_quest_cfg.length; i++) {
     let item = daily_quest_cfg[i];
-    supportTaskMap[getTaskKey(item.type == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.MISSION_TASK_DAILY : TASK_PREFIX.MISSION_TASK_ONCE, item.type, item.condition, item.value1)] = true;
+    supportTaskMap[getTaskKey(getMissionPrefix(item.type), item.type, item.condition, item.value1)] = true;
 }
 
 for (let i = 0; i < active_activequest_cfg.length; i++) {
     let item = active_activequest_cfg[i];
-    supportTaskMap[getTaskKey(item.repeat == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.ACTIVE_TASK_DAILY : TASK_PREFIX.ACTIVE_TASK_ONCE, item.repeat, item.condition, item.value1)] = true;
+    supportTaskMap[getTaskKey(getActivePrefix(item.repeat), item.repeat, item.condition, item.value1)] = true;
 }
 
 const EXPORT_TOOLS = {
@@ -108,15 +115,13 @@ class MissionModel {
         let cmds = [];
         for (let i = 0; i < daily_quest_cfg.length; i++) {
             let item = daily_quest_cfg[i];
-            let taskKey = getTaskKey(item.type == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.MISSION_TASK_DAILY :
-                TASK_PREFIX.MISSION_TASK_ONCE, item.type, item.condition, item.value1);
+            let taskKey = getTaskKey(getMissionPrefix(item.type), item.type, item.condition, item.value1);
             cmds.push(['HDEL', taskKey, uid]);
         }
 
         for (let i = 0; i < active_activequest_cfg.length; i++) {
             let item = active_activequest_cfg[i];
-            let taskKey = getTaskKey(item.repeat == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.ACTIVE_TASK_DAILY :
-                TASK_PREFIX.ACTIVE_TASK_ONCE, item.repeat, item.condition, item.value1);
+            let taskKey = getTaskKey(getActivePrefix(item.repeat), item.repeat, item.condition, item.value1);
             cmds.push(['HDEL', taskKey, uid]);
         }
 
@@ -135,7 +140,7 @@ class MissionModel {
         let linkMap = {};
         for (let i = 0; i < active_activequest_cfg.length; i++) {
             let item = active_activequest_cfg[i];
-            let taskKey = getTaskKey(item.repeat == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.ACTIVE_TASK_DAILY : TASK_PREFIX.ACTIVE_TASK_ONCE, item.repeat, item.condition, item.value1);
+            let taskKey = getTaskKey(getActivePrefix(item.repeat), item.repeat, item.condition, item.value1);
             cmds.push(['HGET', taskKey, account.id]);
             linkMap[i] = {
                 mainType: item.repeat,
@@ -191,7 +196,7 @@ class MissionModel {
         for (let i = 0; i < active_newbie_cfg.length; i++) {
             let item = active_newbie_cfg[i];
             item.type = TASK_MAIN_TYPE.ONCE;
-            let taskKey = getTaskKey(TASK_PREFIX.ACTIVE_TASK_NEWBIE, item.type, item.condition, item.value1);
+            let taskKey = getTaskKey(TASK_PREFIX.MISSION_TASK_ONCE, item.type, item.condition, item.value1);
             if (!notRepeated[taskKey]) {
                 cmds.push(['HGET', taskKey, account.id]);
                 linkMap[linkIndex] = {
@@ -245,11 +250,7 @@ class MissionModel {
         return { active_stat_newbie: newbie };
     }
 
-    /**
-     * 获取成就任务进度数据
-     * @param {*} account 
-     */
-    static async getMissionTaskProcessInfo(account) {
+    static async getRedisProcessInfo(account) {
         let cmds = [];
         let linkMap = {};
         let notRepeated = {};
@@ -258,7 +259,7 @@ class MissionModel {
         let mission_daily_reset = account.mission_daily_reset;
         for (let i = 0; i < daily_quest_cfg.length; i++) {
             let item = daily_quest_cfg[i];
-            let taskKey = getTaskKey(item.type == TASK_MAIN_TYPE.DAILY ? TASK_PREFIX.MISSION_TASK_DAILY : TASK_PREFIX.MISSION_TASK_ONCE, item.type, item.condition, item.value1);
+            let taskKey = getTaskKey(getMissionPrefix(item.type), item.type, item.condition, item.value1);
             if (!notRepeated[taskKey]) {
                 cmds.push(['HGET', taskKey, account.id]);
                 linkMap[linkIndex] = {
@@ -273,10 +274,50 @@ class MissionModel {
 
         }
 
-        let once = Object.deepClone(mission_only_once), daily = Object.deepClone(mission_daily_reset);
-        once.achievePoint = account.achieve_point;
+        let redisProcessInfo = await redisConnector.multi(cmds);
+
+        let ret = {};
+        for (let i = 0; i < redisProcessInfo.length; i++) {
+            if (redisProcessInfo[i] != null) {
+                let linkInfo = linkMap[i];
+                ret[linkInfo.taskKey.split(':')[1]] = +redisProcessInfo[i];
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * 获取成就任务进度数据
+     * @param {*} account 
+     */
+    static async getMissionTaskProcessInfo(account) {
+        let cmds = [];
+        let linkMap = {};
+        let notRepeated = {};
+        let linkIndex = 0;
+        let mission_only_once = account.mission_only_once;
+        let mission_daily_reset = account.mission_daily_reset;
+        for (let i = 0; i < daily_quest_cfg.length; i++) {
+            let item = daily_quest_cfg[i];
+            let taskKey = getTaskKey(getMissionPrefix(item.type), item.type, item.condition, item.value1);
+            if (!notRepeated[taskKey]) {
+                cmds.push(['HGET', taskKey, account.id]);
+                linkMap[linkIndex] = {
+                    mainType: item.type,
+                    taskId: item.id,
+                    taskKey: taskKey
+                };
+                linkIndex++;
+                notRepeated[taskKey] = [];
+            }
+            notRepeated[taskKey].push(item.id);
+
+        }
 
         let redisProcessInfo = await redisConnector.multi(cmds);
+
+        let once = Object.deepClone(mission_only_once), daily = Object.deepClone(mission_daily_reset);
+        once.achievePoint = account.achieve_point;
 
         for (let i = 0; i < redisProcessInfo.length; i++) {
             if (redisProcessInfo[i] != null) {
@@ -377,7 +418,7 @@ class MissionModel {
     }
 
     /**
-     * 日常
+     * 成就
      * @private
      */
     _addMissionOnlyOnce(taskType, value, subTaskType, prefix = TASK_PREFIX.MISSION_TASK_ONCE) {
@@ -402,7 +443,7 @@ class MissionModel {
     }
 
     /**
-     * 成就
+     * 日常
      * @private
      */
     _addMissionDailyReset(taskType, value, subTaskType, prefix = TASK_PREFIX.MISSION_TASK_DAILY) {

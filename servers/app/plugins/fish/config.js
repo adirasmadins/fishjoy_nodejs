@@ -24,5 +24,8 @@ module.exports = {
         MATE_TIMEOUT: 10000, //匹配超时时间，超时则分配机器人
         FIRE: 100, //排位赛100炮
         MSECONDS: 3 * 60 * 1000, //倒计时3分钟，单位毫秒 
+    },
+    ARENA:{
+
     }
 };

@@ -2,11 +2,13 @@ const RankMatchRoom = require('./rankMatchRoom');
 const fishCode = CONSTS.SYS_CODE;
 const config = require('../config');
 const TICK_DT = 100; //定时器轮询周期，单位毫秒
+const PlayerFactory = require('../entity/playerFactory');
 
 class RankMatchInstance {
     constructor() {
         this._roomMap = new Map();
         this._canRun = true;
+        this._playerFactory = new PlayerFactory();
     }
 
     start() {
@@ -60,10 +62,10 @@ class RankMatchInstance {
 
     rpc_join(data, cb){
         let room = new RankMatchRoom({
-            users: data.users,
             serverId: data.serverId,
             roomId:this._genRoomId()
         });
+        room.init(data.users, this._playerFactory);
         this._roomMap.set(room.roomId, room);
         cb(null, {
             roomId: room.roomId,

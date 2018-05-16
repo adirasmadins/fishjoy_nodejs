@@ -7,7 +7,7 @@ exports.getReward = getReward;
 
 // 新手狂欢
 exports.getNewbieInfo = getNewbieInfo;
-exports.syncNewbieProgress = syncNewbieProgress;
+exports.syncMissionProgress = syncMissionProgress;
 exports.getNewbieReward = getNewbieReward;
 
 /**
@@ -65,9 +65,9 @@ async function getNewbieInfo(data) {
 /**
  * 同步新手狂欢进度数据
  */
-async function syncNewbieProgress(data) {
+async function syncMissionProgress(data) {
     return new Promise(function(resolve, reject){
-        buzz_newbie.syncNewbieProgress(data, function (err, account) {
+        buzz_newbie.syncMissionProgress(data, function (err, account) {
             if(err){
                 logger.error('getReward err:', err);
                 reject(err);

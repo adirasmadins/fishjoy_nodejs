@@ -173,3 +173,11 @@ cd /opt/auto_deploy
 
 ## mysql 远程连接授权
 - grant all privileges  on *.* to root@'%' identified by "root";
+
+- SELECT * from tbl_item_log WHERE scene IN(31) AND log_at>='2018-05-16 00:00:00' AND log_at<='2018-05-16 23:59:59' into outfile /tmp/item_log.csv
+- mysql -h 103.90.220.76 -P 3030 -umysqlremote -pVnet@9999 --database=fishjoy --execute="SELECT * from tbl_item_log WHERE scene IN(31) AND log_at>='2018-05-16 00:00:00' AND log_at<='2018-05-16 23:59:59'" -X > /tmp/item_log.csv
+
+
+
+
+
