@@ -12,7 +12,8 @@ class ArenaRoom extends Room {
         this._canRun = true;
         this._match_state = config.ARENA.MATCH_STATE.READY;
         this._inviter = -1;
-        this._countdown = new Countdown(this._countdown_notify.bind(this), config.ARENA.START_COUNTDOWN);
+        this._runSettlementDt = 10 * 1000; //结算超时时间,毫秒
+        this._runSettlement = false;
     }
 
     _countdown_notify(dt) {
@@ -32,15 +33,47 @@ class ArenaRoom extends Room {
 
     }
 
-    update() {
-        await this._try2Settlement();
+    async _try2Settlement() {
+        if (this._canOVer()) {
+            try{
+                await this._settlement();
+            }catch (err){
+                logger.error('排位赛结算异常, err=', err);
+            }
 
+            this.stop();
+        }
+    }
+
+    //PK结算
+    async _settlement() {
+        if (this._runSettlement) {
+            return;
+        }
+        this._runSettlement = true;
+        this.roomBroadcast(rankMatchCmd.push.pkResult.route, {});
+    }
+
+    _canOVer() {
+        if (this._countdown === 0) {
+            return true;
+        }
+        for (let player of this._playerMap.values()) {
+            if (!player.isOver()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    async update() {
+        await this._try2Settlement();
         //比赛结算超时强制结算
         if (this._runSettlement) {
-            this._runSettlementDt -= dt;
+            this._runSettlementDt -= 100;
             if (this._runSettlementDt <= 0) {
                 this.roomBroadcast(rankMatchCmd.push.pkResult.route, {settlementTimeout: 1});
-                this._matchFinish();
+                this.stop();
                 logger.error('结算超时');
             }
         }
@@ -53,6 +86,7 @@ class ArenaRoom extends Room {
             if (this._countdown.isZero()) {
                 this._match_state = config.ARENA.MATCH_STATE.GOING;
                 this._startMatch();
+                this._countdown.reset(config.ARENA.PK_DURATION);
                 this._runPKTask();
                 return;
             }
@@ -70,11 +104,13 @@ class ArenaRoom extends Room {
     }
 
     start() {
+        this._countdown = new Countdown(this._countdown_notify.bind(this), config.ARENA.START_COUNTDOWN);
         this._runWaitTask();
     }
 
     stop() {
         this._canRun = false;
+        this._stopMatch();
     }
 
     join(player, opts) {
@@ -89,9 +125,8 @@ class ArenaRoom extends Room {
         this._inviter = opts.inviter;
 
         if (opts.inviter == player.uid) {
-
             //TODO 检查是否有比赛未结束
-            //存在则邀请好友继续完成比赛
+            //存在则提示邀请好友继续完成比赛
         }else {
             if(opts.asyncMatch){
                 this._countdown.reset(0);
