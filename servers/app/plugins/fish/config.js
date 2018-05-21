@@ -31,9 +31,10 @@ module.exports = {
         PK_DURATION:180000, //PK持续时间单位ms
         TICK_DT:200, //事件轮训周期单位ms
         MATCH_STATE:{
-            GOING:1,
-            FINISHED:2,
-            OVER:3, //对战
+            READY:1,
+            GOING:2,
+            FINISHED:3,
+            OVER:4,
         }
     }
 };

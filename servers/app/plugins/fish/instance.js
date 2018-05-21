@@ -198,16 +198,13 @@ class Instance {
                 playerMax: consts.ROOM_PLAYER_MAX[data.roomType]
             });
         }
-
-        err = room.join(player);
+        err = room.join(player, data);
         if (err) {
             logger.error('加入游戏房间失败, err=', err);
             throw err;
         }
-
         this._roomMap.set(room.roomId, room);
         this._entities.set(player.uid, room);
-
         return {
             roomId: room.roomId,
             players: room.genAllPlayers(player.uid)

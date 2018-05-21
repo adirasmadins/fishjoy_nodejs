@@ -7,39 +7,6 @@ const rankMatchCmd = require('../../../cmd/rankMatchCmd');
 class ArenaPlayer extends MatchPlayer{
     constructor(opts){
         super(opts);
-        this._canRun = true;
-    }
-
-    update(){
-
-    }
-
-    _countdown_notify(dt) {
-        logger.error('PK倒计时=', dt);
-        this.emit(rankMatchCmd.push.timer.route, {
-            player:this,
-            data:{
-                countdown: dt
-            }
-        });
-    }
-
-    _runPKTask() {
-        if (!this._canRun) return;
-        setTimeout(async function () {
-            await this._countdown.tick();
-            this.update();
-            this._runPKTask();
-        }.bind(this), 100);
-    }
-
-    startAsyncMatch(){
-        this._countdown = new Countdown(this._countdown_notify.bind(this), config.ARENA.PK_DURATION);
-        this._runPKTask();
-    }
-
-    stopAsyncMatch(){
-        this._canRun = false;
     }
 
     //发往对战玩家所在的房间进行统计和广播
@@ -51,13 +18,12 @@ class ArenaPlayer extends MatchPlayer{
         });
     }
 
-    //如果玩家金币不足1000则自动补足
+    //PK玩家金币不足1000则自动补足1000
     reset_gold(){
         let nowValue = this._account.gold;
         if(nowValue < 1000){
             let incrValue = 1000 - nowValue;
             this._account.gold = incrValue;
-
         }
     }
 

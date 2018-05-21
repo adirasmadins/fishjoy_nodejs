@@ -6,6 +6,15 @@ class Countdown {
         this._notify = notify;
     }
 
+    isZero(){
+        return this._duration == 0;
+    }
+
+    reset(duration, interval = 1000){
+        this._duration = duration;
+        this._interval = interval;
+    }
+
     _flushCountdown() {
         let subTime = Date.now() - this._lastUpdateTime;
         return subTime;
