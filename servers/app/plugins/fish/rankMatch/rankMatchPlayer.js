@@ -38,6 +38,7 @@ class RankMatchPlayer extends BasePlayer {
             nuclear_fish_count: -1, //核弹打死条数,-1默认取消核弹，核弹可能存在打不死鱼
             nuclear_score: -1, //核弹打死鱼总得分
             firetime: 0, //统计时间戳
+            provocativeVal: 0, //被魅惑的分值
         };
         this._pointChange = 0; //点数变化值
         this._winStreak = this.account.match_winning_streak; //连胜次数
@@ -52,6 +53,7 @@ class RankMatchPlayer extends BasePlayer {
         this._seasonWin = this.account.match_season_win; //赛季胜利次数
         this._mission = null;
         this._winner = 0;
+        this._isProvocativeEnabled = false;
     }
 
     set gameSid(val) {
@@ -117,9 +119,18 @@ class RankMatchPlayer extends BasePlayer {
         this.account.commit();
 
         //添加到rank有序列表中
+        // if(this.account.privacy==1) {
+        //     if (!tools.BuzzUtil.isCheat(this.account)) {
+        //         redisConnector.cmd.zadd(`${REDISKEY.RANK.MATCH}:${this.account.platform}`, this.account.match_points, this.account.id);
+        //     }
+        // }
+    }
+
+    async _zaddMatchPoints(points){
+        //添加到rank有序列表中
         if(this.account.privacy==1) {
             if (!tools.BuzzUtil.isCheat(this.account)) {
-                redisConnector.cmd.zadd(`${REDISKEY.RANK.MATCH}:${this.account.platform}`, this.account.match_points, this.account.id);
+                await redisConnector.zadd(`${REDISKEY.RANK.MATCH}:${this.account.platform}`, points, this.account.id);
             }
         }
     }
@@ -136,7 +147,7 @@ class RankMatchPlayer extends BasePlayer {
         // (3)败方减少：max(胜方参数-败方参数 + 20，5)
         // 分数相同且不为0, 比较firetime
      */
-    setResult(p2) {
+    async setResult(p2) {
         this._winner = 0; //0平局 1赢了 2输了
         let score1 = this.statistics.score;
         let score2 = p2.statistics.score;
@@ -199,22 +210,15 @@ class RankMatchPlayer extends BasePlayer {
         }
 
         let points = Math.max(0, this.account.match_points + this._pointChange);
-        let charm = 0;
-        let matchRank = this._matchRank;
-        let treasure2 = null; //普通宝箱配置
-        let treasure1 = null; //首胜宝箱id
-        const cfg = GAMECFG.rank_rankgame_cfg;
-        let i = cfg.length;
-        while (i > 0 && i--) {
-            let rank_info = cfg[i];
-            if (points >= rank_info.integral) {
-                matchRank = rank_info.id;
-                charm = rank_info.charm;
-                treasure2 = rank_info.treasure2;
-                treasure1 = rank_info.treasure1;
-                break;
-            }
-        }
+        await this._zaddMatchPoints(points);
+        return points;
+    }
+
+    afterSetResult(result){
+        let charm = result.charm;
+        let matchRank = result.matchRank;
+        let treasure2 = result.treasure2; //普通宝箱配置
+        let treasure1 = result.treasure1; //首胜宝箱id
         this._charmPoint += charm;
         this._rankChange = matchRank - this._matchRank;
         this._matchRank = matchRank; //注意这个段位不是准确的，实际需求是需要根据排名和点数共同决定
@@ -397,6 +401,7 @@ class RankMatchPlayer extends BasePlayer {
                 score: this.statistics.score,
             },
             vip: this.account.vip,
+            provocative_enabled: this.isProvocativeEnabled() ? 1 : 0,
         };
     }
 
@@ -441,6 +446,7 @@ class RankMatchPlayer extends BasePlayer {
             nuclear_fish_count: this.statistics.nuclear_fish_count,
             nuclear_score: this.statistics.nuclear_score,
             vip: this.account.vip,
+            provocativeVal: this.statistics.provocativeVal,
         };
         let star = this.getSkinStar();
         star && (detail.star = star);
@@ -467,7 +473,7 @@ class RankMatchPlayer extends BasePlayer {
      */
     useNbomb(data) {
         this.statistics.firetime = new Date().getTime();
-        this.statistics.score = data.score;
+        this.statistics.score = data.score - this.statistics.provocativeVal;
         this.statistics.fire = 0;
         this.statistics.nuclear_fish_count = data.nbomb.num;
         this.statistics.nuclear_score = data.nbomb.point;
@@ -483,13 +489,38 @@ class RankMatchPlayer extends BasePlayer {
     }
 
     /**
+     * 魅惑对手
+     */
+    provocative(hisScore) {
+        if (this._isProvocativeEnabled && this.statistics.score < hisScore) {
+            if (!this._isProvocatived) {
+                this._isProvocatived = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 被魅惑，减去分数
+     * @param {*} provocativeVal 
+     */
+    beProvocatived(provocativeVal) {
+        if (!this.statistics.provocativeVal) {
+            this.statistics.provocativeVal = provocativeVal;
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 普通开炮结果
      * @param {*} data 
      */
     setFightInfo(data) {
         this.statistics.firetime = new Date().getTime();
         this.statistics.fire = data.fire;
-        this.statistics.score = data.score;
+        this.statistics.score = data.score - this.statistics.provocativeVal;
         for (let i = 0; i < data.fish_list.length; i++) {
             let temp = data.fish_list[i];
             let k = temp.name;
@@ -503,14 +534,6 @@ class RankMatchPlayer extends BasePlayer {
             this.statistics.fish_account[k].point += temp.point;
         }
         this._skinStar = data.star;
-    }
-
-    set ready(value) {
-        this._ready = value;
-    }
-
-    get ready() {
-        return this._ready;
     }
 
     isOver() {
@@ -536,6 +559,18 @@ class RankMatchPlayer extends BasePlayer {
      */
     clear() {
         this.save();
+    }
+    
+    /**
+     * 是否可以魅惑
+     */
+    setProvocativeEnabled(isEnabled) {
+        this._isProvocativeEnabled = isEnabled;
+        logger.error('uid = ', this.uid, ' isEnabled= ', isEnabled)
+    }
+
+    isProvocativeEnabled() {
+        return this._isProvocativeEnabled && !this._isProvocatived && !this.isOver();
     }
 
 

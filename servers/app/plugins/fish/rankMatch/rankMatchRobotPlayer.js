@@ -226,6 +226,21 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
         this._operation(consts.RMATCH_ROBOT_OPT.RANDOM_CHAT, tdata);
     }
 
+    /**
+     * 思考是否魅惑
+     */
+    _think2Provocative() {
+        if (this._isThinkedToProvocative) {
+            return;
+        }
+        this._isThinkedToProvocative = true;
+        let val = 2 + Math.floor(Math.random()*4);
+        let tdata = {
+            provocativeVal: val
+        };
+        this._operation(consts.RMATCH_ROBOT_OPT.PROVOCATIVE, tdata);
+    }
+
     _resetWpSkin (wpSkin) {
         this.account.weapon_skin.equip = wpSkin;
         const cfg = configReader.getValue('newweapon_weapons_cfg', wpSkin);
@@ -260,7 +275,12 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
         }
         if (!this._checkFire(dt)) return;
         this._selectFish2Fire();
-        this._fireC === config.MATCH.FIRE && this._think2FireWithNbomb();
+        if (this._fireC === config.MATCH.FIRE) {
+            this._think2FireWithNbomb();
+        }else {
+            this.isProvocativeEnabled() && this._fireC > config.MATCH.FIRE*2/3 && this._think2Provocative();
+        }
+        
     }
 
     /**
@@ -292,6 +312,30 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
 
     async updateAccount(){
         //机器人无需处理
+    }
+
+    /**
+     * 魅惑对手
+     */
+    provocative(hisScore) {
+        let isOK = super.provocative(hisScore);
+        if (!isOK) {
+            this._isThinkedToProvocative = false;
+        }
+        return isOK;
+    }
+
+    async _zaddMatchPoints() {
+        //do nothing
+    }
+
+    afterSetResult(result){
+        let charm = result.charm;
+        let matchRank = result.matchRank;
+        this._charmPoint += charm;
+        this._rankChange = matchRank - this._matchRank;
+        this._matchRank = matchRank; //注意这个段位不是准确的，实际需求是需要根据排名和点数共同决定
+        return this._winner === 1;
     }
 
 }

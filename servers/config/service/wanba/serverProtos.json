@@ -219,7 +219,8 @@
                 "required float winning_rate": 5,
                 "required uInt32 wp_skin": 6,
                 "required uInt32 nbomb_cost": 7,
-                "required uInt32 vip": 8
+                "required uInt32 vip": 8,
+                "optional uInt32 charm_point": 9
             },
             "repeated Player players": 2
         },
@@ -264,6 +265,7 @@
             "required uInt32 point": 3
         },
         "repeated FishList fish_list": 4
+
     },
 
     "s_rank_match_timer": {
@@ -280,6 +282,11 @@
     "s_turn_weapon": {
         "required uInt32 seatId": 1,
         "optional uInt32 wp_level": 2
+    },
+
+    "s_rank_match_provocative": {
+        "required sInt32 uid": 1,
+        "optional uInt32 provocativeVal": 2
     }
 
 }

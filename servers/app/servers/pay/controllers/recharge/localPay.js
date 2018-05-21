@@ -24,4 +24,4 @@ class LocalPay extends VietnamMockPay {
 
 
 
-module.exports = LocalPay;
+module.exports = mockPay;

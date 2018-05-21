@@ -186,7 +186,6 @@ function _getAccount(uid, fields, cb) {
     }
 
     _exist(uid, function (err) {
-
         if (err) {
             utils.invokeCallback(cb, err);
             return;

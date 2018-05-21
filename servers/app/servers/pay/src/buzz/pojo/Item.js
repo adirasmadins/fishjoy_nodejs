@@ -12,7 +12,8 @@ const ItemType = {
     CHANGE_FARE: 10,
     CHANGE_PHONE: 11,
     SKIN: 12,
-    SKIN_DEBRIS:13
+    SKIN_DEBRIS:13,
+    SKIN_CARD:14
 };
 exports.ItemType = ItemType;
 
@@ -30,7 +31,8 @@ const ItemTypeC = {
     CHANGE_FARE: "10",
     CHANGE_PHONE: "11",
     SKIN: '12',
-    SKIN_DEBRIS:'13'
+    SKIN_DEBRIS:'13',
+    SKIN_CARD:'14'
 };
 exports.ItemTypeC = ItemTypeC;
 

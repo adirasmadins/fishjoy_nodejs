@@ -107,6 +107,11 @@ class RobotBuilder {
         return weapon_skin;
     }
 
+    calcCharmPoint(cp) {
+        let rcp = 100 + randomUtil.randomNum(0, cp);
+        return rcp;
+    }
+
     _calcVip (vip) {
         let rvip = randomUtil.randomNum(0, vip);
         return rvip;
@@ -145,7 +150,7 @@ class RobotBuilder {
         let minGold = 0;
         let sceneCfg = GAMECFG.scene_scenes_cfg[room.sceneId];
         let minWeaponLevel = sceneCfg.min_level;
-        if (room.mode == consts.ROOM_TYPE.RANK_MATCH) {
+        if (room.roomType == consts.ROOM_TYPE.RANK_MATCH) {
             minLevel = GAMECFG.common_const_cfg.RMATCH_ROLE_LV;
             minWeaponLevel = GAMECFG.common_const_cfg.RMATCH_OPEN_LIMIT;
         }else{

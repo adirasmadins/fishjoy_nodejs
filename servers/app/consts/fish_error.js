@@ -73,7 +73,6 @@ const _errorCode = {
     UID_INVALID: 1014, //客户端传入的用户uid在数据库中没有找到
     UID_CANNOT_FIND: 1015, //用户ID无法找到
     PLAYER_CHEAT: 1016, //账号因为作弊行为被封禁，有疑问请联系客服微信：gamekefu01
-    DB_REDIS_ERR: 1017, //REDIS数据库操作错误
 
     NOT_SUPPORT_SERVICE: 1017, //不支持此服务
     NOT_SUPPORT_CHANNEL_LOGIN: 1018, //不支持此渠道用户登录
@@ -91,6 +90,7 @@ const _errorCode = {
     CALL_SDK_FAIL: 1030, //SDK请求失败
 
     SESSION_EXPIRED: 1031, //session过期
+    DB_REDIS_ERR: 1032, //REDIS数据库操作错误
 
     // 游戏逻辑错误(从1101开始)
     REPEAT_OPERATION: 1101, //重复操作(重复购买，重复领取)
@@ -288,6 +288,7 @@ const _errorCode = {
     ITEM_NOT_EXIST: 6024, //道具不存在
     CARD_TYPE_WRONG: 6025, //卡类型非法
     CARD_AMOUNT_WRONG: 6026, //卡面额不支持
+    ITEM_TYPE_ILLEGAL: 6027, //道具类型不合法
 
     FIRST_RECHARGE_NO_RMB: 6031, //领取首充奖励但是没有充值
     FIRST_RECHARGE_ALREADY: 6032, //领取首充奖励但是已经领取了
@@ -320,6 +321,11 @@ const _errorCode = {
     MINIGAME_TYPE_INVALID: 7108, // 没有掉落该类型的mini游戏
     WEAPON_LEVEL_INVALID: 7109, //非法武器等级
     RM_WEAPON_LEVEL_LIMIT: 7120, // 倍率低于配位赛最低要求
+
+    DESIGN_CFGS_NOT_EXIST:7121, //配置文件不存在
+    NOT_SUPPORT_MODE_PLAYER: 7122, //不支持此模式玩家
+    WEAPON_TURN_GOLD_TOO_LOW: 7123, //你的金币过低，不能使用更高倍率
+    OTHER_PLAYER_MATCHING:7124, //其他玩家正在进行比赛
 };
 
 const _errorObj = {
@@ -389,12 +395,16 @@ const _errorObj = {
     },
 
     ROOMID_INVALID: {
-        msg: '房间号无效',
+        // msg: i18n.ROOMID_INVALID[lan],
+        // msg: '房间号无效',
+        msg: 'ROOMID_INVALID',
         code: _errorCode.ROOMID_INVALID,
     },
 
     GET_GAME_ENTRY_FAIL: {
-        msg: '获取游戏入口失败',
+        // msg: i18n.GET_GAME_ENTRY_FAIL[lan],
+        // msg: '获取游戏入口失败',
+        msg: 'GET_GAME_ENTRY_FAIL',
         code: _errorCode.GET_GAME_ENTRY_FAIL,
     },
 
@@ -489,12 +499,16 @@ const _errorObj = {
     },
 
     ROOM_PLAYER_FULL: {
-        msg: '房间人数已满',
+        // msg: i18n.ROOM_PLAYER_FULL[lan],
+        // msg: '房间人数已满',
+        msg: 'ROOM_PLAYER_FULL',
         code: _errorCode.ROOM_PLAYER_FULL,
     },
 
     GAME_SCENE_NOT_MATCH: {
-        msg: '游戏场景不匹配',
+        // msg: i18n.GAME_SCENE_NOT_MATCH[lan],
+        // msg: '游戏场景不匹配',
+        msg: 'GAME_SCENE_NOT_MATCH',
         code: _errorCode.GAME_SCENE_NOT_MATCH,
     },
 
@@ -575,8 +589,7 @@ const _errorObj = {
     },
 
     GUIDE_REWARD_ALREADY: {
-        msg: '玩家已经领取了新手奖励',
-        // msg: i18n.GUIDE_REWARD_ALREADY[lan],
+        msg: i18n.GUIDE_REWARD_ALREADY[lan],
         code: _errorCode.GUIDE_REWARD_ALREADY,
     },
 
@@ -586,7 +599,9 @@ const _errorObj = {
     },
     API_SWITCH: {
         code: _errorCode.API_SWITCH,
-        msg: '功能维护升级中，敬请期待'
+        // msg: '功能维护升级中，敬请期待'
+        msg: 'Function upgrade, please wait...'
+        // msg: i18n.API_SWITCH[lan]
     },
     TOKEN_INVALID: {
         code: _errorCode.TOKEN_INVALID,
@@ -598,7 +613,9 @@ const _errorObj = {
     },
     DB_REDIS_ERR: {
         code: _errorCode.DB_REDIS_ERR,
-        msg: 'REDIS数据库操作错误'
+        // msg: 'REDIS数据库操作错误'
+        msg: 'REDIS Error'
+        // msg: i18n.DB_REDIS_ERR[lan]
     },
     PARAM_MISSING: {
         code: _errorCode.PARAM_MISSING,
@@ -799,21 +816,13 @@ const _errorObj = {
 
     GODDESS_LEVEL_NOT_REACHED: {
         code: _errorCode.GODDESS_LEVEL_NOT_REACHED,
-        msg: '女神还没有达到解锁特权的等级'
+        msg: i18n.GODDESS_LEVEL_NOT_REACHED[lan]
     },
-    // GODDESS_LEVEL_NOT_REACHED: {
-    //     code: _errorCode.GODDESS_LEVEL_NOT_REACHED,
-    //     msg: i18n.GODDESS_LEVEL_NOT_REACHED[lan]
-    // },
 
     GODDESS_INTERACT_REWARD_ALREADY: {
         code: _errorCode.GODDESS_INTERACT_REWARD_ALREADY,
-        msg: '女神互动奖励已经领取'
+        msg: i18n.GODDESS_INTERACT_REWARD_ALREADY[lan]
     },
-    // GODDESS_INTERACT_REWARD_ALREADY: {
-    //     code: _errorCode.GODDESS_INTERACT_REWARD_ALREADY,
-    //     msg: i18n.GODDESS_INTERACT_REWARD_ALREADY[lan]
-    // },
 
     RANK_COUNT_TOO_LARGE: {
         code: _errorCode.RANK_COUNT_TOO_LARGE,
@@ -874,49 +883,26 @@ const _errorObj = {
         msg: i18n.MIX_GOLD_NOT_ENOUGH[lan]
     },
 
-
     PACK_USE_WRONG_NUM: {
         code: _errorCode.PACK_USE_WRONG_NUM,
-        msg: '传入了非法的数量(num<=0)'
+        msg: i18n.PACK_USE_WRONG_NUM[lan]
     },
     PACK_USE_ITEM_NOT_ENOUGH: {
         code: _errorCode.PACK_USE_ITEM_NOT_ENOUGH,
-        msg: '使用的物品数量不足'
+        msg: i18n.PACK_USE_ITEM_NOT_ENOUGH[lan]
     },
     PACK_SELL_ITEM_CANNOT_SELL: {
         code: _errorCode.PACK_SELL_ITEM_CANNOT_SELL,
-        msg: '物品不能出售'
+        msg: i18n.PACK_SELL_ITEM_CANNOT_SELL[lan]
     },
     PACK_ITEM_CANNOT_USE: {
         code: _errorCode.PACK_ITEM_CANNOT_USE,
-        msg: '所选物品不可使用'
+        msg: i18n.PACK_ITEM_CANNOT_USE[lan]
     },
     PACK_ITEM_NOT_EXIST: {
         code: _errorCode.PACK_ITEM_NOT_EXIST,
-        msg: '物品不存在(游戏没有配置或已经取消)'
+        msg: i18n.PACK_ITEM_CANNOT_USE[lan]
     },
-
-    // TODO: 多语言配置
-    // PACK_USE_WRONG_NUM: {
-    //     code: _errorCode.PACK_USE_WRONG_NUM,
-    //     msg: i18n.PACK_USE_WRONG_NUM[lan]
-    // },
-    // PACK_USE_ITEM_NOT_ENOUGH: {
-    //     code: _errorCode.PACK_USE_ITEM_NOT_ENOUGH,
-    //     msg: i18n.PACK_USE_ITEM_NOT_ENOUGH[lan]
-    // },
-    // PACK_SELL_ITEM_CANNOT_SELL: {
-    //     code: _errorCode.PACK_SELL_ITEM_CANNOT_SELL,
-    //     msg: i18n.PACK_SELL_ITEM_CANNOT_SELL[lan]
-    // },
-    // PACK_ITEM_CANNOT_USE: {
-    //     code: _errorCode.PACK_ITEM_CANNOT_USE,
-    //     msg: i18n.PACK_ITEM_CANNOT_USE[lan]
-    // },
-    // PACK_ITEM_NOT_EXIST: {
-    //     code: _errorCode.PACK_ITEM_NOT_EXIST,
-    //     msg: i18n.PACK_ITEM_CANNOT_USE[lan]
-    // },
 
     //
     CIK_TOKEN_NOT_ENOUGH: {
@@ -1185,12 +1171,16 @@ const _errorObj = {
 
     AMOUNT_NOT_ENOUGH: {
         code: _errorCode.AMOUNT_NOT_ENOUGH,
-        msg: '余额不足'
+        // msg: '余额不足'
+        msg: "Not enough money"
+        // msg: i18n.AMOUNT_NOT_ENOUGH[lan]
     },
 
     SDK_ACCESS_TOKEN_INVALID: {
         code: _errorCode.SDK_ACCESS_TOKEN_INVALID,
-        msg: '第三方SDK接口凭证无效'
+        // msg: '第三方SDK接口凭证无效'
+        msg: "SDK access token invalid"
+        // msg: i18n.SDK_ACCESS_TOKEN_INVALID[lan]
     },
 
     // 订单相关
@@ -1207,13 +1197,15 @@ const _errorObj = {
 
     ACTIVE_NEWBIE_END: {
         code: _errorCode.ACTIVE_NEWBIE_END,
-        msg: "新手狂欢活动已经结束"
+        // msg: "新手狂欢活动已经结束"
+        msg: "Newbie ended"
         // msg: i18n.ACTIVE_NEWBIE_END[lan]
     },
 
     ACTIVE_NEWBIE_REWARD_NOT_SATISFIED: {
         code: _errorCode.ACTIVE_NEWBIE_REWARD_NOT_SATISFIED,
-        msg: "新手狂欢活动奖励领取条件不满足"
+        // msg: "新手狂欢活动奖励领取条件不满足"
+        msg: "Newbie not satisfied"
         // msg: i18n.ACTIVE_NEWBIE_END[lan]
     },
 
@@ -1232,11 +1224,15 @@ const _errorObj = {
     // 范围
     RANGE_SCENE_CATCHRATE_LOW: {
         code: _errorCode.RANGE_SCENE_CATCHRATE_LOW,
-        msg: "捕获率设置值低于最低限制0.5"
+        // msg: "捕获率设置值低于最低限制0.5"
+        msg: "Catch rate below 0.5"
+        // msg: i18n.RANGE_SCENE_CATCHRATE_LOW[lan]
     },
     RANGE_SCENE_CATCHRATE_HIGH: {
         code: _errorCode.RANGE_SCENE_CATCHRATE_HIGH,
-        msg: "捕获率设置值高于最高限制1.5"
+        // msg: "捕获率设置值高于最高限制1.5"
+        msg: "Catch rate over 1.5"
+        // msg: i18n.RANGE_SCENE_CATCHRATE_HIGH[lan]
     },
 
     DATA_NULL_ERROR: {
@@ -1380,6 +1376,14 @@ const _errorObj = {
     CARD_AMOUNT_WRONG: {
         code: _errorCode.CARD_AMOUNT_WRONG,
         msg: 'Không thành vấn đề, không hỗ trợ thẻ'
+    },
+    // ITEM_TYPE_ILLEGAL: {
+    //     code: _errorCode.ITEM_TYPE_ILLEGAL,
+    //     msg: i18n.ITEM_TYPE_ILLEGAL[lan]
+    // },
+    ITEM_TYPE_ILLEGAL: {
+        code: _errorCode.ITEM_TYPE_ILLEGAL,
+        msg: 'Item Type Illegal'
     },
 
     //--------------------------------------------------------------------------
@@ -1526,7 +1530,22 @@ const _errorObj = {
         msg: i18n.RM_WEAPON_LEVEL_LIMIT[lan],
         code: _errorCode.RM_WEAPON_LEVEL_LIMIT,
     },
-
+    DESIGN_CFGS_NOT_EXIST: {
+        msg: '配置文件不存在',
+        code: _errorCode.DESIGN_CFGS_NOT_EXIST,
+    },
+    NOT_SUPPORT_MODE_PLAYER: {
+        msg: '不支持此模式玩家',
+        code: _errorCode.NOT_SUPPORT_MODE_PLAYER,
+    },
+    WEAPON_TURN_GOLD_TOO_LOW: {
+        msg: '你的金币过低，不能使用更高倍率',
+        code: _errorCode.WEAPON_TURN_GOLD_TOO_LOW,
+    },
+    OTHER_PLAYER_MATCHING: {
+        msg: '其他玩家正在进行比赛',
+        code: _errorCode.OTHER_PLAYER_MATCHING,
+    },
     // TODO: 配置表增加字段后解开注释
     // FIRST_RECHARGE_NO_RMB: { code: _errorCode.FIRST_RECHARGE_NO_RMB, msg: i18n.FIRST_RECHARGE_NO_RMB[lan] },
     // FIRST_RECHARGE_ALREADY: { code: _errorCode.FIRST_RECHARGE_ALREADY, msg: i18n.FIRST_RECHARGE_ALREADY[lan] },

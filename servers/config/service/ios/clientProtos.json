@@ -111,6 +111,10 @@
         "required uInt32 godIdx": 1
     },
 
+    "game.fishHandler.c_god_jump": {
+        "required uInt32 godIdx": 1
+    },
+
     "game.fishHandler.c_continue_rmatch": {
         "required string serverId": 1,
         "required string roomId": 2

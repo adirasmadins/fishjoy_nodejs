@@ -62,7 +62,7 @@ class AccountCommit {
                 return null;
             }
 
-            if (typeInfo.min) {
+            if (typeInfo.min != null) {
                 let nowValue = this[`_${key}`];
                 let newValue = nowValue + _value;
                 if (newValue < typeInfo.min) {

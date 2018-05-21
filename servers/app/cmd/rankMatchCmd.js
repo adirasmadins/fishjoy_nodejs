@@ -110,6 +110,9 @@ class RankMatchCmd extends SysCmd {
             }
         };
 
+        /**
+         * 聊天
+         */
         this._push.rmatchChat = {
             route: 's_rank_match_chat',
             msg: {
@@ -123,6 +126,15 @@ class RankMatchCmd extends SysCmd {
                 }
             },
             res: {}
+        };
+
+        //魅惑对手
+        this._push.provocative = {
+            route:'s_rank_match_provocative',
+            data:{
+                uid:10001,
+                provocativeVal: 2,
+            }
         };
     }
 
@@ -205,15 +217,6 @@ class RankMatchCmd extends SysCmd {
             }
         };
 
-        //取消核弹
-        this._rpc.cancelNbomb = {
-            route:'rpc_cancel_nbomb',
-            data:{
-                uid:10001,
-                roomId: '100202',
-            }
-        };
-
         //排位赛聊天
         this._rpc.rmatchChat = {
             route: 'rpc_rank_match_chat',
@@ -223,6 +226,15 @@ class RankMatchCmd extends SysCmd {
                 idx: 0, //模板索引,-1自定义内容
                 data: null, //对应类型的自定义内容,
                 matchFlag: 0, //0战斗同房间广播, 非0只在具体比赛选择中广播
+            }
+        };
+
+         //魅惑对手
+         this._rpc.provocative = {
+            route:'rpc_rank_match_provocative',
+            data:{
+                uid: 10001,
+                provocativeVal: 2,
             }
         };
         

@@ -5,10 +5,15 @@ const consts = require('../consts');
 class Player extends EventEmitter{
     constructor(opts){
         super();
+        this._opts = opts;
         this._kindId = opts.kindId;
         this._sid = opts.sid || '';
         this._uid = opts.uid || '';
         this._activeTime = Date.now();
+    }
+
+    get opts(){
+        return this._opts;
     }
 
     get kindId(){

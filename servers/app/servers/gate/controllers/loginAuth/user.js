@@ -35,7 +35,7 @@ class User {
             let mission_only_once = account.mission_only_once;
             let cmds = [];
             for(let tid in mission_only_once){
-                let item = designCfgUtils.getCfgMapValue('daily_quest_cfg', 'id', Number(tid));
+                let item = designCfgUtils.getCfgValue('daily_quest_cfg', Number(tid), 'id');
                 let processValue = Number(mission_task_once[tid]);
                 if(item && !Number.isNaN(processValue)){
                     let taskKey = RewardModel.EXPORT_TOOLS.getTaskKey(RewardModel.EXPORT_TOOLS.TASK_PREFIX.MISSION_TASK_ONCE, item.type,
@@ -91,7 +91,10 @@ class User {
                     return;
                 }
                 logBuilder.addLoginLog(account.id, data.deviceId, data.ip);
-                self._someOptAfterLogin(account, function (err, account) {
+                self._someOptAfterLogin(account, async function (err, account) {
+                    let globalSwitchCdkey = await tools.RedisUtil.get(REDISKEY.SWITCH.CDKEY);
+                    globalSwitchCdkey = +globalSwitchCdkey;
+                    account.cdkey_on &= globalSwitchCdkey;
                     resolve(account);
                 });
             }else {

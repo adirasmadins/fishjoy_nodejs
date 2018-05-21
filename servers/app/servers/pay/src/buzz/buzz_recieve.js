@@ -642,7 +642,7 @@ function _didGetCikLog(dataObj, cb) {
 async function _didGetCikInfo(dataObj, cb) {
     let leftData = tools.CfgUtil.change.getDailyLeftData();
     let cikDailyLeft = await tools.RedisUtil.hgetall(REDISKEY.CIK_DAILY_LEFT);
-    logger.error('cikDailyLeft: ', cikDailyLeft);
+    //logger.error('cikDailyLeft: ', cikDailyLeft);
     if (cikDailyLeft) {
         for (let cid in cikDailyLeft) {
             let redisRecord = Number(cikDailyLeft[cid]);
@@ -816,14 +816,12 @@ function _addBroadcast(account) {
  * 领取VIP每日奖励
  */
 function _vipDailyReward(dataObj, cb) {
-    const FUNC = TAG + "_vipDailyReward() --- ";
-    let uid = dataObj.uid;
 
+    let uid = dataObj.uid;
     doNext(dataObj.account);
 
     function doNext(account) {
         if (account.vip_daily_reward == 1) {
-            if (ERROR) logger.error(FUNC + '玩家今日已经领取了VIP奖励');
             cb(ERROR_OBJ.VIP_DAILY_REWARD_GOTTEN);
             return;
         }

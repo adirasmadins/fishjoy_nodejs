@@ -1104,7 +1104,371 @@ let uids = [21372
     ,9501
     ,769
 ];
+
+let golds_uids = [
+    32836
+    ,26407
+    ,59454
+    ,51303
+    ,21608
+    ,364
+    ,68196
+    ,39586
+    ,36923
+    ,269
+    ,67330
+    ,68183
+    ,66575
+    ,51023
+    ,68215
+    ,21250
+    ,33316
+    ,14052
+    ,67222
+    ,64379
+    ,64370
+    ,34362
+    ,427
+    ,68392
+    ,68368
+    ,67888
+    ,44142
+    ,38615
+    ,29580
+    ,12807
+    ,42776
+    ,19691
+    ,3893
+    ,68089
+    ,38391
+    ,38389
+    ,39288
+    ,62936
+    ,68268
+    ,45006
+    ,54666
+    ,36716
+    ,8593
+    ,3298
+    ,24286
+    ,5991
+    ,68203
+    ,68000
+    ,68333
+    ,43421
+    ,54390
+    ,48417
+    ,57004
+    ,44151
+    ,140
+    ,14933
+    ,9515
+    ,60338
+    ,53454
+    ,7120
+    ,4450
+    ,9631
+    ,25418
+    ,32699
+    ,67860
+    ,43700
+    ,68169
+    ,68100
+    ,63840
+    ,31936
+    ,5403
+    ,1270
+    ,59445
+    ,34978
+    ,262
+    ,27247
+    ,44655
+    ,54879
+    ,33228
+    ,1260
+    ,3881
+    ,68114
+    ,67117
+    ,50512
+    ,33164
+    ,10962
+    ,67873
+    ,59685
+    ,35608
+    ,19617
+    ,243
+    ,60763
+    ,52881
+    ,59448
+    ,19674
+    ,552
+    ,68256
+    ,67912
+    ,56864
+    ,19499
+    ,38979
+    ,360
+    ,6283
+    ,1460
+    ,25147
+    ,606
+    ,18401
+    ,66148
+    ,23331
+    ,838
+    ,2397
+    ,5804
+    ,4289
+    ,6060
+    ,64620
+    ,64197
+    ,49864
+    ,38281
+    ,4131
+    ,6732
+    ,67212
+    ,64030
+    ,46333
+    ,18132
+    ,14946
+    ,67074
+    ,38591
+    ,19244
+    ,8187
+    ,68273
+    ,45965
+    ,57464
+    ,8581
+    ,64527
+    ,61395
+    ,48681
+    ,32626
+    ,331
+    ,2723
+    ,68200
+    ,46905
+    ,58189
+    ,60331
+    ,40693
+    ,46909
+    ,20382
+    ,1695
+    ,6839
+    ,2584
+    ,60812
+    ,67688
+    ,50676
+    ,44747
+    ,31165
+    ,4137
+    ,19836
+    ,4636
+    ,61260
+    ,65021
+    ,14722
+    ,7293
+    ,65191
+    ,61192
+    ,21719
+    ,30696
+    ,9687
+    ,10529
+    ,66065
+    ,29804
+    ,987
+    ,16127
+    ,150
+    ,59688
+    ,30901
+    ,1474
+    ,12888
+    ,67182
+    ,37552
+    ,44334
+    ,29627
+    ,4027
+    ,17730
+    ,15713
+    ,17747
+    ,3908
+    ,66165
+    ,68005
+    ,53950
+    ,28947
+    ,67471
+    ,64303
+    ,67621
+    ,67828
+    ,53398
+    ,53633
+    ,44047
+    ,30953
+    ,22221
+    ,20279
+    ,34604
+    ,6480
+    ,18076
+    ,67100
+    ,67649
+    ,21386
+    ,3409
+    ,13907
+    ,10993
+    ,12983
+    ,3494
+    ,63505
+    ,67745
+    ,50073
+    ,33895
+    ,67203
+    ,45472
+    ,52941
+    ,37791
+    ,36733
+    ,7131
+    ,10077
+    ,67778
+    ,57265
+    ,57065
+    ,55454
+    ,48260
+    ,30987
+    ,37634
+    ,9086
+    ,3608
+    ,12570
+    ,67336
+    ,66703
+    ,43334
+    ,50968
+    ,49067
+    ,43413
+    ,31359
+    ,14726
+    ,68360
+    ,65889
+    ,67958
+    ,51342
+    ,9017
+    ,68024
+    ,45414
+    ,46281
+    ,31343
+    ,39221
+    ,23156
+    ,1472
+    ,17488
+    ,5082
+    ,11217
+    ,68350
+    ,42530
+    ,23765
+    ,5543
+    ,13370
+    ,68099
+    ,67898
+    ,67928
+    ,45954
+    ,38131
+    ,21200
+    ,9992
+    ,300
+    ,64476
+    ,66842
+    ,45378
+    ,58581
+    ,53547
+    ,38538
+    ,869
+    ,64520
+    ,46044
+    ,52402
+    ,24819
+    ,38502
+    ,8929
+    ,8181
+    ,13694
+    ,67836
+    ,67973
+    ,67307
+    ,68439
+    ,52744
+    ,58320
+    ,58378
+    ,29701
+    ,18476
+    ,7452
+    ,19116
+    ,54990
+    ,53746
+    ,50730
+    ,21240
+    ,29830
+    ,18680
+    ,4291
+    ,65033
+    ,66278
+    ,64462
+    ,68003
+    ,39332
+    ,31374
+    ,37856
+    ,8392
+    ,1730
+    ,68054
+    ,68004
+    ,68086
+    ,46608
+    ,52732
+    ,39397
+    ,23497
+    ,3132
+    ,4066
+    ,62862
+    ,66013
+    ,43090
+    ,45145
+    ,37288
+    ,37561
+    ,19091
+    ,16111
+    ,14065
+    ,68075
+    ,68192
+    ,68181
+    ,68259
+    ,64843
+    ,67839
+    ,50717
+    ,26547
+    ,37221
+    ,17362
+    ,1373
+    ,1994
+    ,10316
+    ,64060
+    ,65688
+    ,67089
+    ,46915
+    ,43157
+    ,24540
+    ,27220
+    ,31337
+    ,65869
+    ,67758
+    ,50545
+    ,45026
+    ,23625
+    ,30134
+    ,36912
+    ,20601
+    ,11890
+    ,3885
+    ,9501
+    ,769
+]
 let items  = ['i007','i210','i211','i212','w501','w502','w503','w504','w505','w506','w507','w508','w509','w510','w511','w512','w513','w514','w515'];
+const newweapon_upgrade_cfg = require('../app/utils/imports').DESIGN_CFG.newweapon_upgrade_cfg;
 
 class MissionTaskTransfer {
     async start() {
@@ -1122,43 +1486,101 @@ class MissionTaskTransfer {
             process.exit(0);
             return;
         }
-
-
-        await this.resetGold();
-        await this.resetWeapon();
-        await this.resetPackages();
+        // await this.resetGold();
+        // await this.resetWeapon();
+        // await this.resetPackages();
+        await this.recoverWeaponLevel();
+        await this.resetWeaponStar();
     }
 
-    async resetGold() {
-        let sql = "select total from tbl_gold_log where account_id=? and log_at>='2018-05-15 19:00:00' order by log_at asc limit 0,1";
+    _getWeaponLevelByUnlock_cost(cost){
+        for(let key1 in newweapon_upgrade_cfg){
+            let item1 = newweapon_upgrade_cfg[key1];
+            if(item1){
+                if(item1.unlock_cost == cost){
+                    return item1.weaponlevel;
+                }
+            }
+        }
+    }
+
+    _getWeaponEnergy(level, cur_eng){
+        let energy = cur_eng || {};
+        for(let key1 in newweapon_upgrade_cfg){
+            let item1 = newweapon_upgrade_cfg[key1];
+            if(item1){
+                if(item1.weaponlevel > level){
+                    return energy;
+                }
+                if(energy[item1.weaponlevel] == null){
+                    energy[item1.weaponlevel] = 0;
+                }
+            }
+        }
+    }
+
+    async recoverWeaponLevel(){
         for (let i = 0; i < uids.length; i++) {
-            let rows = await mysqlConnector.query(sql, [uids[i]]);
+            let sql = `select min(delta) AS cost FROM tbl_item_log WHERE scene=8
+        AND log_at<'2018-05-17 08:00:00'
+        AND account_id= ${uids[i]}`;
+            let rows = await mysqlConnector.query(sql);
             if (rows && rows[0]) {
-                let gold = rows[0].total;
-                if (!isNaN(Number(gold))) {
-                    let cur_gold = await redisConnector.hget(REDISKEY.GOLD, uids[i]);
-                    if(cur_gold > gold){
-                        await redisConnector.hset(REDISKEY.GOLD, uids[i], gold);
-                        logger.error('作弊玩家', uids[i], '金币重置为', gold);
+                let cost = rows[0].cost;
+                if(cost && !isNaN(Number(cost))){
+                    let level = this._getWeaponLevelByUnlock_cost(Math.abs(cost));
+                    let now_level = await redisConnector.hget(REDISKEY.WEAPON, uids[i]);
+                    // logger.error(`1111111111玩家武器等级${cost}恢复为${cost}`);
+                    if(now_level && level && level >= now_level){
+                        await redisConnector.hset(REDISKEY.WEAPON, uids[i], level);
+                        let cur_eng = await redisConnector.hget(REDISKEY.WEAPON_ENERGY, uids[i]);
+                        let eng = this._getWeaponEnergy(level, cur_eng);
+                        await redisConnector.hset(REDISKEY.WEAPON_ENERGY, uids[i], JSON.stringify(eng));
+                        logger.error(`玩家${uids[i]}武器等级${now_level}恢复为${level}  能量值:${JSON.stringify(eng)}`);
                     }
                 }
             }
         }
     }
 
-    async resetWeapon() {
-        for (let i = 0; i < uids.length; i++) {
-            let weapon_level = await redisConnector.hget(REDISKEY.WEAPON, uids[i]);
-            if (weapon_level > 5) {
-                await redisConnector.hset(REDISKEY.WEAPON, uids[i], 5);
-                await redisConnector.hset(REDISKEY.WEAPON_ENERGY, uids[i], JSON.stringify({
-                    "1": 0,
-                    "5": 0
-                }));
-                logger.error('作弊玩家', uids[i], '武器重置为', 5);
+    async resetGold() {
+        let sql = "select total from tbl_gold_log where account_id=? and log_at>='2018-05-15 19:00:00' order by log_at asc limit 0,1";
+        for (let i = 0; i < golds_uids.length; i++) {
+            let rows = await mysqlConnector.query(sql, [golds_uids[i]]);
+            if (rows && rows[0]) {
+                let gold = rows[0].total;
+                if (!isNaN(Number(gold))) {
+                    let cur_gold = await redisConnector.hget(REDISKEY.GOLD, golds_uids[i]);
+                    if(cur_gold > gold){
+                        await redisConnector.hset(REDISKEY.GOLD, golds_uids[i], gold);
+                        logger.error('作弊玩家', golds_uids[i], '金币重置为', gold);
+                    }
+                }
             }
         }
     }
+
+    async resetWeaponStar() {
+        for (let i = 0; i < uids.length; i++) {
+            let weapon_skin = await redisConnector.hget(REDISKEY.WEAPON_SKIN, uids[i]);
+            let star =weapon_skin && weapon_skin.star;
+            if(star){
+                let reset = false;
+                for(let key in star){
+                    let star_level = star[key];
+                    if(star_level && star_level > 5){
+                        weapon_skin.star[key] = 5;
+                        reset = true;
+                    }
+                }
+                if(reset){
+                    await redisConnector.hset(REDISKEY.WEAPON_SKIN, uids[i], JSON.stringify(weapon_skin));
+                    logger.error('作弊玩家', uids[i], '武器星级重置为', JSON.stringify(weapon_skin));
+                }
+            }
+        }
+    }
+
 
     async resetPackages(){
         for (let i = 0; i < uids.length; i++) {

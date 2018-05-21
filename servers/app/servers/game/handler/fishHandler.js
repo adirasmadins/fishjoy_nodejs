@@ -1,16 +1,10 @@
 const ReqHandler = require('../../common/reqHandler');
 const fishCmd = require('../../../cmd/fishCmd');
-const omelo = require('omelo');
+const arenaCmd = require('../../../cmd/arenaCmd');
 
 class FishHandler extends ReqHandler{
     constructor(){
         super();
-    }
-
-    request(route, msg, session, next) {
-        omelo.app.entry.request(route, msg, session, (err, result)=>{
-            super.response(err, result, next);
-        });
     }
 }
 
@@ -19,6 +13,12 @@ module.exports = function () {
     for(let k of Object.keys(req)){
         FishHandler.registe(req[k].route.split('.')[2]);
     }
+
+    req = arenaCmd.request;
+    for(let k of Object.keys(req)){
+        FishHandler.registe(req[k].route.split('.')[2]);
+    }
+
     return new FishHandler();
 };
 

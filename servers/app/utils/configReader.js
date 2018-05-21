@@ -90,7 +90,7 @@ class ConfigReader {
         if (!tbVal) {
             let itemKey = TB_KEYS[tbl];
             if (itemKey) {
-                return designCfgUtils.getCfgMapValue(tbl, itemKey, key);
+                return designCfgUtils.getCfgValue(tbl, key, itemKey);
             }else {
                 tbVal = GAMECFG[tbl];
             }

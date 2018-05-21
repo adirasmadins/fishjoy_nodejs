@@ -1,12 +1,28 @@
-const ACCOUNTKEY = require('../../database').dbConsts.ACCOUNTKEY;
+const ROOM_TYPE = {
+    SINGLE: 1, //单人模式
+    MULTI_FREE: 2, //多人自由模式
+    GODDESS: 3, //保卫女神模式
+    ARENA_MATCH: 4, //1v1竞技模式
+    RANK_MATCH: 5,//排位赛模式
+};
+
+const ROOM_PLAYER_MAX = {};
+ROOM_PLAYER_MAX[ROOM_TYPE.SINGLE] = 1;
+ROOM_PLAYER_MAX[ROOM_TYPE.MULTI_FREE] = 4;
+ROOM_PLAYER_MAX[ROOM_TYPE.GODDESS] = 1;
+ROOM_PLAYER_MAX[ROOM_TYPE.ARENA_MATCH] = 2;
+ROOM_PLAYER_MAX[ROOM_TYPE.RANK_MATCH] = 2;
 
 module.exports = {
-    ROOM_TYPE: {
-        SINGLE: 1, //单人模式
-        MULTI_FREE: 2, //多人自由模式
-        GODDESS: 3, //保卫女神模式
-        ARENA_MATCH:4, //1v1竞技模式
-        RANK_MATCH: 5,//排位赛模式
+    ROOM_TYPE: ROOM_TYPE,
+    ROOM_PLAYER_MAX: ROOM_PLAYER_MAX,
+
+    PLAYER_TYPE:{
+        GODDESS:1,
+        FISH:2,
+        MATCH_FISH:3,
+        RANK_MATCH:4,
+        ARENA_MATCH:5,
     },
 
     SKILL_ID: {
@@ -76,26 +92,25 @@ module.exports = {
 
     FLUSH_EVENT: Symbol('flushFish'),
     RMATCH_EVENT: Symbol('rmatchEvt'),
-
-    ROOM_MAX_PLAYER: 4,
-
+    
     ENTITY_TYPE: {
         PLAYER: 0, //玩家
         ROBOT: 1 //普通机器人
     },
 
-    MATCH_ROOM_STATE:{
-        WAIT:1, //等待
-        DOING:2, //比赛中
-        OVER:3, //结束
+    MATCH_ROOM_STATE: {
+        WAIT: 1, //等待
+        DOING: 2, //比赛中
+        OVER: 3, //结束
     },
 
-    RMATCH_ROBOT_OPT:{
+    RMATCH_ROBOT_OPT: {
         WEAPON_CHANGE: 0, //切换武器
         FIGHTING: 1, //普通开炮
         USE_NBOMB: 2, //使用核弹
         CANCEL_NBOMB: 3, //取消核弹
         RANDOM_CHAT: 4, //随机聊天
+        PROVOCATIVE: 5, //魅惑
     },
 
     /** 首胜宝箱状态 */
@@ -109,23 +124,23 @@ module.exports = {
     },
 
     BROADCAST_TYPE: {
-        SERVER:         1,
-        GAME_EVENT:     2,
-        FAMOUS_ONLINE:  3,
-        DRAW:           4,
+        SERVER: 1,
+        GAME_EVENT: 2,
+        FAMOUS_ONLINE: 3,
+        DRAW: 4,
     },
-    
+
     GAME_EVENT_TYPE: {
-        BOSS_KILL:          1,
-        WEAPON_UPGRADE:     2,
-        SKIN_GOT:           3,
-        TOOL_GOT:           4,
-        GOLDFISH_DRAW:      5,
-        GODDESS_UNLOCK:     6,
-        GODDESS_UPGRADE:    7,
-        GODDESS_CHALLENGE:  8,
-        DRAW_REWARD:        9,
-        VICTORS:            10,
+        BOSS_KILL: 1,
+        WEAPON_UPGRADE: 2,
+        SKIN_GOT: 3,
+        TOOL_GOT: 4,
+        GOLDFISH_DRAW: 5,
+        GODDESS_UNLOCK: 6,
+        GODDESS_UPGRADE: 7,
+        GODDESS_CHALLENGE: 8,
+        DRAW_REWARD: 9,
+        VICTORS: 10,
     },
 
     CHAT_TYPE: {
@@ -133,7 +148,7 @@ module.exports = {
         PIC: 1, //图片
         SOUND: 2, //音频
     },
-    
+
     CHEAT_FLAG: {
         NO_SKIN: -100, //使用没有的皮肤开炮而作弊, 注意作弊标记都是小于0，下同
         NO_WP_LEVEL: -101, //使用当前场景不允许的等级开炮而作弊

@@ -539,6 +539,7 @@ function getRankgameLog(pool, uid, account, cb) {
                 figure_url: p1.figure_url,
                 star: p1.star,
                 vip: p1.vip,
+                provocativeVal: p1.provocativeVal
             },
             {
                 uid: p2.uid,
@@ -551,6 +552,7 @@ function getRankgameLog(pool, uid, account, cb) {
                 figure_url: p2.figure_url,
                 star: p2.star,
                 vip: p2.vip,
+                provocativeVal: p2.provocativeVal
             }
         ];
         for (let key in result) {

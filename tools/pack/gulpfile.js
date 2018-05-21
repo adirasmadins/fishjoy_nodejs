@@ -44,10 +44,6 @@ gulp.task('uploadZip', function (cb) {
   runSequence('scp-modules', cb);
 });
 
-
-
-
-
 //gulp 功能业务配置
 gulp.task('clean', function () {
   return del([

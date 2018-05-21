@@ -43,6 +43,7 @@ class MatchingRobotUser extends MatchingUser {
             match_points: utils.random_int(1, 1000), // 点数
             ior: robotInfo.ior, // 本段位的平均收支比
             vip: robotInfo.vip,
+            charm_point: robotInfo.charm_point,
         };
 
         let robot = new MatchingRobotUser({

@@ -31,6 +31,8 @@ do
   # echo '服务器【'${hostname}':'${ip}'】服务器时间同步...'
   # scripts/cmd.sh $ip $port $AUTH $user $password 'yum -y install ntp ntpdate'
   # scripts/cmd.sh $ip $port $AUTH $user $password 'ntpdate cn.pool.ntp.org'
+   scripts/echo_append.sh $ip $port $AUTH $user $password '0 23 * * * ntpdate asia.pool.ntp.org >> /var/log/ntpdate.log' '/var/spool/cron/root'
+   scripts/cmd.sh $ip $AUTH $user $password 'service crond restart'
   # scripts/cmd.sh $ip $AUTH $user $password 'hwclock --systohc'
   # echo '服务器【'${hostname}':'${ip}'】服务器时间同步完成'
 
@@ -55,9 +57,9 @@ do
   #echo '服务器【'${hostname}':'${ip}'】解压NODE包完成'
 
   #安装运行库
-  echo '服务器【'${hostname}':'${ip}'】安装运行库开始...'
-  scripts/env-install.sh $ip $port $AUTH $user $password
-  echo '服务器【'${hostname}':'${ip}'】安装运行库完成'
+  #echo '服务器【'${hostname}':'${ip}'】安装运行库开始...'
+  #scripts/env-install.sh $ip $port $AUTH $user $password
+  #echo '服务器【'${hostname}':'${ip}'】安装运行库完成'
 
   #关闭防火墙
   #echo '服务器【'${hostname}':'${ip}'】关闭防火墙...'

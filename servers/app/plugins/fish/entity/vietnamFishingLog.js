@@ -84,19 +84,12 @@ const CHEAT_P3 = 1.25; //金币作弊阈值
 
     
     logAll () {
-        if (this._isForbided) {
-            return;
-        }
         super.logAll();
         this._saveCheatGold();
     }
 
     checkWriteNow (dt) {
-        if (this._isForbided) {
-            return;
-        }
         super.checkWriteNow(dt);
-
         //
         this._regetDt += dt;
         if (this._regetDt >= REGET_DT) {

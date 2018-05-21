@@ -6,8 +6,27 @@ const REDISKEY = require('../../database').dbConsts.REDISKEY;
  * 黑名单类, 完成黑名单的添加和删除等相关操作
  */
 class BlackList {
-    constructor() { 
+    constructor() {
         logger.error('-----------------BlackList');
+    }
+
+    /**
+     * 对用户进行封号操作
+     * @param {Array} uidList 用户uid列表，数组或单值
+     * @param {Number} reason 封号原因，总是一个<0的数
+     */
+    async freeze(uidList, reason) {
+        await _updateAccount(uidList, reason);
+        await _addToList(uidList);
+    }
+
+    /**
+     * 对用户进行解封操作
+     * @param {Array} uidList 用户uid列表，数组或单值
+     */
+    async unfreeze(uidList) {
+        await _updateAccount(uidList, 1);
+        await _removeFromList(uidList);
     }
 
     /**
@@ -16,7 +35,6 @@ class BlackList {
      * @param {Number} reason 加入黑名单原因，总是一个<0的数
      */
     async add(uidList, reason) {
-        await _updateAccount(uidList, reason);
         await _addToList(uidList);
     }
 
@@ -25,7 +43,6 @@ class BlackList {
      * @param {Array} uidList 用户uid列表，数组或单值
      */
     async remove(uidList) {
-        await _updateAccount(uidList, 1);
         await _removeFromList(uidList);
     }
 

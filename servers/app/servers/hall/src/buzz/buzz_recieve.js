@@ -224,15 +224,10 @@ function getChangeInfoFromId(change_id) {
  * 领取VIP每日奖励
  */
 function _vipDailyReward(dataObj, cb) {
-    const FUNC = TAG + "_vipDailyReward() --- ";
     let uid = dataObj.uid;
-    let token = dataObj.token;
-    let pool = req.pool;
-
     doNextWithAccount(dataObj.account);
     function doNextWithAccount(account) {
         if (account.vip_daily_reward == 1) {
-            if (ERROR) logger.error(FUNC + '玩家今日已经领取了VIP奖励');
             cb(ERROR_OBJ.VIP_DAILY_REWARD_GOTTEN);
             return;
         }

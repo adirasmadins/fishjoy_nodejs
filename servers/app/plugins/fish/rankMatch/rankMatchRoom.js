@@ -10,6 +10,7 @@ const fishCmd = require('../../../cmd/fishCmd');
 const redisKey = require('../../../database').dbConsts.REDISKEY;
 const Room = require('../entity/room');
 const constDef = require('../../../consts/constDef');
+let calculateMatchRank = require('./calculateMatchRank');
 
 class RankMatchRoom extends Room {
     constructor(opts) {
@@ -20,7 +21,7 @@ class RankMatchRoom extends Room {
         this._state = consts.MATCH_ROOM_STATE.WAIT;
         this._lastUpdateTime = Date.now();
         this._robot = null;
-        this._serverId = opts.serverId || omelo.app.getServerId();
+        this._serverId = omelo.app.getServerId();
         this._runSettlementDt = 10 * 1000; //结算超时时间,毫秒
         this._runSettlement = false;
     }
@@ -35,6 +36,15 @@ class RankMatchRoom extends Room {
 
     init(users, playerFactory) {
         super.start();
+        let cp = 0;
+        let maxCharmUid = -1;
+        users.forEach(async function (user) {
+            if (user.charm_point > cp) {
+                maxCharmUid = user.uid;
+                cp = user.charm_point;
+                logger.error('cp = ', cp, ' maxCharmUid = ', maxCharmUid)
+            }
+        });
         let i = 0;
         users.forEach(async function (user) {
             let uid = user.uid;
@@ -47,14 +57,15 @@ class RankMatchRoom extends Room {
                     uid: uid,
                     sid: sid,
                     roomType: consts.ROOM_TYPE.RANK_MATCH
-                });
+                }, consts.PLAYER_TYPE.RANK_MATCH);
                 this.addMsgChannel(uid, sid);
-                this.addGamePos(uid, this._serverId, {serverId: this._serverId, roomId: this.roomId, roomType:this.mode, time:Date.now()});
+                this.addGamePos(uid, this._serverId, {serverId: this._serverId, roomId: this.roomId, roomType:this.roomType, time:Date.now()});
             }
+            player.setProvocativeEnabled(maxCharmUid == uid);
             this._playerMap.set(uid, player);
             i++;
             if (i === 2) {
-                this._startRmatch({
+                this._startMatch({
                     serverId: this._serverId,
                     roomId: this.roomId,
                 });
@@ -86,16 +97,33 @@ class RankMatchRoom extends Room {
         });
         this._robot = player;
         this._robot.registerUpdateFunc(async function (type, data) {
-            if (type === OPT.WEAPON_CHANGE) {
-                this.weaponChange(data);
-            } else if (type === OPT.FIGHTING) {
-                this.setFightInfo(data);
-            } else if (type === OPT.USE_NBOMB) {
-                await this.useNbomb(data);
-            } else if (type === OPT.CANCEL_NBOMB) {
-                await this.cancelNbomb(data);
-            } else if (type === OPT.RANDOM_CHAT) {
-                this.rmatchChat(data);
+            switch(type) {
+                case OPT.WEAPON_CHANGE:
+                    this.weaponChange(data);
+                break;
+
+                case OPT.FIGHTING:
+                    this.setFightInfo(data);
+                break;
+
+                case OPT.USE_NBOMB:
+                    await this.useNbomb(data);
+                break;
+
+                case OPT.CANCEL_NBOMB:
+                    await this.cancelNbomb(data);
+                break;
+
+                case OPT.RANDOM_CHAT:
+                    this.rmatchChat(data);
+                break;
+
+                case OPT.PROVOCATIVE:
+                    this.provocative(data);
+                break;
+
+                default:
+                break;
             }
         }.bind(this));
 
@@ -166,6 +194,9 @@ class RankMatchRoom extends Room {
             return fishCode.MATCH_ROOM_NOPLAYER;
         }
         player.setFightInfo(data);
+        if (player.statistics.provocativeVal > 0) {
+            data.score = data.score - player.statistics.provocativeVal;
+        }
         this.roomBroadcast(rankMatchCmd.push.fightInfo.route, data);
     }
 
@@ -195,6 +226,29 @@ class RankMatchRoom extends Room {
             return fishCode.MATCH_ROOM_NOPLAYER;
         }
         this.roomBroadcast(rankMatchCmd.push.rmatchChat.route, data);
+    }
+
+    provocative(data) {
+        let player = this._playerMap.get(data.uid);
+        if (!player) {
+            return fishCode.MATCH_ROOM_NOPLAYER;
+        }
+        //找出对方的当前的分数,校验是否可以魅惑对手
+        let hisScore = 0;
+        let he = null;
+        for (let p of this._playerMap.values()) {
+            if (p.uid != player.uid) {
+                hisScore = p.statistics.score;
+                he = p;
+                break;
+            }
+        }
+        if (player.provocative(hisScore)) {
+            he.beProvocatived(data.provocativeVal)
+        }else{
+            data.provocativeVal = 0;
+        }
+        this.roomBroadcast(rankMatchCmd.push.provocative.route, data);
     }
 
     /**
@@ -237,8 +291,11 @@ class RankMatchRoom extends Room {
         let p2 = players[1][1];
         await p1.updateAccount();
         await p2.updateAccount();
-        p1.setResult(p2);
-        p2.setResult(p1);
+        let p1_points = await p1.setResult(p2);
+        let p2_points = await p2.setResult(p1);
+        let match_rank_data = await calculateMatchRank.calculateAll(p1, p1_points, p2, p2_points);
+        p1.afterSetResult(match_rank_data.p1_data);
+        p2.afterSetResult(match_rank_data.p2_data);
 
         let data = {
             time: moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss'),
@@ -270,6 +327,7 @@ class RankMatchRoom extends Room {
             data['score' + playerIdx] = data['bullet_score' + playerIdx] + data['nuclear_score' + playerIdx] + (matchDetail.star ? matchDetail.star.score : 0);
             data['star' + playerIdx] = matchDetail.star;
             data['vip' + playerIdx] = matchDetail.vip;
+            data['provocativeVal' + playerIdx] = matchDetail.provocativeVal;
             playerIdx++;
         }
 
@@ -290,7 +348,8 @@ class RankMatchRoom extends Room {
                 figure_url: data.figureurl1,
                 nuclear_fish_count: data.nuclear_fish_count1,
                 star: data.star1,
-                vip: data.vip1
+                vip: data.vip1,
+                provocativeVal: data.provocativeVal1
             },
             player2: {
                 nickname: data.nickname2,
@@ -308,7 +367,8 @@ class RankMatchRoom extends Room {
                 figure_url: data.figureurl2,
                 nuclear_fish_count: data.nuclear_fish_count2,
                 star: data.star2,
-                vip: data.vip2
+                vip: data.vip2,
+                provocativeVal: data.provocativeVal2
             },
             winner: data.score1 > data.score2 ? 1 : 2,
         };
@@ -460,7 +520,7 @@ class RankMatchRoom extends Room {
     }
 
     //双方准备就绪，正式开始
-    async _startRmatch(data) {
+    async _startMatch(data) {
         if (this._state != consts.MATCH_ROOM_STATE.WAIT) {
             return;
         }
@@ -471,7 +531,7 @@ class RankMatchRoom extends Room {
         this._lastUpdateTime = Date.now();
         for (let player of this._playerMap.values()) {
             if(player.isPlayer()){
-                let result = await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.matchStart.route, player.account.id, {
+                await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.matchStart.route, player.account.id, {
                     uid: player.account.id,
                     nbomb_cost: player.nbomb_cost,
                     serverId: data.serverId,
@@ -487,14 +547,25 @@ class RankMatchRoom extends Room {
     async _matchFinish() {
         for (let player of this._playerMap.values()) {
             if (player.isPlayer()) {
-                await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.matchFinish.route, player.account.id, {
-                    uid: player.account.id
-                });
+                try{
+                    await rpcSender.invokeFront(rpcSender.serverType.game, rpcSender.serverModule.game.playerRemote, fishCmd.remote.matchFinish.route, player.account.id, {
+                        uid: player.account.id
+                    });
+                }catch(err){
+                    logger.error('排位赛服发送排位赛结束事件结束');
+                }
             }
         }
         this._state = consts.MATCH_ROOM_STATE.OVER;
         this._robot = null;
         this._unInit();
+    }
+
+    rpc_rank_match_provocative(data, cb){
+        this._rpcInfo(data, function(code, room) {
+            code === 0 && room.provocative(data);
+            cb && cb(null);
+        });
     }
 
 }

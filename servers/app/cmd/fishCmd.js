@@ -476,6 +476,20 @@ class FishCmd extends SysCmd {
             res: {}
         };
 
+         /**
+         * 排位赛：抛媚眼
+         */
+        this._req.rmatch_provocative = {
+            route: 'game.fishHandler.c_rmatch_provocative',
+            msg: {
+                enc: 'aes',
+                data: {
+                    result: {},
+                }
+            },
+            res: {}
+        };
+
         
         /**
          * 切换武器倍率
@@ -490,8 +504,6 @@ class FishCmd extends SysCmd {
             },
             res: {}
         };
-        
-
 
     }
 

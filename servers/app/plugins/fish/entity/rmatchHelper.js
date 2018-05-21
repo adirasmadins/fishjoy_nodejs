@@ -141,6 +141,7 @@ class RmatchHelper {
             }else if (fireFlag === consts.FIRE_FLAG.NBOMB && this._fireC === 0) {
                 continue; //第一炮被核弹打中，不计分数
             }
+
             let fish = fishModel.getActorData(fk);
             let gold = fish.goldVal;
             let temp = fk.split('#');
@@ -214,6 +215,14 @@ class RmatchHelper {
             };
         }
         return temp;
+    }
+
+    /**
+     * 魅惑对手
+     */
+    provocativeAnother() {
+        let val = 2 + Math.floor(Math.random()*4);
+        return val;
     }
     
 }

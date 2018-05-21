@@ -42,11 +42,6 @@ module.exports = {
         GAMEPLAY.WANBA
     ],
 
-    CHEAT_BROKEN: [
-        GAMEPLAY.VIETNAM_VN,
-        GAMEPLAY.VIETNAM,
-        GAMEPLAY.VIETNAM_VN_TEST
-    ],
 
     WWW_DOMAIN: [
         GAMEPLAY.VIETNAM,

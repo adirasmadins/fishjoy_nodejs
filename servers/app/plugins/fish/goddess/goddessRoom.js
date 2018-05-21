@@ -41,6 +41,7 @@ class GoddessRoom extends FishRoom {
     _addPlayerEvent(player) {
         super._addPlayerEvent(player);
 
+        let isJumping = false;
         this._fishModel.setNextWaveFunc(function (waveCount) {
             player && player.nextWave(waveCount);
         });
@@ -59,10 +60,15 @@ class GoddessRoom extends FishRoom {
                 this._isStarted = true;
                 this._fishModel.setStart(event.player.godStart());
                 this._fishModel._ready2StartNextWave(true);
+                isJumping = false;
             }
         }.bind(this));
         
         player.on(fishCmd.push.god_hurt.route, function (event) {
+            if (isJumping) {
+                logger.error('正在跳关，无需处理，鱼已清空!');
+                return;
+            }
             let isGodDead = event.hpPercent === 0;
             this._fishModel.removeActorData(event.fishKey, isGodDead);
             if (isGodDead) {
@@ -75,6 +81,7 @@ class GoddessRoom extends FishRoom {
 
         player.on(fishCmd.push.god_jump.route, function (event) {
             this._replayAgain();
+            isJumping = true;
         }.bind(this));
     }
 }

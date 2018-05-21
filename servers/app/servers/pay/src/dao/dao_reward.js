@@ -93,6 +93,7 @@ function getReward(account, reward, cb) {
     let mix_inc = rewardInfo.mix;
     let skin_inc = rewardInfo.skin;
     let skin_debris_inc = rewardInfo.skin_debris;
+    let skin_card_inc = rewardInfo.skin_card;
 
 
     logger.info(FUNC + "更新缓存中的玩家数据");
@@ -146,6 +147,11 @@ function getReward(account, reward, cb) {
     }
     account.package[ItemTypeC.SKIN_DEBRIS] = ObjUtil.update(account.package[ItemTypeC.SKIN_DEBRIS], skin_debris_inc);
 
+    if (account.package[ItemTypeC.SKIN_CARD] == null) {
+        account.package[ItemTypeC.SKIN_CARD] = {};
+    }
+    account.package[ItemTypeC.SKIN_CARD] = ObjUtil.update(account.package[ItemTypeC.SKIN_CARD], skin_card_inc);
+
     account.package = account.package;
     account.commit(function (err, result) {
         // TODO:如果金币和钻石改变量为0则不在写数据库
@@ -178,6 +184,7 @@ function cost(account, needitem, cb) {
     let mix_inc = rewardInfo.mix;
     let skin_inc = rewardInfo.skin;
     let skin_debris_inc = rewardInfo.skin_debris;
+    let skin_card_inc = rewardInfo.skin_card;
 
     logger.info(FUNC + "account.skill:", account.skill);
 
@@ -198,6 +205,7 @@ function cost(account, needitem, cb) {
         ObjUtil.cost(account.package[ItemTypeC.MIX], mix_inc, cb);
         ObjUtil.cost(account.package[ItemTypeC.SKIN], skin_inc, cb);
         ObjUtil.cost(account.package[ItemTypeC.SKIN_DEBRIS], skin_debris_inc, cb);
+        ObjUtil.cost(account.package[ItemTypeC.SKIN_CARD], skin_card_inc, cb);
 
 
         account.skill = account.skill;
@@ -232,6 +240,7 @@ function enough(account, needitem) {
     let mix_inc = rewardInfo.mix;
     let skin_inc = rewardInfo.skin;
     let skin_debris_inc = rewardInfo.skin_debris;
+    let skin_card_inc = rewardInfo.skin_card;
 
     // =========================================================================
     // 兑换中消耗物品
@@ -291,6 +300,13 @@ function enough(account, needitem) {
         pack_old[ItemTypeC.SKIN_DEBRIS] = ObjUtil.noNull(pack_old[ItemTypeC.SKIN_DEBRIS]);
         let diff = ObjUtil.enough(pack_old[ItemTypeC.SKIN_DEBRIS], skin_debris_inc);
         if (ObjUtil.length(diff) > 0) notEnough[ItemTypeC.SKIN_DEBRIS] = diff;
+    }
+    // 武器皮肤抽奖卡
+    if (!ObjUtil.isEmpty(skin_card_inc)) {
+        logger.info(FUNC + "验证武器皮肤抽奖卡!");
+        pack_old[ItemTypeC.SKIN_CARD] = ObjUtil.noNull(pack_old[ItemTypeC.SKIN_CARD]);
+        let diff = ObjUtil.enough(pack_old[ItemTypeC.SKIN_CARD], skin_card_inc);
+        if (ObjUtil.length(diff) > 0) notEnough[ItemTypeC.SKIN_CARD] = diff;
     }
     // =========================================================================
     // 金币

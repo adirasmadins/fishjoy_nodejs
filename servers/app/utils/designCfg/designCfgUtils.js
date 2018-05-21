@@ -30,19 +30,20 @@ class DesignCfgUtils{
      * 获取配置表中某字段对应的值
      * @param name
      * @param key
+     * @param mapitem
      * @return {*}
      */
-    getCfgMapValue(name, item, value) {
+    getCfgValue(name, key, mapitem) {
         let cfg = DESIGN_CFG[name];
         if (cfg instanceof Array) {
-            let cfgMap = this._cfgsMap.get(this._getKey(name, item));
+            let cfgMap = this._cfgsMap.get(this._getKey(name, mapitem));
             if (!cfgMap) {
-                cfg = this._toMap(cfg, name, item);
+                cfg = this._toMap(cfg, name, mapitem);
             }else {
                 cfg = cfgMap;
             }
         }
-        return cfg[value];
+        return cfg[key];
     }
 
     _toMap(cfg, name, item) {
@@ -61,6 +62,6 @@ class DesignCfgUtils{
 
 // let aa = new DesignCfgUtils();
 // // console.log(aa.getCfg('active_active_cfg'));
-// console.log(aa.getCfgMapValue('active_active_cfg', 'id', 15));
+// console.log(aa.getCfgValue('active_active_cfg', 'id', 15));
 
 module.exports = new DesignCfgUtils();

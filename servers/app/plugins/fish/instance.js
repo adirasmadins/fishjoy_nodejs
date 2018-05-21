@@ -1,15 +1,16 @@
 const RobotController = require('./robot/robotController');
 const config = require('./config');
 const PlayerFactory = require('./entity/playerFactory');
+const RoomFactory = require('./roomFactory');
 const omelo = require('omelo');
 const consts = require('./consts');
 const fishCmd = require('../../cmd/fishCmd');
 const FishCode = CONSTS.SYS_CODE;
-const FishRoom = require('./fishRoom');
-const GoddessRoom = require('./goddess/goddessRoom');
 const ROBOT_EVENT = new Set([fishCmd.request.robot_catch_fish.route.split('.')[2]]);
-const GAMECFG = require('../../utils/imports').DESIGN_CFG;
+const DESIGN_CFG = require('../../utils/imports').DESIGN_CFG;
 const RobotEvent = require('./entity/robotEvent');
+const MatchPlayer = require('./entity/matchPlayer');
+const Player = require('./entity/player');
 const GamePlay = require('./gamePlay/gamePlay');
 const PlayerEvent = require('./cache/playerEvent');
 const Cache = require('./cache/cache');
@@ -29,22 +30,23 @@ class Instance {
         this._cacheReader = new CacheReader(this._cache);
         this._gamePlay = new GamePlay();
         this._playerFactory = new PlayerFactory();
+        this._roomFactory = new RoomFactory();
         logger.error('-----------------fish Instance');
     }
 
-    get gamePlay(){
+    get gamePlay() {
         return this._gamePlay;
     }
 
-    get playerEventEmitter(){
+    get playerEventEmitter() {
         return this._playerEventEmitter;
     }
 
-    get cache(){
+    get cache() {
         return this._cache;
     }
 
-    get cacheReader(){
+    get cacheReader() {
         return this._cacheReader;
     }
 
@@ -72,7 +74,7 @@ class Instance {
             clearInterval(this._kickOfflineTimer);
             this._kickOfflineTimer = null;
         }
-        
+
         this._robotEventEmitter.removeAllListeners();
         this._playerEventEmitter.removeAllListeners();
         // robotController.stop();
@@ -120,10 +122,10 @@ class Instance {
         });
     }
 
-    //加入邀请游戏
-    async enterInviteGame(data) {
+    //通过房间号加入游戏
+    async enterGameByRoomId(data) {
         if (!data.roomId || !data.uid || !data.sid) {
-            return [CONSTS.SYS_CODE.ARGS_INVALID];
+            throw CONSTS.SYS_CODE.ARGS_INVALID;
         }
 
         if (this._entities.has(data.uid)) {
@@ -132,100 +134,84 @@ class Instance {
 
         let room = this._roomMap.get(data.roomId);
         if (!room) {
-            return [CONSTS.SYS_CODE.PALYER_GAME_ROOM_DISMISS];
+            throw CONSTS.SYS_CODE.PALYER_GAME_ROOM_DISMISS;
         }
 
-        let player = null;
-        try{
-            player = await this._playerFactory.createPlayer(data);
-        }catch(err){
-            return [err];
+        let playerType = this._playerFactory.roomType2PlayerType(data.roomType);
+        if(null == playerType){
+            throw CONSTS.SYS_CODE.NOT_SUPPORT_MODE_PLAYER;
         }
+
+        let player = await this._playerFactory.createPlayer(data, playerType);
 
         let err = this._access(player.account, room.sceneId);
         if (err) {
-            return [err];
+            logger.error('进入邀请游戏场景条件不满足, err=', err);
+            throw err;
         }
 
         err = room.join(player);
         if (err) {
-            return [err];
+            logger.error('加入邀请游戏房间失败, err=', err);
+            throw err;
         }
+
         this._roomMap.set(room.roomId, room);
         this._entities.set(player.uid, room);
 
-        return [null,{
+        return {
             roomId: room.roomId,
             players: room.genAllPlayers(player.uid)
-        }];
+        };
     }
 
     async enterGame(data) {
         if (data.roomType == null || !data.sceneId || !data.uid || !data.sid) {
-            return [CONSTS.SYS_CODE.ARGS_INVALID];
+            throw CONSTS.SYS_CODE.ROOM;
         }
 
         if (this._entities.has(data.uid)) {
             this.leaveGame(data);
         }
-
-        let player = null;
-        try{
-            player = await this._playerFactory.createPlayer(data);
-        }catch(err){
-            return [err];
+        let playerType = this._playerFactory.roomType2PlayerType(data.roomType);
+        if(null == playerType){
+            throw CONSTS.SYS_CODE.NOT_SUPPORT_MODE_PLAYER;
         }
 
-        if (!player) {
-            return [CONSTS.SYS_CODE.PLAYER_CREATE_FAILED];
-        }
-
+        let player = await this._playerFactory.createPlayer(data, playerType);
         let err = this._access(player.account, data.sceneId);
         if (err) {
-            return [err];
+            logger.error('进入游戏场景条件不满足, err=', err);
+            throw err;
         }
 
         let room = null;
-        switch (data.roomType) {
-            case consts.ROOM_TYPE.GODDESS:
-                room = this._createRoom(data.roomType, data.sceneId, GoddessRoom, 1);
-                break;
-            case consts.ROOM_TYPE.SINGLE:
-                room = this._createRoom(data.roomType, data.sceneId, FishRoom, 1);
-                break;
-            case consts.ROOM_TYPE.MULTI_FREE: {
-                room = this._searchMultiRoom(data.sceneId);
-                if (!room) {
-                    room = this._createRoom(data.roomType, data.sceneId, FishRoom);
-                }
-            }
-                break;
-            case consts.ROOM_TYPE.ARENA_MATCH:
-                room = this._createRoom(data.roomType, data.sceneId, FishRoom);
-                break;
-            default:
-                err = FishCode.NOT_SUPPORT_ROOMMODE;
-                break;
+        if (consts.ROOM_TYPE.MULTI_FREE == data.roomType) {
+            room = this._searchMultiRoom(data.sceneId);
         }
 
-        if (err) {
-            return [err];
+        if (null == room) {
+            room = this._roomFactory.createRoom({
+                roomMap: this._roomMap,
+                roomType: data.roomType,
+                sceneId: data.sceneId,
+                playerMax: consts.ROOM_PLAYER_MAX[data.roomType]
+            });
         }
 
         err = room.join(player);
         if (err) {
-            return [err];
+            logger.error('加入游戏房间失败, err=', err);
+            throw err;
         }
 
         this._roomMap.set(room.roomId, room);
         this._entities.set(player.uid, room);
 
-        let resp = {
+        return {
             roomId: room.roomId,
             players: room.genAllPlayers(player.uid)
         };
-        logger.error('玩家加入游戏房间', resp);
-        return [null, resp];
     }
 
     /**
@@ -248,6 +234,19 @@ class Instance {
         return resData;
     }
 
+    async continue_rmatch(data, cb) {
+        logger.error('排位赛继续比赛');
+        let room = this._entities.get(data.uid);
+        if (room) {
+            let player = room.getPlayer(data.uid);
+            player.prototypeObj = Player.prototype;
+            MatchPlayer.attach(player);
+            await player.continueMatch(data, cb);
+        }else {
+            throw CONSTS.SYS_CODE.PALYER_GAME_ROOM_DISMISS;
+        }
+    }
+
     /**
      * 设置玩家状态
      * @param {uid:10010,state: 0,sid:'game-server-1',sceneId:'scene-type-1'} data
@@ -268,7 +267,8 @@ class Instance {
         }
     }
 
-    rpc_match_start(data, cb) {
+    async rpc_match_start(data, cb) {
+        logger.error('rpc_match_start排位赛开始比赛',data);
         if (!data.uid) {
             utils.invokeCallback(cb, CONSTS.SYS_CODE.ARGS_INVALID);
             return;
@@ -276,13 +276,17 @@ class Instance {
 
         let room = this._entities.get(data.uid);
         if (room) {
+            //TODO create a matchPlayer
             let player = room.getPlayer(data.uid);
-            player && player.startRmatch(data);
+            player.prototypeObj = Player.prototype;
+            MatchPlayer.attach(player);
+            player && player.startMatch(data);
         }
         utils.invokeCallback(cb, null);
     }
 
     rpc_match_finish(data, cb) {
+        logger.error('rpc_match_finish排位赛结束',data);
         if (!data.uid) {
             utils.invokeCallback(cb, CONSTS.SYS_CODE.ARGS_INVALID);
             return;
@@ -290,10 +294,11 @@ class Instance {
 
         let room = this._entities.get(data.uid);
         if (room) {
+            //TODO create a matchPlayer
             let player = room.getPlayer(data.uid);
-            player && player.clearRmatch();
-            utils.invokeCallback(cb, null);
+            player && player.stopMatch && player.stopMatch() && MatchPlayer.dettach(player, Player.prototype);
         }
+        utils.invokeCallback(cb, null);
     }
 
     rpc_player_data_change(data, cb) {
@@ -307,8 +312,8 @@ class Instance {
             let player = room.getPlayer(data.uid);
             //玩家进行数据同步
             player.syncData();
-            utils.invokeCallback(cb, null);
         }
+        utils.invokeCallback(cb, null);
     }
 
     rpc_leave_game(data, cb) {
@@ -324,20 +329,10 @@ class Instance {
         utils.invokeCallback(cb, null);
     }
 
-    _searchMultiRoom(sceneId, robot =false) {
+    _searchMultiRoom(sceneId, robot = false) {
         for (let room of this._roomMap.values()) {
-            if (sceneId == room.sceneId && room.mode === consts.ROOM_TYPE.MULTI_FREE && (room.playerCount() < consts.ROOM_MAX_PLAYER
+            if (sceneId == room.sceneId && room.roomType === consts.ROOM_TYPE.MULTI_FREE && (room.playerCount < room.roomPlayerMaxCount
                     || !robot && room.kickRobot())) {
-                return room;
-            }
-        }
-        return null;
-    }
-
-    _matchRoom() {
-        for (let room of this._roomMap.values()) {
-            if (sceneId == room.sceneId && room.mode === consts.ROOM_TYPE.RANK_MATCH && room.playerCount() < 2) {
-
                 return room;
             }
         }
@@ -346,7 +341,7 @@ class Instance {
 
     //场景进入条件
     _access(account, sceneId) {
-        let sceneCfg = GAMECFG.scene_scenes_cfg[sceneId];
+        let sceneCfg = DESIGN_CFG.scene_scenes_cfg[sceneId];
         if (!sceneCfg) {
             return FishCode.NOT_SUPPORT_SCENETYPE;
         }
@@ -359,7 +354,6 @@ class Instance {
         //取玩家的最大武器等级
         let curMaxWpLv = this._gamePlay.cost.getWpLevelMax(account.weapon_energy);
         if (curMaxWpLv < sceneCfg.min_level) {
-            logger.error('maxWp = ', maxWp, ' sceneConfig.min_level = ', sceneCfg.min_level);
             return FishCode.WEAPON_LEVEL_LOW;
         }
         return null;
@@ -380,7 +374,7 @@ class Instance {
         if (!ROBOT_EVENT.has(route)) {
             return false;
         }
-        robotEvent.emit(route, data, cb);
+        this._robotEventEmitter.emit(route, data, cb);
         return true;
     }
 
@@ -454,26 +448,6 @@ class Instance {
             }
         }
     }
-
-    _genRoomId() {
-        let rid = global.SERVER_ID + utils.random_int_str(4);
-        while (this._roomMap.has(rid)) {
-            rid = global.SERVER_ID + utils.random_int_str(4);
-        }
-        return rid;
-    }
-
-    _createRoom(mode, sceneId, className = FishRoom, playerMax = consts.ROOM_MAX_PLAYER) {
-        let room = new className({
-            roomId: this._genRoomId(),
-            mode: mode,
-            sceneId: sceneId,
-            playerMax: playerMax,
-        });
-        room.start();
-        return room;
-    }
-
 }
 
 function attach() {

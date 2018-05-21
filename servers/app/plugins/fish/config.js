@@ -23,9 +23,17 @@ module.exports = {
         MATE_INTERVAL: 1000, //比赛匹配周期
         MATE_TIMEOUT: 10000, //匹配超时时间，超时则分配机器人
         FIRE: 100, //排位赛100炮
-        MSECONDS: 3 * 60 * 1000, //倒计时3分钟，单位毫秒 
+        MSECONDS: 180000, //倒计时3分钟，单位毫秒
     },
     ARENA:{
-
+        FIRE: 200, //1v1对战200炮
+        START_COUNTDOWN:30000, //单位ms
+        PK_DURATION:180000, //PK持续时间单位ms
+        TICK_DT:200, //事件轮训周期单位ms
+        MATCH_STATE:{
+            GOING:1,
+            FINISHED:2,
+            OVER:3, //对战
+        }
     }
 };

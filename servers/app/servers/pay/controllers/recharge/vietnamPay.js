@@ -73,7 +73,7 @@ class VietnamPay extends Pay {
         return amount;
     }
 
-    getGoodsName(shop_id) {
+    getGoodsName(shop_id, itemtype) {
         return "Thẻ nạp tiền";
     }
 

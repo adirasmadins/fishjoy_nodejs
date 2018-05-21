@@ -15,7 +15,7 @@ const tools = require('../../../utils/tools');
 const GAMECFG = require('../../../utils/imports').DESIGN_CFG;
 const GameEventBroadcast = require('../../../common/broadcast/GameEventBroadcast');
 const RedisUtil = require('../../../../app/utils/tools/RedisUtil');
-
+const RewardModel = require('../../../utils/account/RewardModel');
 const SAVE_DT = 30 * 1000;
 
 class GoddessPlayer extends ChannelPlayer {
@@ -27,6 +27,9 @@ class GoddessPlayer extends ChannelPlayer {
         this._isGodOVerAndSaved = false;
         this._top1Score = 0; //女神第一名关数
         this._top1Nick = 'None';
+        this._top1Charm = 0;//女神第一名魅力点数
+        this._jumpIdx = -1;
+
         if (this.account.goddess_jump > 0) {
             this.account.goddess_jump = Math.min(this.account.goddess_jump, 5);
             this._getTop1();
@@ -51,6 +54,7 @@ class GoddessPlayer extends ChannelPlayer {
                     }
                     this._top1Score = top1.score;
                     this._top1Nick = top1.ext.nickname;
+                    this._top1Charm = top1.ext.charm_point; 
                 }
             }   
         } catch (error) {
@@ -293,7 +297,10 @@ class GoddessPlayer extends ChannelPlayer {
         if (this._godIdx != godIdx) {
             return utils.invokeCallback(cb, FishCode.INVALID_GOD);
         }
-
+        this._getTop1();
+        if (this.account.charm_point < this._top1Charm) {
+            return utils.invokeCallback(cb, null, { charmBelowTop1: true });
+        }
         if (this.account.goddess_jump > 0 && this._top1Score > 0) {
             let goddess = this.account.goddess[godIdx];
             if (goddess.startWaveIdx + 1 >= this._top1Score - 1) {
@@ -321,6 +328,7 @@ class GoddessPlayer extends ChannelPlayer {
                 params: params,
             };
             new GameEventBroadcast(content).extra(this.account).add();
+            this._jumpIdx = goddess.startWaveIdx;
         }else{
             utils.invokeCallback(cb, FishCode.INVALID_GOD);
         }
@@ -358,6 +366,9 @@ class GoddessPlayer extends ChannelPlayer {
             if (!max_wave || max_wave < wc) {
                 max_wave = wc;
                 this.account.max_wave = max_wave;
+                let mission = new RewardModel(this.account);
+                mission.updateProcess(RewardModel.TaskType.GODDESS_LEVEL, max_wave);
+                mission.commit();
             }
 
             if (this._godHp === 0) {
@@ -448,7 +459,12 @@ class GoddessPlayer extends ChannelPlayer {
         }else if (this._actionType === 3) {
             return;
         }
-        logBuilder.addGoddessLog(this.account.id, wc, this._actionType);//女神挑战过关
+        if (this._jumpIdx === wc) {
+            logBuilder.addGoddessLog(this.account.id, wc, 4);//直接跳关开始新的一波
+            this._jumpIdx = -1;
+        }else{
+            logBuilder.addGoddessLog(this.account.id, wc, this._actionType);//女神挑战过关
+        }
         this._actionType = 2;
     }
             

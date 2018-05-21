@@ -97,7 +97,8 @@ class MatchingUser {
             winning_rate: this.genWinRate(),
             wp_skin: this.account.weapon_skin.equip,
             nbomb_cost: this.genNbombCost(),
-            vip: this.account.vip
+            vip: this.account.vip,
+            charm_point: this.account.charm_point,
         };
     }
 
@@ -134,6 +135,7 @@ MatchingUser.baseField = [
     ACCOUNTKEY.VIP,
     ACCOUNTKEY.WEAPON_ENERGY,
     ACCOUNTKEY.WEAPON,
+    ACCOUNTKEY.CHARM_POINT,
 ];
 
 module.exports = MatchingUser;

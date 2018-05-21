@@ -4,11 +4,9 @@ const MatchingUser = require('./matchingUser');
 const MatchingRobotUser = require('./matchingRobotUser');
 const messageService = require('../../../net/messageService');
 const matchingCmd = require('../../../cmd/matchingCmd');
-const managerCmd = require('../../../cmd/loadManagerCmd');
 const rankMatchCmd = require('../../../cmd/rankMatchCmd');
 const robotBuilder = require('../robot/robotBuilder');
 const AiData = require('./AiData');
-const REDISKEY = require('../../../database').dbConsts.REDISKEY;
 const fishCode = CONSTS.SYS_CODE;
 const omeloNickname = require('omelo-nickname');
 const consts = require('../consts');
@@ -16,7 +14,7 @@ const versionsUtil = require('../../../utils/imports').versionsUtil;
 const rpcSender = require('../../../net/rpcSender');
 const loadManagerCmd = require('../../../cmd/loadManagerCmd');
 const modules = require('../../../modules');
-const configReader = require('../../../utils/configReader');
+const designCfgUtils = require('../../../utils/designCfg/designCfgUtils');
 const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
 
 class RankMatching {
@@ -76,8 +74,8 @@ class RankMatching {
             session.set('matching', true);
             session.push('matching');
             msg.sid = session.frontendId;
-            let user = await MatchingUser.allocUser(msg);            
-            let rmMinLevel = configReader.getValue('common_const_cfg', 'RMATCH_OPEN_LIMIT');
+            let user = await MatchingUser.allocUser(msg);
+            let rmMinLevel = designCfgUtils.getCfgValue('common_const_cfg', 'RMATCH_OPEN_LIMIT');
             let curMaxWpLv = omelo.app.entry.instance.gamePlay.cost.getWpLevelMax(user.account.weapon_energy);
             logger.error('有人报名--curMaxWpLv = ', curMaxWpLv);
             if (curMaxWpLv < rmMinLevel || user.account.weapon < rmMinLevel) {
@@ -134,12 +132,14 @@ class RankMatching {
         let match_rank = robotBuilder._calcRank(user.account.match_rank);
         let ior = AiData.getIOR(match_rank);
         let vip = robotBuilder._calcVip(user.account.vip);
+        let charmPoint = robotBuilder.calcCharmPoint(user.account.charm_point);
         let robotInfo = {
             baseInfo: baseInfo,
             weapon_skin: weapon_skin,
             match_rank: match_rank,
             ior: ior,
             vip: vip,
+            charm_point: charmPoint,
         };
 
         let robot = MatchingRobotUser.allocUser(user, robotInfo);

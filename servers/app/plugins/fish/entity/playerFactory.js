@@ -1,4 +1,5 @@
 const ChannelPlayer =  require('./channelPlayer');
+const MatchPlayer =  require('./matchPlayer');
 const GoddessPlayer = require('../goddess/goddessPlayer');
 const RankMatchPlayer = require('../rankMatch/rankMatchPlayer');
 const ArenaPlayer = require('../arena/arenaPlayer');
@@ -10,56 +11,57 @@ class PlayerFactory{
         logger.error('-----------------PlayerFactory');
     }
 
-    _allocPlayer(data, classObj){
-        let promise = new Promise((resolve, reject)=>{
-            let baseField = classObj.sBaseField();
-            //logger.error('account data.uid= ', data.uid, baseField);
-            redisAccountSync.getAccount(data.uid, baseField, function (err, account) {
-                if(err){
-                    reject(CONSTS.SYS_CODE.DB_INNER_ERROR);
-                    return;
-                }
-                if(!account){
-                    logger.error('2212312  account data.uid= ', data.uid, baseField);
-                    reject(CONSTS.SYS_CODE.PLAYER_NOT_EXIST);
-                    return;
-                }
-
-                //logger.error('account = ', account);
-                let player = new classObj({
-                    uid: data.uid, 
-                    sid: data.sid, 
-                    account: account,
-                    kindId: consts.ENTITY_TYPE.PLAYER,
-                });
-                resolve(player);
-            });
-        });
-        return promise;
-    }
-
     /**
      * 创建一个真实玩家
      * @param {*} data 
      */
-    async createPlayer(data){
-        let classObj = this.getPlayerClass(data.roomType);
+    async createPlayer(data, playerType){
+        let classObj = this._getPlayerClass(playerType);
         if (!classObj) {
             return null;
         }
         return await this._allocPlayer(data, classObj);
     }
 
-    getPlayerClass (mode) {
-        switch (mode) {
+    async _allocPlayer(data, classObj){
+        let account = await redisAccountSync.getAccountAsync(data.uid, classObj.sBaseField());
+        let player = new classObj({
+            uid: data.uid,
+            sid: data.sid,
+            account: account,
+            kindId: consts.ENTITY_TYPE.PLAYER,
+        });
+        return player;
+    }
+
+    roomType2PlayerType(roomType){
+        switch (roomType) {
             case consts.ROOM_TYPE.GODDESS:
-                return GoddessPlayer;
+                return consts.PLAYER_TYPE.GODDESS;
             case consts.ROOM_TYPE.SINGLE:
             case consts.ROOM_TYPE.MULTI_FREE:
-                return ChannelPlayer;
+                return consts.PLAYER_TYPE.FISH;
             case consts.ROOM_TYPE.RANK_MATCH:
-                return RankMatchPlayer;
+                return consts.PLAYER_TYPE.RANK_MATCH;
             case consts.ROOM_TYPE.ARENA_MATCH:
+                return consts.PLAYER_TYPE.ARENA_MATCH;
+            default:
+                break;
+        }
+        return null;
+    }
+
+    _getPlayerClass (type) {
+        switch (type) {
+            case consts.PLAYER_TYPE.GODDESS:
+                return GoddessPlayer;
+            case consts.PLAYER_TYPE.FISH:
+                return ChannelPlayer;
+            case consts.PLAYER_TYPE.MATCH_FISH:
+                return MatchPlayer;
+            case consts.PLAYER_TYPE.RANK_MATCH:
+                return RankMatchPlayer;
+            case consts.PLAYER_TYPE.ARENA_MATCH:
                 return ArenaPlayer;
             default:
             break;

@@ -102,11 +102,11 @@ module.exports = {
             id: 'admin',
             useCluster: false,
             useSSL: versions.SSL,
-            static:{
-                enable:true,
-                opts:{
-                    root:null,
-                    index:false
+            static: {
+                enable: true,
+                opts: {
+                    root: null,
+                    index: false
                 }
             },
             views: true,
@@ -131,13 +131,13 @@ module.exports = {
             id: 'resource',
             useCluster: true,
             useSSL: versions.SSL,
-      static:{
-        enable:true,
-        opts:{
-            root:null,
-                    index:false
-        }
-    },
+            static: {
+                enable: true,
+                opts: {
+                    root: null,
+                    index: false
+                }
+            },
             views: true,
             http: {
                 host: getServerCfg('resource', 'resource').host,
@@ -273,11 +273,11 @@ module.exports = {
             id: 'admin',
             useCluster: false,
             useSSL: versions.SSL,
-            static:{
-                enable:true,
-                opts:{
-                    root:null,
-                    index:false
+            static: {
+                enable: true,
+                opts: {
+                    root: null,
+                    index: false
                 }
             },
             views: true,
@@ -302,13 +302,13 @@ module.exports = {
             id: 'resource',
             useCluster: true,
             useSSL: versions.SSL,
-          static:{
-            enable:true,
-            opts:{
-                root:null,
-                    index:false
-            }
-        },
+            static: {
+                enable: true,
+                opts: {
+                    root: null,
+                    index: false
+                }
+            },
             views: true,
             http: {
                 host: getServerCfg('resource', 'resource').host,

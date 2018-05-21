@@ -6,12 +6,6 @@ class GateHandler extends ReqHandler{
     constructor() {
         super();
     }
-
-    request(route, msg, session, next) {
-        omelo.app.entry.request(route, msg, session, (err, result)=>{
-            super.response(err, result, next);
-        });
-    }
 }
 
 module.exports = function () {

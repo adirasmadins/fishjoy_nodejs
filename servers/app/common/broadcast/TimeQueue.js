@@ -14,7 +14,7 @@ class TimeQueue {
 
         var crossQueue = this.queue;
         setInterval(function () {
-            logger.info('检测时间队列');
+           // logger.info('检测时间队列');
             var currentTimesamp = Date.parse(new Date());
             for (var i = 0; i < crossQueue.length; i++) {
                 var broadcast = crossQueue[i];

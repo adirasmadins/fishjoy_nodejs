@@ -20,14 +20,12 @@ class Pay {
      * @return {Promise}
      */
     async createPayOrder(data) {
-        logger.error('Pay createPayOrder data=', data);
         try{
             if (data.itemid == null || data.itemtype == null) {
                 throw ERROR_OBJ.PARAM_MISSING;
             }
 
-            let shopItemInfo = this._getShopItemInfo(data.itemid, data.itemtype);
-            if(!shopItemInfo){
+            if(null == this._getShopItemInfo(data.itemid, data.itemtype)){
                 throw ERROR_OBJ.BUY_WRONG_SHOP_ID;
             }
 
@@ -39,7 +37,7 @@ class Pay {
                 };
             }
 
-            data.goods_name = this.getGoodsName(data.itemid, buyType);
+            data.goods_name = this.getGoodsName(data.itemid, data.itemtype);
             data.goods_id = this.getGoodsId(data.itemid);
             let game_order_id = await dao_shop.createPayOrderItem(data);
 
@@ -48,6 +46,7 @@ class Pay {
             };
         }catch (err){
             logger.error('支付订单创建失败,err=',err);
+            throw ERROR_OBJ.ORDER_CREATE_FAIL;
         }
     }
 
@@ -57,7 +56,7 @@ class Pay {
      * @return {Promise.<*>}
      */
     async buy(data) {
-        logger.error('Pay buy data=', data);
+        // logger.error('Pay buy data=', data);
         try {
             let orderInfo = await dao_shop.getOrderInfo(data.orderid);
             data.orderInfo = orderInfo;
@@ -407,10 +406,10 @@ class Pay {
                     logBuilder.addGoldAndItemLog(item_list, account, scene);// 商城中的钻石变化需要写入物品日志
                     //统计钻石充值dfc
                     let mission = new RewardModel(account);
-                    mission.updateProcess(RewardModel.TaskType.CHARG_PEARL, log_data.price, 0);
-                    mission.updateProcess(RewardModel.TaskType.CHARG_PEARL, log_data.price, 1);
+                    const dayNth = tools.DateUtil.getDayNth(account.created_at);
+                    mission.updateProcess(RewardModel.TaskType.CHARG_PEARL, log_data.price, dayNth);
                     mission.updateProcess(RewardModel.TaskType.GET_VIP_LV, account.vip);
-                    mission.commit(); 
+                    mission.commit();
                     account.commit();
                 }
             });

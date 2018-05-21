@@ -37,6 +37,11 @@ for (let i = 0; i < daily_quest_cfg.length; i++) {
     supportTaskMap[getTaskKey(getMissionPrefix(item.type), item.type, item.condition, item.value1)] = true;
 }
 
+for (let i = 0; i < active_newbie_cfg.length; i++) {
+    let item = active_newbie_cfg[i];
+    supportTaskMap[getTaskKey(getMissionPrefix(1), 1, item.condition, item.value1)] = true;
+}
+
 for (let i = 0; i < active_activequest_cfg.length; i++) {
     let item = active_activequest_cfg[i];
     supportTaskMap[getTaskKey(getActivePrefix(item.repeat), item.repeat, item.condition, item.value1)] = true;
@@ -50,7 +55,6 @@ const EXPORT_TOOLS = {
 
 class MissionModel {
     constructor(account) {
-        // logger.error('=========================MissionModel');
         this._uid = account.id;
         this._taskProcessMap = {};
         //判断是否统计
@@ -250,13 +254,98 @@ class MissionModel {
         return { active_stat_newbie: newbie };
     }
 
+    static getInitNewbie(condition, value1) {
+        for (let i = 0; i < active_newbie_cfg.length; i++) {
+            let item = active_newbie_cfg[i];
+            if (item.condition == condition && item.value1 == value1) {
+                return item.id;
+            }
+        }
+        return null;
+    }
+
+    static getNewbieInfo(id) {
+        for (let i = 0; i < active_newbie_cfg.length; i++) {
+            let item = active_newbie_cfg[i];
+            if (item.id == id) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    static checkStatus(statusList, condition, value1) {
+        for (let i in statusList) {
+            let newbieStatus = statusList[i];
+            if (newbieStatus.condition == condition && newbieStatus.value1 == value1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取新手狂欢状态信息.
+     * @param {*} account 
+     */
+    static async getNewbieStatInfo(account, reward_status) {
+        let cmds = [];
+        let linkMap = {};
+        let notRepeated = {};
+        let linkIndex = 0;
+        for (let i = 0; i < active_newbie_cfg.length; i++) {
+            let item = active_newbie_cfg[i];
+            let taskKey = getTaskKey(getMissionPrefix(1), 1, item.condition, item.value1);
+            if (!notRepeated[taskKey]) {
+                cmds.push(['HGET', taskKey, account.id]);
+                linkMap[linkIndex] = {
+                    mainType: item.type,
+                    taskId: item.id,
+                    condition: item.condition,
+                    value1: item.value1,
+                    taskKey: taskKey
+                };
+                linkIndex++;
+                notRepeated[taskKey] = [];
+            }
+            notRepeated[taskKey].push(item.id);
+        }
+
+        let redisProcessInfo = await redisConnector.multi(cmds);
+
+        let statusList = [];
+        for (let itemId in reward_status) {
+            let itemInfo = MissionModel.getNewbieInfo(itemId);
+            statusList.push({
+                condition: itemInfo.condition,
+                value1: itemInfo.value1,
+            });
+        }
+
+        for (let i = 0; i < redisProcessInfo.length; i++) {
+            if (redisProcessInfo[i] != null) {
+                let linkInfo = linkMap[i];
+                let redisInfo = +redisProcessInfo[i];
+                let keyFlag = linkInfo.taskKey.split(':')[1];
+                let typeList = keyFlag.split('_');
+                let condition = typeList[1];
+                let value1 = typeList[2];
+                if (!MissionModel.checkStatus(statusList, condition, value1)) {
+                    let initId = MissionModel.getInitNewbie(condition, value1);
+                    if (null != initId) {
+                        reward_status[initId] = 1;
+                    }
+                }
+            }
+        }
+        return reward_status;
+    }
+
     static async getRedisProcessInfo(account) {
         let cmds = [];
         let linkMap = {};
         let notRepeated = {};
         let linkIndex = 0;
-        let mission_only_once = account.mission_only_once;
-        let mission_daily_reset = account.mission_daily_reset;
         for (let i = 0; i < daily_quest_cfg.length; i++) {
             let item = daily_quest_cfg[i];
             let taskKey = getTaskKey(getMissionPrefix(item.type), item.type, item.condition, item.value1);
@@ -272,6 +361,21 @@ class MissionModel {
             }
             notRepeated[taskKey].push(item.id);
 
+        }
+        for (let i = 0; i < active_newbie_cfg.length; i++) {
+            let item = active_newbie_cfg[i];
+            let taskKey = getTaskKey(getMissionPrefix(1), 1, item.condition, item.value1);
+            if (!notRepeated[taskKey]) {
+                cmds.push(['HGET', taskKey, account.id]);
+                linkMap[linkIndex] = {
+                    mainType: item.type,
+                    taskId: item.id,
+                    taskKey: taskKey
+                };
+                linkIndex++;
+                notRepeated[taskKey] = [];
+            }
+            notRepeated[taskKey].push(item.id);
         }
 
         let redisProcessInfo = await redisConnector.multi(cmds);
@@ -343,7 +447,13 @@ class MissionModel {
                             mission_only_once[linkInfo.taskId] = 1;
                             taskId = linkInfo.taskId;
                         }
-                        once[taskId] = processValue;
+
+                        if (mission_only_once[taskId] == -1) {
+                            once[taskId] = -1;
+                        } else {
+                            once[taskId] = processValue;
+                        }
+
                     } else {
                         once[linkInfo.taskId] = -1;
                     }
@@ -359,11 +469,17 @@ class MissionModel {
                                 break;
                             }
                         }
+
                         if (taskId == null) {
                             mission_daily_reset[linkInfo.taskId] = 1;
                             taskId = linkInfo.taskId;
                         }
-                        daily[taskId] = processValue;
+
+                        if (mission_daily_reset[taskId] == -1) {
+                            daily[taskId] = -1;
+                        } else {
+                            daily[taskId] = processValue;
+                        }
                     } else {
                         daily[linkInfo.taskId] = -1;
                     }
@@ -423,6 +539,7 @@ class MissionModel {
      */
     _addMissionOnlyOnce(taskType, value, subTaskType, prefix = TASK_PREFIX.MISSION_TASK_ONCE) {
         let taskKey = getTaskKey(prefix, TASK_MAIN_TYPE.ONCE, taskType, subTaskType);
+        //logger.error('taskKey:', taskKey);
 
         //任务类型是否存在
         if (!supportTaskMap[taskKey]) {
@@ -675,6 +792,7 @@ MissionModel.TaskType = {
     CHALLENGE_WIN: 28, //排位赛获得x次胜利
     CHALLENGE_DUANWEI: 29, //排位赛段位大于等于x
     MAX: 30,//最后一个，暂时取消掉了
+    WEAPON_DRAW: 31,//参加x次皮肤抽奖
 };
 
 const BASE = {};
@@ -708,6 +826,7 @@ BASE[MissionModel.TaskType.CHALLENGE_POS] = { "incrType": "max", "multiType": fa
 BASE[MissionModel.TaskType.CHALLENGE_WIN] = { "incrType": "incr", "multiType": false };
 BASE[MissionModel.TaskType.CHALLENGE_DUANWEI] = { "incrType": "max", "multiType": false };
 BASE[MissionModel.TaskType.MAX] = { "incrType": "incr", "multiType": false };
+BASE[MissionModel.TaskType.WEAPON_DRAW] = { "incrType": "incr", "multiType": false };
 
 
 MissionModel.Base = BASE;

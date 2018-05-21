@@ -508,6 +508,18 @@ class Connector {
         });
     }
 
+    async zadd(key, score, member) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            self._cmdClient.zadd(key, score, member, (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+        });
+    }
 
 }
 

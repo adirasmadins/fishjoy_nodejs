@@ -18,6 +18,7 @@ const ERROR_OBJ = CstError.ERROR_OBJ;
 const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 const DrawBroadcast = require('../../../../common/broadcast/DrawBroadcast');
 const itemDef = require('../../../../consts/itemDef');
+const RewardModel = require('../../../../utils/account/RewardModel');
 
 let TAG = "【dao_draw】";
 
@@ -83,6 +84,7 @@ function getDraw(data, cb) {
     let account = data.account;
 
     let type = data.type;
+    /** 抽奖次数 */
     let times = data.times;
     let draw_pool = DRAW_POOL[type];
     let platform = account.platform;
@@ -140,8 +142,9 @@ function getDraw(data, cb) {
                 drawBroadcastType = GameEventBroadcast.TYPE.DRAW.PEARL;
                 break;
 
-            // case ItemType.TOKENS:
+            // 物品中的13:'c***'被配置表转换为14:'c***'的兼容处理
             case ItemType.SKIN_DEBRIS:
+            case ItemType.SKIN_CARD:
                 // 需要判断玩家抽奖次数是否超过了限制(武器碎片抽奖)
                 let weaponSkinOwn = account.weapon_skin.own;
                 let weaponDrawId = type % 100;
@@ -164,7 +167,20 @@ function getDraw(data, cb) {
                 cost.num = cost.num * real_times;
                 logger.info(FUNC + "使用代币:", cost.num);
                 /** 玩家拥有的代币数量. */
-                let tokensCount = account.package[cost.type][cost.item] || 0;
+                // 物品中的13:'c***'被配置表转换为14:'c***'的兼容处理
+                if (null == account.package[ItemType.SKIN_DEBRIS]) {
+                    account.package[ItemType.SKIN_DEBRIS] = {};
+                }
+                if (null == account.package[ItemType.SKIN_CARD]) {
+                    account.package[ItemType.SKIN_CARD] = {};
+                }
+                let tokensCount13 = account.package[ItemType.SKIN_DEBRIS][cost.item] || 0;
+                let tokensCount14 = account.package[ItemType.SKIN_CARD][cost.item] || 0;
+                let tokensCount = tokensCount13 + tokensCount14;
+                account.package[ItemType.SKIN_CARD][cost.item] = tokensCount;
+                delete account.package[ItemType.SKIN_DEBRIS][cost.item];
+                account.package = account.package;
+                account.commit();
 
                 if (tokensCount < cost.num) {
                     logger.error(FUNC + "抽奖代币不足, 需要" + cost.num + "，实际拥有" + tokensCount);
@@ -181,7 +197,15 @@ function getDraw(data, cb) {
                 }
                 logger.info(FUNC + "cost.num :", cost.num);
                 drawBroadcastType = GameEventBroadcast.TYPE.DRAW.SKIN;
+
                 break;
+            default:
+            {
+                logger.error('item type:', cost.type);
+                cb({code: 6027, msg: 'Item Type Illegal'});
+                // cb(ERROR_OBJ.ITEM_TYPE_ILLEGAL);
+                return;
+            }
         }
 
         let rand = [];
@@ -225,6 +249,13 @@ function getDraw(data, cb) {
                     total_draw: account.total_draw,
                 };
 
+                // if (cost.type == ItemType.SKIN_DEBRIS || cost.type == 14) {
+                if (cost.type == ItemType.SKIN_CARD) {
+                    let mission = new RewardModel(account);
+                    // logger.error(`抽奖任务记录`);
+                    mission.commitProcess(RewardModel.TaskType.WEAPON_DRAW, times, 0);
+                }
+
                 cb(null, ret_account);
 
                 let player = account.nickname;
@@ -262,8 +293,6 @@ function getDraw(data, cb) {
                 new DrawBroadcast(drawContent).extra(account).add();
 
                 // yDONE: 金币数据记录
-                let gain = 0;
-                let cost = 0;
                 let item_list = [];
                 let cost_item_list = [];
                 for (let i = 0; i < items.length; i++) {
@@ -274,9 +303,6 @@ function getDraw(data, cb) {
                         item_id: item_id,
                         item_num: item_num
                     });
-                    if (itemDef.GOLD == item_id) {
-                        gain += item_num;
-                    }
                 }
                 logger.info(FUNC + "-----------------cost_items:", cost_items);
                 for (let i = 0; i < cost_items.length; i++) {
@@ -287,9 +313,6 @@ function getDraw(data, cb) {
                         item_id: item_id,
                         item_num: item_num
                     });
-                    if (itemDef.GOLD == item_id) {
-                        cost += item_num;
-                    }
                 }
 
                 logBuilder.addGoldAndItemLog(item_list, account, common_log_const_cfg.ACTIVE_DRAW);

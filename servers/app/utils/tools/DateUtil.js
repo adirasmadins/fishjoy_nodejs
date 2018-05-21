@@ -29,6 +29,18 @@ exports.FMT = {
 };
 
 /**
+ * 获取当前是创建账号的第几日
+ * @param {*} created_at 创建日期
+ */
+exports.getDayNth = (created_at) => {
+    let time1 = moment(created_at).format('YYYY-MM-DD');
+    let time2 = moment().format('YYYY-MM-DD');
+    logger.error('time1:', time1);
+    logger.error('time2:', time2);
+    return moment(time2).diff(moment(time1), 'days') + 1;
+}
+
+/**
  * 输入: 2017-09-05 20:00:01
  * 输出: 2017-09-05 19:00:00
  */

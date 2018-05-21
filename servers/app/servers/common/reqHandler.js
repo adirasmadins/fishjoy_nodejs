@@ -1,3 +1,5 @@
+const omelo = require('omelo');
+
 class ReqHandler {
     constructor() {}
 
@@ -10,7 +12,13 @@ class ReqHandler {
     }
 
     request(route, msg, session, next) {
-        next(null, answer.respNoData(CONSTS.SYS_CODE.NOT_SUPPORT_SERVICE));
+        try{
+            omelo.app.entry.request(route, msg, session, (err, result)=>{
+                this.response(err, result, next);
+            });
+        }catch (err){
+            this.response(err, null, next);
+        }
     }
 
     response(err, result, next) {

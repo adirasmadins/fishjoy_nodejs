@@ -116,7 +116,7 @@ class LogBackup extends Task {
     //获取备份表名
     async _getTableName(task) {
         let tab = await mysqlConnector.query(`SHOW TABLES FROM ${this.bakDBName}`);
-        let yesterday = moment().substract(1, "days").format('YYYYMMDD');
+        let yesterday = moment().subtract(1, "days").format('YYYYMMDD');
         let index = 1;
         for (let k in tab) {
             let tablename = tab[k][`Tables_in_${this.bakDBName}`];

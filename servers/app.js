@@ -240,6 +240,7 @@ app.configure('production|development', 'hall', function () {
     httpLockFilter.addRoute('/hall/clientApi/diamond_to_gold');
     httpLockFilter.addRoute('/hall/clientApi/get_weekend_reward');
     httpLockFilter.addRoute('/hall/clientApi/weapon_buy_skin');
+    httpLockFilter.addRoute('/hall/clientApi/newbie_reward');
     omeloHttpPlugin.filter(httpLockFilter);
 });
 

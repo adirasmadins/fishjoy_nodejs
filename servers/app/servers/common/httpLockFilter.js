@@ -65,7 +65,6 @@ class HttpLockFilter {
     }
 
     async after(ctx, next) {
-        logger.info('call after');
         let uid = ctx.request.body && ctx.request.body.data &&  ctx.request.body.data.uid;
         uid && this.unlock(uid);
         await next();

@@ -21,7 +21,6 @@ module.exports = (router) => {
 		logger.error('redirect url redirectUrl=', redirectUrl);
 
 		ctx.redirect(redirectUrl);
-
 	});
 
 	//获取游戏声明

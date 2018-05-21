@@ -77,7 +77,9 @@ module.exports = {
         // time: '*/10,*,*,*,*,*',
         time: '0,0,0,*,*,7', //每周日0点执行
         subTask: [
-            { redisKey: REDISKEY.SOCIAL_SHARE_STATUS_2, type: SUBTASK_TYPE.DEL }
+            { redisKey: REDISKEY.SOCIAL_SHARE_STATUS_2, type: SUBTASK_TYPE.DEL },
+            { redisKey: REDISKEY.RANK.BP, type: SUBTASK_TYPE.DEL },
+            { redisKey: REDISKEY.RANK.FLOWER, type: SUBTASK_TYPE.DEL }
         ]
     },
     //按月重置

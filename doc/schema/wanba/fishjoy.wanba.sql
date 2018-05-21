@@ -548,7 +548,7 @@ DROP TABLE IF EXISTS `tbl_gold_log`;
 CREATE TABLE `tbl_gold_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `account_id` bigint(20) NOT NULL COMMENT '账户ID',
-  `log_at` varchar(19) DEFAULT NULL COMMENT '记录日志的时间',
+  `log_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录日志的时间',
   `gain` int(11) NOT NULL DEFAULT '0' COMMENT '获得金币数',
   `cost` int(11) NOT NULL DEFAULT '0' COMMENT '消费金币数',
   `total` int(11) DEFAULT '0' COMMENT '玩家持有的金币总数，此字段需要和玩家当前持有金币信息进行验证',

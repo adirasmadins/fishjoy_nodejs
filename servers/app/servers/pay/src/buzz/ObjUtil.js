@@ -350,7 +350,7 @@ function TimeQueue(timeInterval, timeOffset, recentRetLength, maxQueueLength) {
 
     var crossQueue = this.queue;
     setInterval(function () {
-        if (DEBUG) logger.info('检测时间队列');
+        //if (DEBUG) logger.info('检测时间队列');
         var currentTimesamp = Date.parse(new Date());
         for (var i = 0; i < crossQueue.length; i++) {
             var broadcast = crossQueue[i];

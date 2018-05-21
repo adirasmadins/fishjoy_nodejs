@@ -16,7 +16,7 @@ module.exports = Reward;// 奖励对象
 function Reward(list) {
     // ---- 储存原始奖励字段
     this.list = list;
-    
+
     // ---- 储存解析后的奖励
     this.gold = 0;      // 金币
     this.pearl = 0;     // 钻石
@@ -28,12 +28,13 @@ function Reward(list) {
     this.tokens = {};   // 代币
     this.skin = {};     // 武器皮肤(获取新皮肤或转换为对应皮肤的碎片)
     this.skin_debris = {};   // 武器皮肤的碎片
+    this.skin_card = {};   // 武器抽奖卡
     this.mix = {};      // 合成道具
-    
+
     // ---- 解析奖励
     for (let i in this.list) {
         let item = this.list[i];
-        
+
         let item_id = item[IDX_ID];
         let itemInfo = item_item_cfg[item_id];
 
@@ -90,6 +91,10 @@ function Reward(list) {
 
                 case ItemType.SKIN_DEBRIS:
                     createOrAdd(this.skin_debris, item_id, item[IDX_NUM]);
+                    break;
+
+                case ItemType.SKIN_CARD:
+                    createOrAdd(this.skin_card, item_id, item[IDX_NUM]);
                     break;
             }
         }

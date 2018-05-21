@@ -272,8 +272,7 @@ class FishRoom extends Room{
      */
     join(player) {
         let uid = player.uid;
-        if (this._playerMap.has(uid)) {
-            logger.error('玩家已经在房间内', uid);
+        if(this.isInRoom(uid)){
             return;
         }
 
@@ -308,7 +307,6 @@ class FishRoom extends Room{
         });
 
         let isRobot = !player.isRealPlayer();
-        //logger.error('isRealPlayer = ', isRobot)
         isRobot && (this._robotJoinTimestamp = new Date().getTime());
     }
 
@@ -415,8 +413,24 @@ class FishRoom extends Room{
      * 房间内玩家数量
      * @returns {number}
      */
-    playerCount() {
+    get playerCount() {
         return this._playerMap.size;
+    }
+
+    get roomPlayerMaxCount(){
+        return consts.ROOM_PLAYER_MAX[this.roomType];
+    }
+
+    //是否已满
+    isFull(){
+        return this.playerCount >= this.roomPlayerMaxCount;
+    }
+
+    isInRoom(uid){
+        if (this._playerMap.has(uid)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -457,7 +471,7 @@ class FishRoom extends Room{
                 super.addMsgChannel(player.uid, player.sid);
                 super.addWorldChannel(player.uid, player.sid, constDef.WORLD_CHANNEL_NAME.BARRAGE);
                 if(!isNet){
-                    this.addGamePos(player.uid, player.sid, {sid:player.sid, roomId:player.roomId, roomType:this.mode, time:Date.now()});
+                    this.addGamePos(player.uid, player.sid, {sid:player.sid, roomId:player.roomId, roomType:this.roomType, time:Date.now()});
                 }
 
                 break;

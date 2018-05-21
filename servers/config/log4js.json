@@ -110,5 +110,5 @@
       "level": "ERROR"
     }
   },
-  "lineDebug": true
+  "lineDebug": false
 }

@@ -11,9 +11,6 @@ const globalStatusData = require('../../utils/globalStatusData');
 const fishCmd = require('../../cmd/fishCmd');
 const serviceCtrl = require('../common/serviceCtrl');
 
-let gCount = 0;
-let gRoomId = '';
-
 class GameApp {
     constructor() {
         this._instance = new plugins[GAME_TYPE].Instance();
@@ -128,58 +125,60 @@ class GameApp {
     }
 
     async c_enter_room(msg, session, cb) {
-        //TODO 临时测试
-        // gCount++;
-        // if (gCount > 1) {
-        //     msg.roomId = gRoomId;
-        // }
-
-        msg.sid = session.frontendId;
-        let recoverRoomId = null;
-        let gamePos = await globalStatusData.queryData(constDef.GLOBAL_STATUS_DATA_TYPE.PLAYER_GAME_POS, rpcSender.serverType.game, msg.uid);
-        if (gamePos) {
-            if (gamePos.sid != msg.sid) {
-                await rpcSender.invoke(rpcSender.serverType.game, rpcSender.serverModule.playerRemote, fishCmd.remote.leaveGame.route, {uid: msg.uid});
-            } else {
-                if(msg.roomType && gamePos.roomType != msg.roomType){
-                    await this._instance.leaveGame(msg);
-                }else {
-                    recoverRoomId = gamePos.roomId;
+        //TODO 测试
+        msg.roomType = 4;
+        msg.sceneId = 'scene_1V1';
+        try {
+            msg.sid = session.frontendId;
+            let recoverRoomId = null;
+            let gamePos = await globalStatusData.queryData(constDef.GLOBAL_STATUS_DATA_TYPE.PLAYER_GAME_POS, rpcSender.serverType.game, msg.uid);
+            if (gamePos) {
+                if (gamePos.sid != msg.sid) {
+                    await rpcSender.invoke(rpcSender.serverType.game, rpcSender.serverModule.playerRemote, fishCmd.remote.leaveGame.route, {uid: msg.uid});
+                } else {
+                    if(msg.roomType && gamePos.roomType != msg.roomType){
+                        await this._instance.leaveGame(msg);
+                    }else {
+                        recoverRoomId = gamePos.roomId;
+                    }
                 }
-
             }
-        }
 
-        //加入指定房间
-        let _respose = [null, null];
-        if (msg.roomId) {
-            _respose = await this._instance.enterInviteGame(msg);
-        } else {
-            if (!recoverRoomId) {
-                _respose = await this._instance.enterGame(msg);
+            //加入指定房间
+            let _respose = null;
+            if (msg.roomId) {
+                _respose = await this._instance.enterGameByRoomId(msg);
             } else {
-                msg.roomId = recoverRoomId;
-                _respose = await this._reconnectGame(msg);
+                if (!recoverRoomId) {
+                    _respose = await this._instance.enterGame(msg);
+                } else {
+                    msg.roomId = recoverRoomId;
+                    _respose = await this._reconnectGame(msg);
+                }
             }
-        }
-        if (!_respose[0]) {
-            gRoomId = _respose[1].roomId;
-            session.set('roomId', _respose[1].roomId);
+
+            session.set('roomId', _respose.roomId);
             session.set(rpcSender.serverIdKey.game, session.frontendId);
             session.pushAll(function () {
-                logger.info(`用户[${msg.uid}]加入游戏成功`, _respose[1]);
-                utils.invokeCallback(cb, null, _respose[1]);
+                logger.info(`用户[${msg.uid}]加入游戏成功`, _respose);
+                utils.invokeCallback(cb, null, _respose);
             });
-        } else {
-            logger.error(`用户[${msg.uid}]加入游戏失败`, _respose[0]);
-            utils.invokeCallback(cb, _respose[0]);
+
+        }catch(err){
+            logger.error(`用户[${msg.uid}]加入游戏失败`, err);
+            utils.invokeCallback(cb, err);
         }
+
     }
 
     c_leave_room(msg, session, cb) {
         logger.error(`用户[${msg.uid}]主动退出房间`);
         this._instance.leaveGame(msg);
         utils.invokeCallback(cb, null, CONSTS.SYS_CODE.OK);
+    }
+
+    async c_continue_rmatch(data, session, cb) {
+        await this._instance.continue_rmatch(data, cb);
     }
 
     async _reconnectGame(msg) {

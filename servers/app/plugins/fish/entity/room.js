@@ -1,11 +1,11 @@
 const omelo = require('omelo');
 const globalStatusData = require('../../../utils/globalStatusData');
 const rpcDefs = require('../../../net/rpcDefs');
-const constDef = require('../../../consts/constDef');
+
 class Room{
     constructor(opts){
         this._roomId = opts.roomId;
-        this._mode = opts.mode;
+        this._roomType = opts.roomType;
         this._sceneId = opts.sceneId;
         this._gamePosType = opts.gamePosType || null;
 
@@ -27,7 +27,7 @@ class Room{
 
     //获取房间模式
     get mode() {
-        return this._mode;
+        return this._roomType;
     }
 
     get sceneId() {

@@ -12,7 +12,11 @@ class PaySdk {
             return;
         }
         try{
-            const CLASS = require(`./${ver}Pay`);
+            let CLASS = require(`./${ver}Pay`);
+            if(versionsUtil.isDevelopment()){
+                CLASS = require('./localPay');
+            }
+
             let sdk = new CLASS(payConfig);
             sdk.start && sdk.start();
             this._install(channelId, sdk);

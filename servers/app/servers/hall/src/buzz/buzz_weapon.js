@@ -19,6 +19,9 @@ const common_log_const_cfg = DESIGN_CFG.common_log_const_cfg;
 const newweapon_upgrade_cfg = DESIGN_CFG.newweapon_upgrade_cfg;
 const GameEventBroadcast = require('../../../../common/broadcast/GameEventBroadcast');
 
+const COST_ITEM_KEY = 'i007';
+const COST_PEARL_KEY = 'i002';
+const STONE_KEY = 'i500';
 
 let MIN_WEAPON_ID = 1;
 let MAX_WEAPON_ID = MIN_WEAPON_ID;
@@ -96,13 +99,15 @@ function upstar(dataObj, cb) {
  * 武器升级
  */
 function levelup(dataObj, cb) {
-    if (!lPrepare(dataObj)) return;
+    _newWeaponUp(dataObj.use_stone, dataObj.account, cb);
 
-    _levelup(dataObj, cb);
+    // if (!lPrepare(dataObj)) return;
 
-    function lPrepare(input) {
-        return BuzzUtil.checkParams(input, ['token'], "buzz_weapon", cb);
-    }
+    // _levelup(dataObj, cb);
+
+    // function lPrepare(input) {
+    //     return BuzzUtil.checkParams(input, ['token'], "buzz_weapon", cb);
+    // }
 }
 
 /**
@@ -704,6 +709,205 @@ function _equip(dataObj, cb) {
     } else {
         cb && cb(ERROR_OBJ.INVALID_WP_SKIN);
     }
+}
+
+/**
+ * 武器升级重构
+ */
+function _newWeaponUp(isUseStone, account, cb) {
+    let curWpLV = account.weapon;
+    let curEnergys = account.weapon_energy;
+    let isDone = true;
+
+    //确认合法的当前等级
+    let maxLv = 1;
+    for (let k in curEnergys) {
+        let num = parseInt(k);
+        maxLv = Math.max(num, maxLv);
+    }
+    if (curEnergys[curWpLV] == null) {
+        curWpLV = maxLv;
+    }else {
+        curWpLV = Math.max(maxLv, curWpLV);
+    }
+
+    //找出当前等级下一级的配置并校验
+    let cfg = DESIGN_CFG.newweapon_upgrade_cfg;
+    let wbks = Object.keys(cfg);
+    wbks.sort(function (a, b) {
+        return Number(a) > Number(b) ? 1 : -1;
+    });
+    let i = wbks.indexOf(curWpLV.toString());
+    if (i === -1) {
+        return cb(ERROR_OBJ.WEAPON_LEVEL_INVALID);
+    }else if (i === wbks.length - 1) {
+        return cb(ERROR_OBJ.WEAPON_INFO_NULL);
+    }
+    let nextWpLV =  Number(wbks[i + 1]);
+    let nextCfg = cfg[nextWpLV];
+    if (!nextCfg) {
+        return cb(ERROR_OBJ.WEAPON_INFO_NULL); 
+    }
+    if (curEnergys[nextWpLV] >= 0) {
+        return cb(ERROR_OBJ.WEAPON_LEVELUP_REPEAT);
+    }
+
+    let cost = nextCfg.unlock_cost; //指定货币消耗数量
+    let material = nextCfg.unlock_material; //材料及数量
+    if (!cost && nextWpLV > 1) {
+        return cb(ERROR_OBJ.WEAPON_INFO_NULL); 
+    }
+
+    //升级约定消耗道具i007、锻造成功率i500
+    let itemCostLit = [];
+    let ITEM_CFGS = DESIGN_CFG.item_item_cfg;
+    if (!ITEM_CFGS || !ITEM_CFGS[COST_ITEM_KEY]) {
+        return cb(ERROR_OBJ.PACK_ITEM_NOT_EXIST);
+    }
+    let curPackage = account.package;
+    let curSkill = account.skill;
+    let res = _costItemFromPackage(null, curPackage, COST_ITEM_KEY, cost);
+    let actCost = cost;
+    let leftPearl = 0;
+    if (res.err) {
+        leftPearl = res.leftPearl;
+        if (leftPearl > 0 && account.pearl < leftPearl) {
+            return cb(res.err);
+        }
+        actCost = res.curItemCount;
+        itemCostLit.push({
+            item_id: COST_PEARL_KEY,
+            item_num: leftPearl
+        });
+    }
+    itemCostLit.push({
+        item_id: COST_ITEM_KEY,
+        item_num: actCost
+    });
+
+    //锻造所需材料确认及消耗
+    if (!material || !(material instanceof Array)) {
+        return cb(ERROR_OBJ.WEAPON_INFO_NULL); 
+    }
+    let materialLength = material.length;
+    if (materialLength > 0) {
+        isDone = false;
+        for (let i = 0; i < materialLength; i ++) {
+            let temp = material[i];
+            if (!temp || temp.length != 2) {
+                return cb(ERROR_OBJ.WEAPON_INFO_NULL);  
+            }
+            let itemKey = temp[0];
+            let itemNum = temp[1];
+            let res = _costItemFromPackage(curSkill, curPackage, itemKey, itemNum);
+            if (res.err) {
+                return cb(res.err);
+            }
+            itemCostLit.push({
+                item_id: itemKey,
+                item_num: itemNum
+            });
+        }
+        //确定成功率\陨石消耗
+        let unlockRate = nextCfg.unlock_rate;
+        if (isUseStone) {
+            let needStone = Math.round((1 - unlockRate) * 100);
+            if (!needStone) {
+                return cb(ERROR_OBJ.WEAPON_INFO_NULL); 
+            }
+            let res = _costItemFromPackage(null, curPackage, STONE_KEY, needStone);
+            if (res.err) {
+                return cb(res.err);
+            }
+            itemCostLit.push({
+                item_id: STONE_KEY,
+                item_num: needStone,
+            });
+            isDone = true;
+        }
+        else {
+            isDone = unlockRate >= Math.random();
+        }
+    }
+
+    //升级结果、返回数据、日志记录、任务统计、计算魅力值并返回
+    if (isDone) {
+        curEnergys[nextWpLV] = nextCfg.needpower;
+        account.weapon_energy = curEnergys;
+        account.weapon = nextWpLV;
+        leftPearl > 0 && (account.pearl = -leftPearl); //注意增量，消耗则为负数
+    }
+    account.package = curPackage;
+    account.skill = curSkill;
+    logBuilder.addGoldAndItemLog(itemCostLit, account, common_log_const_cfg.WEAPON_UNLOCK, -1);
+    let reward = new RewardModel(account);
+    reward.addProcess(RewardModel.TaskType.UPDATE_WEAPON_LV, account.weapon);
+    account.commit();
+    let ret = {
+        change: {
+            pearl: account.pearl,
+            package: curPackage,
+            skill: curSkill,
+        },
+        weapon_level: account.weapon,
+        is_success: isDone,
+        weapon_energy: account.weapon_energy,
+    };
+    CacheAccount.resetCharmPoint(account, function (chs) {
+        if (chs && chs.length == 2) {
+            let charmPoint = chs[0];
+            let charmRank = chs[1];
+            charmPoint >= 0 && (ret.change.charm_point = charmPoint);
+            charmRank >= 0 && (ret.change.charm_rank = charmRank);
+        }
+        cb(null, ret);
+    });
+}
+
+/**
+ * 从背包中扣除道具
+ * @param {*} itemKey 
+ */
+function _costItemFromPackage(curSkill, curPackage, itemKey, costCount) {
+    let ITEM_CFGS = DESIGN_CFG.item_item_cfg;
+    let itemCfg = ITEM_CFGS[itemKey];
+    let itype = itemCfg.type;
+    if (itype === 3) {
+        if (!curSkill) {
+            return { err: ERROR_OBJ.WEAPON_UNLOCK_DIAMOND_NOT_ENOUGH };
+        }
+        let skillId = itemCfg.id;
+        if (!curSkill[skillId] || curSkill[skillId] < costCount) {
+            return { err: ERROR_OBJ.WEAPON_UNLOCK_DIAMOND_NOT_ENOUGH };
+        }
+        curSkill[skillId] = Math.max(0, curSkill[skillId] - costCount);
+    }else {
+        if (!curPackage[itype]) {
+            if (itemKey === COST_ITEM_KEY) {
+                return { 
+                    err: ERROR_OBJ.WEAPON_UNLOCK_DIAMOND_NOT_ENOUGH,
+                    leftPearl: costCount, //武器精华不足的用钻石补齐购买
+                    curItemCount: 0, //实际消耗的武器精华
+                 };
+            }
+            return { err: ERROR_OBJ.WEAPON_UNLOCK_DIAMOND_NOT_ENOUGH };
+        }
+        let curItemCount = curPackage[itype][itemKey] || 0;
+        curItemCount = Math.max(0, curItemCount);
+        if (curItemCount < costCount) {
+            if (itemKey === COST_ITEM_KEY) {
+                curPackage[itype][itemKey] = 0;
+                return { 
+                    err: ERROR_OBJ.WEAPON_UNLOCK_DIAMOND_NOT_ENOUGH,
+                    leftPearl: costCount - curItemCount,//武器精华不足的用钻石补齐购买
+                    curItemCount: curItemCount, //实际消耗的武器精华
+                 };
+            }
+            return { err: ERROR_OBJ.WEAPON_UNLOCK_DIAMOND_NOT_ENOUGH };
+        }
+        curPackage[itype][itemKey] = Math.max(0, curItemCount - costCount);
+    }
+    return { err: null };
 }
 
 

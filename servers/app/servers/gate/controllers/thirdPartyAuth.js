@@ -46,9 +46,9 @@ class ThirdPartyAuth {
             sdkAuthResponse.charm_point = account.charm_point;
             sdkApi.reportUserAchievement(sdkAuthResponse);
 
-            let globalSwitchCdkey = await RedisUtil.get(REDISKEY.SWITCH.CDKEY);
-            globalSwitchCdkey = +globalSwitchCdkey;
-            account.cdkey_on &= globalSwitchCdkey;
+            // let globalSwitchCdkey = await RedisUtil.get(REDISKEY.SWITCH.CDKEY);
+            // globalSwitchCdkey = +globalSwitchCdkey;
+            // account.cdkey_on &= globalSwitchCdkey;
             
             return logicResponse.ask(account.toJSON());
         } catch (err) {

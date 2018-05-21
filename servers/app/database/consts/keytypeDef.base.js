@@ -496,7 +496,7 @@ exports.OtherDef = {
         "def": 0,
         "type": "number"
     },
-    "max_wave": {
+    "192.168.35.234_wave": {
         "def": 0,
         "type": "number"
     },
@@ -537,7 +537,8 @@ exports.OtherDef = {
     "match_points": {
         "def": 800,
         "type": "number",
-        "inc":true
+        "inc":true,
+        "min":0,
     },
     "match_rank": {
         "def": 5,

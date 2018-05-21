@@ -278,7 +278,10 @@ function challengeGoddess(data, cb) {
     if (!curGod || !_isGodUnlocked(curGod)) {
         throw ERROR_OBJ.LOCK_GOD;
     }
-
+    
+    let mission = new RewardModel(account);
+    mission.updateProcess(RewardModel.TaskType.GODDESS_LEVEL, account.max_wave);
+    
     //新增暂离状态免费进入次数限制
     if (data.isForEnterFree) {
         if (!curGod.isPauseAway) {
@@ -300,6 +303,7 @@ function challengeGoddess(data, cb) {
         pauseAwayFree[idx] = freeTimes + 1;
         account.goddess_free_pause_away = pauseAwayFree;
         account.pearl = -cost;
+        mission.commit();
         account.commit();
         cb(null, {
             pearl: account.pearl,
@@ -329,9 +333,7 @@ function challengeGoddess(data, cb) {
         logBuilder.addItemLog(account.id, 'i002', -pearl_cost, account.pearl, common_log_const_cfg.GOD_CHALLENGE, account.level);
     }
     //统计女神挑战次数dfc
-    let mission = new RewardModel(account);
     mission.updateProcess(RewardModel.TaskType.DEFEND_GODDESS, 1);
-    mission.updateProcess(RewardModel.TaskType.GODDESS_LEVEL, account.max_wave);
     mission.commit();
     account.commit();
     let ret = {
@@ -353,48 +355,25 @@ function challengeGoddess(data, cb) {
  * 计算跳关次数
  */
 async function _calJumLeft (account) {
-    let ranks = [
-        'rank:goddess:result',
-        'rank:charm:result'
-    ];
-    let data = [];
-    for (let i = 0; i < ranks.length; i ++) {
-        let platform = account.platform;
-        let k = ranks[i];
-        data[i] = await RedisUtil.get(`${k}:${platform}`);
-        data[i] = JSON.parse(data[i]);
-    }
-    let goddesTop1 = -1;
-    let rankGoddess = data[0];
-    if (rankGoddess) {
-        let ps = rankGoddess.players;
-        if (ps && ps.length > 0) {
-            let top1 = ps[0];
-            if (top1.uid == account.id) {
-                //自己是第一名，则不能计算跳关
-                return;
-            }
-            goddesTop1 = top1.ext.charm_point; //女神第一名魅力点数
-        }
-    }
-    if (goddesTop1 > 0 && account.charm_point > goddesTop1) {
+    let platform = account.platform;
+    let k = 'rank:charm:result';
+    let rankCharm = await RedisUtil.get(`${k}:${platform}`);
+    rankCharm = JSON.parse(rankCharm);
+    if (rankCharm) {
         let myCharmRank = 10001;
-        let rankCharm = data[1];
-        if (rankCharm) {
-            let ps = rankCharm.players;
-            if (ps) {
-                for (let i = 0; i < ps.length; i ++) {
-                    let rp = ps[i];
-                    if (rp.uid == account.id) {
-                        myCharmRank = i + 1;
-                        break;
-                    }
+        let ps = rankCharm.players;
+        if (ps) {
+            for (let i = 0; i < ps.length; i ++) {
+                let rp = ps[i];
+                if (rp.uid == account.id) {
+                    myCharmRank = i + 1;
+                    break;
                 }
-                let a = Math.floor(Math.pow(Math.max(1, 100 - myCharmRank), 0.4));
-                let jumpLeft = Math.min(5, a); 
-                account.goddess_jump = jumpLeft;
-                account.commit();
             }
+            let a = Math.floor(Math.pow(Math.max(1, 100 - myCharmRank), 0.4));
+            let jumpLeft = Math.min(5, a); 
+            account.goddess_jump = jumpLeft;
+            account.commit();
         }
     }
 }
