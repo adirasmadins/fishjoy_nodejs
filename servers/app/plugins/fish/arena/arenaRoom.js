@@ -131,15 +131,12 @@ class ArenaRoom extends Room {
             if(opts.asyncMatch){
                 this._countdown.reset(0);
                 //TODO 加载对手比赛信息
+            }else if(this._match_state == config.ARENA.MATCH_STATE.READY){  //invitee 受邀者
+                this._countdown.reset(0);
+                //开始实时对战
             }else {
-                //invitee 受邀者
-                if (this._match_state == config.ARENA.MATCH_STATE.READY) {
-                    this._countdown.reset(0);
-                    //开始实时对战
-                } else {
-                    //如果比赛等待时间已经结束，则受邀者自己创建房间进行异步对战
-                    return -1;//new Error('比赛已经开始了,只能异步对战了，自己创建房间吧');
-                }
+                //如果比赛等待时间已经结束，则受邀者自己创建房间进行异步对战
+                return ERROR_OBJ.MATCH_WAIT_TIMEOUT;
             }
         }
         player.reset_gold();

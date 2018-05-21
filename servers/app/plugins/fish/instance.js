@@ -152,6 +152,11 @@ class Instance {
 
         err = room.join(player);
         if (err) {
+            if(err == CONSTS.SYS_CODE.MATCH_WAIT_TIMEOUT){
+                data.asyncMatch = true;
+                return await this.enterGame(data);
+            }
+
             logger.error('加入邀请游戏房间失败, err=', err);
             throw err;
         }

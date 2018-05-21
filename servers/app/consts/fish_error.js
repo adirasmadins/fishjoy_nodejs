@@ -326,6 +326,7 @@ const _errorCode = {
     NOT_SUPPORT_MODE_PLAYER: 7122, //不支持此模式玩家
     WEAPON_TURN_GOLD_TOO_LOW: 7123, //你的金币过低，不能使用更高倍率
     OTHER_PLAYER_MATCHING:7124, //其他玩家正在进行比赛
+    MATCH_WAIT_TIMEOUT:7125, //比赛已经开始了,只能异步对战了，自己创建房间吧
 };
 
 const _errorObj = {
@@ -1545,6 +1546,10 @@ const _errorObj = {
     OTHER_PLAYER_MATCHING: {
         msg: '其他玩家正在进行比赛',
         code: _errorCode.OTHER_PLAYER_MATCHING,
+    },
+    MATCH_WAIT_TIMEOUT: {
+        msg: '比赛已经开始了,只能异步对战了，自己创建房间吧',
+        code: _errorCode.MATCH_WAIT_TIMEOUT,
     },
     // TODO: 配置表增加字段后解开注释
     // FIRST_RECHARGE_NO_RMB: { code: _errorCode.FIRST_RECHARGE_NO_RMB, msg: i18n.FIRST_RECHARGE_NO_RMB[lan] },
