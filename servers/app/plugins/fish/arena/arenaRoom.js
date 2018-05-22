@@ -78,7 +78,7 @@ class ArenaRoom extends Room {
     }
 
     _canOVer() {
-        if (this._countdown.isZero() === 0) {
+        if (this._countdown.isZero()) {
             return true;
         }
         for (let player of this._playerMap.values()) {
@@ -144,7 +144,7 @@ class ArenaRoom extends Room {
         if (this.isInRoom(uid)) {
             return;
         }
-
+    logger.error('创建比赛 roomId=', this.roomId);
         //创建比赛
         if (opts.matchId == null) {
             //TODO 检查是否有比赛未结束

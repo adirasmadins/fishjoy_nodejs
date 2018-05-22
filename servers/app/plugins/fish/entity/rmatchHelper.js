@@ -110,6 +110,8 @@ class RmatchHelper {
                 let bk = bks[i];
                 let temp = cost.parseBulletKey(bk);
                 let skillId = temp.skillId;
+                //TODO test temp.rmatching = 0;
+                temp.rmatching = 1;
                 if (!temp.rmatching 
                     || skillId === consts.SKILL_ID.SK_LASER 
                     || (this._fireC === 0 && (skillId === consts.SKILL_ID.SK_NBOMB0 || skillId === consts.SKILL_ID.SK_NBOMB1 || skillId === consts.SKILL_ID.SK_NBOMB2))) {

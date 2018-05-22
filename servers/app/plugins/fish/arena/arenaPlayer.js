@@ -20,6 +20,7 @@ class ArenaPlayer extends MatchPlayer{
 
     createMatch(roomId){
         let matchId = config.ARENA.GEN_MATCH_ID(roomId, this.uid);
+        logger.error('创建比赛 createMatch matchId=', matchId);
         this._matchStore.create(matchId, this.uid);
     }
 
