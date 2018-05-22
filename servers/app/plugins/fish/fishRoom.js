@@ -31,6 +31,12 @@ class FishRoom extends Room{
         this._fishModel = fishModel;
     }
 
+    setReady(ready){
+        for(let player of this._playerMap.values()){
+            player.ready = ready;
+        }
+    }
+
     /**
      * 机器人是否可以加入
      */

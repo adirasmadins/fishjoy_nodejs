@@ -327,6 +327,7 @@ const _errorCode = {
     WEAPON_TURN_GOLD_TOO_LOW: 7123, //你的金币过低，不能使用更高倍率
     OTHER_PLAYER_MATCHING:7124, //其他玩家正在进行比赛
     MATCH_WAIT_TIMEOUT:7125, //比赛已经开始了,只能异步对战了，自己创建房间吧
+    PLAYER_READYING:7126, //玩家还未准备好，拒绝操作
 };
 
 const _errorObj = {
@@ -1549,6 +1550,10 @@ const _errorObj = {
     },
     MATCH_WAIT_TIMEOUT: {
         msg: '比赛已经开始了,只能异步对战了，自己创建房间吧',
+        code: _errorCode.MATCH_WAIT_TIMEOUT,
+    },
+    PLAYER_READYING: {
+        msg: '玩家还未准备好，拒绝操作',
         code: _errorCode.MATCH_WAIT_TIMEOUT,
     },
     // TODO: 配置表增加字段后解开注释

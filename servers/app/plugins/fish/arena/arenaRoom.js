@@ -25,12 +25,13 @@ class ArenaRoom extends Room {
 
     //开始对战
     _startMatch() {
+        this.setReady(true);
+
         let data = {};
         this._broadcast(arenaCmd.remote.arenaAsyncStart.route, data);
     }
 
     _stopMatch(){
-
     }
 
     async _try2Settlement() {
@@ -123,7 +124,7 @@ class ArenaRoom extends Room {
             return;
         }
         this._inviter = opts.inviter;
-
+        player.ready = true;
         if (opts.inviter == player.uid) {
             //TODO 检查是否有比赛未结束
             //存在则提示邀请好友继续完成比赛

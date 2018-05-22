@@ -404,6 +404,12 @@ class Instance {
                 utils.invokeCallback(cb, FishCode.PLAYER_NOT_EXIST);
                 return;
             }
+
+            if(player.ready){
+                utils.invokeCallback(cb, FishCode.PLAYER_READYING);
+                return;
+            }
+
             let cheatData = player.getCheatingData();
             if (cheatData) {
                 utils.invokeCallback(cb, {

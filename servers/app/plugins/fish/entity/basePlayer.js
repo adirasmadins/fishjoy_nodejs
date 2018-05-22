@@ -10,6 +10,15 @@ class Player extends EventEmitter{
         this._sid = opts.sid || '';
         this._uid = opts.uid || '';
         this._activeTime = Date.now();
+        this._ready = false;
+    }
+
+    get ready(){
+        return this._ready;
+    }
+
+    set ready(r){
+        this._ready = r;
     }
 
     get opts(){
