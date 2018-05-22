@@ -25,7 +25,7 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
         this._wpLv = 1; //武器等级
         this._curScore = 0; //总共得分
         this._fireC = 0; //开炮数
-        this._wpChangeFC = 20 + Math.floor(Math.random() * (config.MATCH.FIRE - 20)); //指定炮数后切换武器,注意只切换一次
+        this._wpChangeFC = 20 + Math.floor(Math.random() * (this._max_fireC - 20)); //指定炮数后切换武器,注意只切换一次
 
         let total = 30 + Math.floor(Math.random() * 30); //随机开炮时间，秒
         this._fireInterval = total / 100 * 1000; //平均100炮间隔, 毫秒
@@ -123,13 +123,13 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
         const cfg = FISH_CFGS[name];
 
         this._fireC += this._wpTimes;
-        this._fireC = Math.min(this._fireC, config.MATCH.FIRE);
+        this._fireC = Math.min(this._fireC, this._max_fireC);
         if (this._fireC === this._wpChangeFC) {
             this._think2ChangeWeaponSkin();
             this._wpChangeFC = -1;
         }
         
-        let fire = Math.max(0, config.MATCH.FIRE - this._fireC);
+        let fire = Math.max(0, this._max_fireC - this._fireC);
         let temp = {
             score: this._curScore,
             fire: fire,
@@ -268,17 +268,17 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
      */ 
     fire (dt) {
         if (this.isOver()) return;
-        if (this._fireC === config.MATCH.FIRE) {
+        if (this._fireC === this._max_fireC) {
             return;
         }else {
             this._think2Chat(dt);
         }
         if (!this._checkFire(dt)) return;
         this._selectFish2Fire();
-        if (this._fireC === config.MATCH.FIRE) {
+        if (this._fireC === this._max_fireC) {
             this._think2FireWithNbomb();
         }else {
-            this.isProvocativeEnabled() && this._fireC > config.MATCH.FIRE*2/3 && this._think2Provocative();
+            this.isProvocativeEnabled() && this._fireC > this._max_fireC*2/3 && this._think2Provocative();
         }
         
     }

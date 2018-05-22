@@ -156,7 +156,6 @@ class Instance {
                 data.asyncMatch = true;
                 return await this.enterGame(data);
             }
-
             logger.error('加入邀请游戏房间失败, err=', err);
             throw err;
         }
@@ -203,13 +202,16 @@ class Instance {
                 playerMax: consts.ROOM_PLAYER_MAX[data.roomType]
             });
         }
+
         err = room.join(player, data);
         if (err) {
             logger.error('加入游戏房间失败, err=', err);
             throw err;
         }
+
         this._roomMap.set(room.roomId, room);
         this._entities.set(player.uid, room);
+
         return {
             roomId: room.roomId,
             players: room.genAllPlayers(player.uid)
@@ -405,11 +407,6 @@ class Instance {
                 return;
             }
 
-            if(player.ready){
-                utils.invokeCallback(cb, FishCode.PLAYER_READYING);
-                return;
-            }
-
             let cheatData = player.getCheatingData();
             if (cheatData) {
                 utils.invokeCallback(cb, {
@@ -425,6 +422,12 @@ class Instance {
                 return;
             }
             if (this._roomEvent(player.roomId, route, data, cb)) {
+                return;
+            }
+
+            if(player.ready && route != 'c_heartbeat'){
+                logger.error('玩家准备中，无法开炮等操作', route);
+                utils.invokeCallback(cb, FishCode.PLAYER_READYING);
                 return;
             }
 

@@ -1548,14 +1548,6 @@ const _errorObj = {
         msg: '其他玩家正在进行比赛',
         code: _errorCode.OTHER_PLAYER_MATCHING,
     },
-    MATCH_WAIT_TIMEOUT: {
-        msg: '比赛已经开始了,只能异步对战了，自己创建房间吧',
-        code: _errorCode.MATCH_WAIT_TIMEOUT,
-    },
-    PLAYER_READYING: {
-        msg: '玩家还未准备好，拒绝操作',
-        code: _errorCode.MATCH_WAIT_TIMEOUT,
-    },
     // TODO: 配置表增加字段后解开注释
     // FIRST_RECHARGE_NO_RMB: { code: _errorCode.FIRST_RECHARGE_NO_RMB, msg: i18n.FIRST_RECHARGE_NO_RMB[lan] },
     // FIRST_RECHARGE_ALREADY: { code: _errorCode.FIRST_RECHARGE_ALREADY, msg: i18n.FIRST_RECHARGE_ALREADY[lan] },

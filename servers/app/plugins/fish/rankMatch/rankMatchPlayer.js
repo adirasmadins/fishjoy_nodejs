@@ -33,7 +33,7 @@ class RankMatchPlayer extends BasePlayer {
 
         this._statistics = {
             score: 0, //当前总得分
-            fire: config.MATCH.FIRE, //剩余子弹数
+            fire: this._max_fireC, //剩余子弹数
             fish_account: {}, //普通开炮打死什么鱼，得多少分
             nuclear_fish_count: -1, //核弹打死条数,-1默认取消核弹，核弹可能存在打不死鱼
             nuclear_score: -1, //核弹打死鱼总得分

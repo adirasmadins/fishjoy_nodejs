@@ -1,19 +1,36 @@
 const MatchPlayer = require('../entity/matchPlayer');
 const config = require('../config');
 const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
+const MatchStore = require('./matchStore');
 
 class ArenaPlayer extends MatchPlayer{
     constructor(opts){
         super(opts);
         this._statistics = {
             score: 0, //当前总得分
-            fire: config.MATCH.FIRE, //剩余子弹数
+            fire: this._max_fireC, //剩余子弹数
             fish_account: {}, //普通开炮打死什么鱼，得多少分
             nuclear_fish_count: -1, //核弹打死条数,-1默认取消核弹，核弹可能存在打不死鱼
             nuclear_score: -1, //核弹打死鱼总得分
             firetime: 0, //统计时间戳
             provocativeVal: 0, //被魅惑的分值
         };
+        this._matchStore = new MatchStore();
+    }
+
+    createMatch(roomId){
+        let matchId = config.ARENA.GEN_MATCH_ID(roomId, this.uid);
+        this._matchStore.create(matchId, this.uid);
+    }
+
+    loadMatch(matchId){
+        this._matchStore.load(matchId, this.uid);
+    }
+
+    startMatch(isRealtime){
+        super.startMatch({});
+        this._rmHelper.max_fireC = config.ARENA.FIRE;
+        this._matchStore.isRealtime = isRealtime;
     }
 
     //发往对战玩家所在的房间进行统计和广播

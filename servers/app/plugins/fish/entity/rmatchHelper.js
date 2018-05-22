@@ -20,6 +20,11 @@ class RmatchHelper {
         this._state = STATE.READY; //比赛状态,0准备中 1开始比赛 2一百炮开完 3使用核弹 4取消核弹 5比赛结束
         this._updateFunc = null;
         this._nbCost = 1000;
+        this._max_fireC = config.MATCH.FIRE;
+    }
+
+    set max_fireC(value){
+        this._max_fireC = value;
     }
 
     get rankMatchSid () {
@@ -57,7 +62,7 @@ class RmatchHelper {
      */
     resetWithContinue (fire, score) {
         fire = fire || 0;
-        this._fireC = config.MATCH.FIRE - fire;
+        this._fireC = this._max_fireC - fire;
         this._curScore = score || 0;
     }
 
@@ -79,14 +84,14 @@ class RmatchHelper {
         }
         times = times || 1;
         this._fireC += times;
-        this._fireC = Math.min(this._fireC, config.MATCH.FIRE);
+        this._fireC = Math.min(this._fireC, this._max_fireC);
     }
 
     /**
      * 普通开火是否结束
      */
     isNormalFireEnd () {
-        return this._fireC === config.MATCH.FIRE;
+        return this._fireC === this._max_fireC;
     }
 
     /**
@@ -210,7 +215,7 @@ class RmatchHelper {
             }
             temp = {
                 score: this._curScore,
-                fire: config.MATCH.FIRE - this._fireC,
+                fire: this._max_fireC - this._fireC,
                 fish_list: flist,
             };
         }

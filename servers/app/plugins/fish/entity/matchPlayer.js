@@ -215,6 +215,8 @@ class MatchPlayer extends FishPlayer {
                         };
                     }
                 }
+
+                logger.error('match pk info==', data);
                 this.matchEventCall(rankMatchCmd.remote.fightInfo.route, data);
             }
         }.bind(this));

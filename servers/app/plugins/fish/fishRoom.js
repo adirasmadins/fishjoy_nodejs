@@ -37,6 +37,7 @@ class FishRoom extends Room{
         }
     }
 
+
     /**
      * 机器人是否可以加入
      */
@@ -193,13 +194,14 @@ class FishRoom extends Room{
 
     start() {
         super.start();
+        logger.error('========fish room start');
         this._evtor.on(consts.FLUSH_EVENT, this.onFlushFish.bind(this));
         this._logicTimer = setInterval(this._logicUpdate.bind(this), 1000);
         this._startBroadcashTimer();
     }
 
     stop() {
-        logger.debug('玩家离开');
+        logger.error('=========fish room stop');
         for (let player of this._playerMap.values()) {
             this._clearPlayerResource(player);
             this._playerMap.delete(player.uid);
