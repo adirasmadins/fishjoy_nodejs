@@ -1,3 +1,0 @@
-[submodule "servers/config/design_cfg"]
-	path = servers/config/design_cfg
-	url = https://github.com/linyngfly/fishjoy_design_config.git
