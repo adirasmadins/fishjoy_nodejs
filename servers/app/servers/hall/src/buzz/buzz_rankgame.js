@@ -1,11 +1,6 @@
-const BuzzUtil = require('../utils/BuzzUtil');
-const RedisUtil = require('../utils/RedisUtil');
-const redisKesy = require('../../../../database').dbConsts.REDISKEY;
 const CommonUtil = require('./CommonUtil');
 const RANK_TYPE = require('../rankCache/cacheConf').RANK_TYPE;
 const _ = require('underscore');
-const buzz_account = require('./buzz_account');
-const DaoCommon = require('../dao/dao_common');
 const dao_rankgame = require('../dao/dao_rankgame');
 const cache = require('../rankCache/cache');
 

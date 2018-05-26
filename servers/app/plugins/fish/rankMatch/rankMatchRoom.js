@@ -561,13 +561,6 @@ class RankMatchRoom extends Room {
         this._unInit();
     }
 
-    rpc_rank_match_provocative(data, cb){
-        this._rpcInfo(data, function(code, room) {
-            code === 0 && room.provocative(data);
-            cb && cb(null);
-        });
-    }
-
 }
 
 module.exports = RankMatchRoom;

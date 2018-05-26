@@ -3,7 +3,7 @@
  * TODO: 表过于臃肿，待拆分:女神数据，凡是单个字段
  */
 
-module.exports.AccountDef = {
+module.exports.PlayerModel = {
     "player_catch_rate": {
         "def": 1,
         "type": "number"
@@ -39,8 +39,4 @@ module.exports.AccountDef = {
         "def": 1,
         "type": "number"
     },
-};
-
-//注意，其他字段来自其他表，参考common的_resultList方法实现
-module.exports.OtherDef = {
 };

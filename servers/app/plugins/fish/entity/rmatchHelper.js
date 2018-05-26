@@ -14,17 +14,19 @@ class RmatchHelper {
         this._rankMatchSid = 0;
         this._roomId = 0;
         this._curScore = 0; //总共得分
-        this._fireC = 0; //开炮数
+        
         this._fHistory = null; //打死什么鱼、多少条、多少分
         this._fHistoryNB = null; //核弹打死多少条鱼、共计分
         this._state = STATE.READY; //比赛状态,0准备中 1开始比赛 2一百炮开完 3使用核弹 4取消核弹 5比赛结束
         this._updateFunc = null;
         this._nbCost = 1000;
-        this._max_fireC = config.MATCH.FIRE;
+        this._maxFireC = config.MATCH.FIRE; //最大开炮数
+        this._fireC = this._maxFireC; //剩余开炮数
     }
 
-    set max_fireC(value){
-        this._max_fireC = value;
+    set maxfireC(value){
+        this._maxFireC = value;
+        this._fireC = this._maxFireC; //剩余开炮数
     }
 
     get rankMatchSid () {
@@ -61,8 +63,7 @@ class RmatchHelper {
      * @param {*上一次的得分} score 
      */
     resetWithContinue (fire, score) {
-        fire = fire || 0;
-        this._fireC = this._max_fireC - fire;
+        this._fireC = fire || 0;
         this._curScore = score || 0;
     }
 
@@ -83,15 +84,15 @@ class RmatchHelper {
             return;
         }
         times = times || 1;
-        this._fireC += times;
-        this._fireC = Math.min(this._fireC, this._max_fireC);
+        this._fireC -= times;
+        this._fireC = Math.max(this._fireC, 0);
     }
 
     /**
      * 普通开火是否结束
      */
     isNormalFireEnd () {
-        return this._fireC === this._max_fireC;
+        return this._fireC === 0;
     }
 
     /**
@@ -102,6 +103,7 @@ class RmatchHelper {
         
         let oldScore = this._curScore;
         this._fishCount(ret, fishModel);
+        let scoreGet = this._curScore - oldScore;
 
         let oldFc = this._fireC;
         if (bks) {
@@ -110,11 +112,9 @@ class RmatchHelper {
                 let bk = bks[i];
                 let temp = cost.parseBulletKey(bk);
                 let skillId = temp.skillId;
-                //TODO test temp.rmatching = 0;
-                temp.rmatching = 1;
                 if (!temp.rmatching 
                     || skillId === consts.SKILL_ID.SK_LASER 
-                    || (this._fireC === 0 && (skillId === consts.SKILL_ID.SK_NBOMB0 || skillId === consts.SKILL_ID.SK_NBOMB1 || skillId === consts.SKILL_ID.SK_NBOMB2))) {
+                    || (this._fireC === this._maxFireC && (skillId === consts.SKILL_ID.SK_NBOMB0 || skillId === consts.SKILL_ID.SK_NBOMB1 || skillId === consts.SKILL_ID.SK_NBOMB2))) {
                     continue; //非比赛、激光、第一炮核弹都不统计次数
                 }
                 const cfg = cost._getWpSKinCfg(temp.skin);
@@ -123,12 +123,13 @@ class RmatchHelper {
             }
         }
 
-        if (oldFc != this._fireC || oldScore != this._curScore) {
+        if (oldFc != this._fireC || scoreGet > 0) {
             let td = this._getDetail();
             this._updateFunc(td);
             this._fHistoryNB = null;
             this._fHistory = null;
         }
+        return scoreGet;
     }
 
     /**
@@ -145,7 +146,7 @@ class RmatchHelper {
             let fireFlag = data.fireFlag;
             if (fireFlag === consts.FIRE_FLAG.LASER) {
                 continue; //被激光打中不统计为比赛分数
-            }else if (fireFlag === consts.FIRE_FLAG.NBOMB && this._fireC === 0) {
+            }else if (fireFlag === consts.FIRE_FLAG.NBOMB && this._fireC === this._maxFireC) {
                 continue; //第一炮被核弹打中，不计分数
             }
 
@@ -217,7 +218,7 @@ class RmatchHelper {
             }
             temp = {
                 score: this._curScore,
-                fire: this._max_fireC - this._fireC,
+                fire: this._fireC,
                 fish_list: flist,
             };
         }

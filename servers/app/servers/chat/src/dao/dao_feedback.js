@@ -1,7 +1,7 @@
 const CachePropose = require('../buzz/cache/CachePropose');
 const CacheUserInfo = require('../buzz/cache/CacheUserInfo');
 const tools = require('../../../../utils/tools');
-const REDISKEY = require('../../../../database/consts/index').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 
 
 const TAG = "【dao_feedback】";

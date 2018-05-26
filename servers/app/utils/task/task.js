@@ -3,7 +3,7 @@ const os = require('os');
 const redisAccountSync = require('../redisAccountSync');
 const utils = require('../utils');
 const async = require('async');
-const REDISKEY = require('../../database/consts').REDISKEY;
+const REDISKEY = require('../../models/index').REDISKEY;
 
 class Task {
     constructor(conf) {

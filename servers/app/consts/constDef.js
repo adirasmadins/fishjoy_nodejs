@@ -66,6 +66,12 @@ module.exports = {
         MSECONDS: 3 * 60 * 1000, //倒计时3分钟，单位毫秒
     },
 
+    ARENA_MATCH_STATE:{
+        CREATED: 1,
+        GOING: 2,
+        FINISHED: 3
+    },
+
     FRIENDS_ONLINE_LAST_MINUTES: 2,   //好友在线判断时间段范围（10分钟内在线即为在线）
 
     RANK_TYPE: {

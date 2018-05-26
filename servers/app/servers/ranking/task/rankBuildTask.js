@@ -1,6 +1,6 @@
 const Task = require('../../../utils/task/task');
 const utils = require('../../../utils/utils');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const mysqlAccountSync = require('../../../utils/mysqlAccountSync');
 const rankRewardCfg = require('../../../utils/designCfg/rankRewardCfg');

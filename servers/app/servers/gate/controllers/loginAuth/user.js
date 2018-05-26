@@ -49,7 +49,7 @@ class User {
     }
 
     async isRegiste(openId) {
-        let uid = await redisConnector.hget(REDISKEY.OPENID_UID, openId);
+        let uid = await redisConnector.hget(REDISKEY.MAP_OPENID_UID, openId);
         if(uid != null){
             return uid;
         }
@@ -58,7 +58,7 @@ class User {
         let row = rows && rows[0];
         if (row) {
             let account = await this._queryAccontFromMysql(row.id);
-            await redisConnector.hset(REDISKEY.OPENID_UID, openId, row.id);
+            await redisConnector.hset(REDISKEY.MAP_OPENID_UID, openId, row.id);
             await this._loadMissionProcess(account);
             return row.id;
         }
@@ -120,15 +120,10 @@ class User {
      */
     async _genAccount(id, data) {
 
-        let AccountDefault = KEYTYPEDEF.AccountDef;
-        let OtherDef = KEYTYPEDEF.OtherDef;
         let newAccount = {};
 
-        for (let k in AccountDefault) {
-            newAccount[k] = _.cloneDeep(AccountDefault[k].def);
-        }
-        for (let k in OtherDef) {
-            newAccount[k] = _.cloneDeep(OtherDef[k].def);
+        for (let k in KEYTYPEDEF.PlayerModel) {
+            newAccount[k] = _.cloneDeep(KEYTYPEDEF.PlayerModel[k].def);
         }
 
         let timeNow = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -155,7 +150,7 @@ class User {
             newAccount.phone = data.phone;
         }
 
-        await redisConnector.hset(REDISKEY.OPENID_UID, data.openid, id);
+        await redisConnector.hset(REDISKEY.MAP_OPENID_UID, data.openid, id);
         await redisAccountSync.setAccountAsync(id, newAccount);
         await redisAccountSync.getAccountAsync(id);
     }

@@ -1,8 +1,19 @@
 const FishPlayer = require('./player');
 const ACCOUNTKEY = require('../../../database').dbConsts.ACCOUNTKEY;
 const VietnamFishingLog = require('./vietnamFishingLog');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 const CHEAT_MAX = 3;
+
+let childSelf = [
+    ACCOUNTKEY.COST,
+    ACCOUNTKEY.CASH,
+    ACCOUNTKEY.RECHARGE,
+    ACCOUNTKEY.GAIN_LOSS,
+    ACCOUNTKEY.GAIN_LOSS_LIMIT,
+    ACCOUNTKEY.GAIN_LOSS_SNAPSHOT,
+    ACCOUNTKEY.PLAYER_CATCH_RATE,
+];
+childSelf = childSelf.concat(FishPlayer.sBaseField());
 
 class VietnamPlayer extends FishPlayer {
     constructor(data) {
@@ -21,21 +32,11 @@ class VietnamPlayer extends FishPlayer {
     }
 
     static sBaseField() {
-        let baseField = FishPlayer.sBaseField();
-        const self = [
-            ACCOUNTKEY.COST,
-            ACCOUNTKEY.CASH,
-            ACCOUNTKEY.RECHARGE,
-            ACCOUNTKEY.GAIN_LOSS,
-            ACCOUNTKEY.GAIN_LOSS_LIMIT,
-            ACCOUNTKEY.GAIN_LOSS_SNAPSHOT,
-            ACCOUNTKEY.PLAYER_CATCH_RATE,
-        ];
-        return baseField.concat(self);
+        return childSelf;
     }
 
     getBaseField() {
-        return VietnamPlayer.baseField;
+        return VietnamPlayer.sBaseField();
     }
 
     /**

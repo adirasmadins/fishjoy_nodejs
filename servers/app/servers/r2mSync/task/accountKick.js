@@ -2,7 +2,7 @@ const Task = require('../../../utils/task/task');
 const moment = require('moment');
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const mysqlAccountSync = require('../../../utils/mysqlAccountSync');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 const utils = require('../../../utils/utils');
 const tools = require('../../../utils/tools');
 const RewardModel = require('../../../utils/account/RewardModel');
@@ -50,7 +50,7 @@ class AccountKick extends Task {
                         [uid, mission_task_once]
                     );
                     await RewardModel.delUserMissionInfo(uid);
-                    await redisConnector.hdel(REDISKEY.OPENID_UID, account.channel_account_id);
+                    await redisConnector.hdel(REDISKEY.MAP_OPENID_UID, account.channel_account_id);
 
                     succUids.push(uid);
 

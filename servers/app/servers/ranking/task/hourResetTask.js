@@ -4,7 +4,7 @@ const utils = require('../../../utils/utils');
 const SUBTASK_TYPE = require('../src/consts').SUBTASK_TYPE;
 const dropManager = require('../../../utils/DropManager');
 const RedisUtil = require('../../../utils/tools/RedisUtil');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 
 class HourTask extends Task{
     constructor(conf){

@@ -31,12 +31,6 @@ class FishRoom extends Room{
         this._fishModel = fishModel;
     }
 
-    setReady(ready){
-        for(let player of this._playerMap.values()){
-            player.ready = ready;
-        }
-    }
-
 
     /**
      * 机器人是否可以加入
@@ -310,12 +304,19 @@ class FishRoom extends Room{
 
         let players = this.genAllPlayers(uid);
         logger.info('room 玩家加入', player.account.nickname);
-        this._broadcast(fishCmd.push.enter_room.route, {
-            players: players
-        });
+        this.broadcastSomeoneEnter(players);
 
         let isRobot = !player.isRealPlayer();
         isRobot && (this._robotJoinTimestamp = new Date().getTime());
+    }
+
+    /**
+     * 广播有人进入
+     */
+    broadcastSomeoneEnter(players) {
+        this._broadcast(fishCmd.push.enter_room.route, {
+            players: players
+        });
     }
 
     /**

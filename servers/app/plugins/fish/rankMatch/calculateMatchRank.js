@@ -1,4 +1,4 @@
-const import_def = require('../../../database/consts');
+const import_def = require('../../../models/index');
 const REDISKEY = import_def.REDISKEY;
 const ACCOUNTKEY = import_def.ACCOUNTKEY;
 const GAMECFG = require('../../../utils/imports').DESIGN_CFG;

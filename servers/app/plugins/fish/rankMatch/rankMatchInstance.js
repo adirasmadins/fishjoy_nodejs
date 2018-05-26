@@ -67,7 +67,7 @@ class RankMatchInstance {
             utils.invokeCallback(cb, null, {
                 roomId: room.roomId,
                 countdown: room.countdown,
-                bulletNum: this._max_fireC,
+                bulletNum: this._maxFireC,
             });
         } catch (err) {
             utils.invokeCallback(cb, err);

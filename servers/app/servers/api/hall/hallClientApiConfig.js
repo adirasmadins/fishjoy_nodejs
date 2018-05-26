@@ -369,6 +369,21 @@ const api_list = {
         handler: data_goddess.interractReward,
         params: [],
         accountFields: []
+    },match_1v1_status_own: {
+        route: '/match_1v1_status_own', //查询自己创建的比赛状态
+        handler: data_rankgame.getPlayerMatch1v1Status,
+        params: [],
+        accountFields: []
+    },match_1v1_status_other: {
+        route: '/match_1v1_status_other', //查询别人创建的比赛状态，即接受别人邀请的比赛状态
+        handler: data_rankgame.acceptMatch1v1,
+        params: [],
+        accountFields: []
+    },match_1v1_result: {
+        route: '/match_1v1_result', //查询1v1比赛结果
+        handler: data_rankgame.queryMatch1v1Result,
+        params: [],
+        accountFields: []
     }
 };
 

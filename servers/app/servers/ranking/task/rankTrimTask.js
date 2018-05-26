@@ -1,7 +1,7 @@
 const Task = require('../../../utils/task/task');
 const RANK_TRIM = require('../src/consts').RANK_TRIM;
 const async = require('async');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 
 class RankTrimTask extends Task {
     constructor(conf) {

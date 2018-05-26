@@ -1,8 +1,7 @@
 const utils = require('../utils');
 const AccountCommit = require('./accountCommit');
-const accountConf = require('./accountConf');
-const REDISKEY = require('../../database/consts').REDISKEY;
-const accountParser = require('./accountParser');
+const REDISKEY = require('../../models/index').REDISKEY;
+const redisDataParser = require('../../models/redisDataParser');
 const EventHandler = require('./eventHandler');
 const ACCOUNT_EVENT_TYPE = require('../../database/consts/consts').ACCOUNT_EVENT_TYPE;
 const omelo = require('omelo');
@@ -15,7 +14,7 @@ class Account extends AccountCommit {
     }
 
     /**
-     * 序列化数据为Account对象
+     * 序列化数据为Account模型对象
      * @param uid
      * @param data
      * @returns {Account}
@@ -28,40 +27,16 @@ class Account extends AccountCommit {
         return account;
     }
 
-    /**
-     * 添加属性到Account对象
-     * @param key
-     * @param data
-     */
-    appendValue(key, data) {
-        this[`_${key}`] = accountParser.parseValue(key, data);
-    }
-
-    toJSON() {
-        let jsonData = {};
-        for (let key in this) {
-            if (typeof this[key] !== 'function' && key.indexOf('__') !== 0) {
-                jsonData[key.replace(/^_/, '')] = this[key];
-            }
-        }
-        return jsonData;
-    }
-
-    static getCmd(key) {
-        let typeInfo = accountConf.getFieldDef(key);
-        let cmd = 'HSET';
-        if (!typeInfo) {
-            return null;
-        }
-        if (typeInfo.inc === true) {
-            if (typeInfo.type == 'float') {
-                cmd = 'HINCRBYFLOAT';
-            } else {
-                cmd = 'HINCRBY';
-            }
-
-        }
-        return cmd;
+    commitSync(){
+        return new Promise(function (resolve, reject) {
+            this.commit(function (err, result) {
+                if(err){
+                    reject(err);
+                }else {
+                    resolve(result);
+                }
+            });
+        }.bind(this));
     }
 
     commit(cb) {
@@ -87,8 +62,8 @@ class Account extends AccountCommit {
             let tk = key[0];
             let cmd = Account.getCmd(tk);
             if (cmd) {
-                let v = accountParser.serializeValue(tk, key[1]);
-                if (v) {
+                let v = redisDataParser.serializeValue(tk, key[1]);
+                if (v != null) {
                     cmds.push([cmd, REDISKEY.getKey(tk), this.id, v]);
                     fields_keys.push(tk);
                 }

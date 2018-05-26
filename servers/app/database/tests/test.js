@@ -31,14 +31,14 @@ logger.info('写入完成');
 
 // let obj = {};
 //
-// let keys_account = Object.keys(account_def.AccountDef);
+// let keys_account = Object.keys(account_def.PlayerModel);
 // keys_account.forEach(function (key) {
 //
 //     obj[key.toUpperCase()] = `prefix + ${key.toLowerCase()}`;
 //
 // });
 //
-// let keys_other = Object.keys(account_def.OtherDef);
+// let keys_other = Object.keys(account_def.PlayerModel);
 // keys_other.forEach(function (key) {
 //
 //     obj[key.toUpperCase()] = `prefix + ${key.toLowerCase()}`;
@@ -51,14 +51,14 @@ logger.info('写入完成');
 
 // let obj = {};
 //
-// let keys_account = Object.keys(account_def.AccountDef);
+// let keys_account = Object.keys(account_def.PlayerModel);
 // keys_account.forEach(function (key) {
 //
 //     obj[key.toUpperCase()] = key.toLowerCase();
 //
 // });
 //
-// let keys_other = Object.keys(account_def.OtherDef);
+// let keys_other = Object.keys(account_def.PlayerModel);
 // keys_other.forEach(function (key) {
 //
 //     obj[key.toUpperCase()] = key.toLowerCase();

@@ -1,4 +1,4 @@
-const redisKeys = require('../../database/consts/redisKey');
+const redisKeys = require('../../models/redisKey');
 
 class Statistics{
 

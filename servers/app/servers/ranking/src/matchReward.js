@@ -1,5 +1,5 @@
 const RankReward = require('./rankReward');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const rankRewardCfg = require('../../../utils/designCfg/rankRewardCfg');
 

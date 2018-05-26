@@ -4,7 +4,7 @@ const DaoCommon = require('./dao_common');
 const CstError = require('../../../../consts/fish_error');
 const gameConfig = require('../../../../utils/imports').DESIGN_CFG;
 const vip_vip_cfg = gameConfig.vip_vip_cfg;
-const account_def = require('../../../../database/consts').KEYTYPEDEF;
+const account_def = require('../../../../models/index').KEYTYPEDEF;
 
 let DEBUG = 0;
 let ERROR = 1;

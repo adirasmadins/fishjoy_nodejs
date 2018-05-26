@@ -6,7 +6,7 @@ const logTableDef = require('./logTableDef');
 const item_item_cfg = require('../imports').DESIGN_CFG.item_item_cfg;
 const tools = require('../../utils/tools');
 const itemDef = require('../../consts/itemDef');
-const REDISKEY = require('../../database/consts').REDISKEY;
+const REDISKEY = require('../../models/index').REDISKEY;
 
 /**
  * TODO：日志构建

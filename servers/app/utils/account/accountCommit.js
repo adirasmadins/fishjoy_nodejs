@@ -1,98 +1,15 @@
-const accountConf = require('./accountConf');
-const omelo = require('omelo');
-const EXCEPTION_ILL_VALUE = 'log:exception:ill_value';
-const EXCEPTION_BIG_PEARL = 'log:exception:big_pearl';
-const EXCEPTION_DOUBLE_GOLD = 'log:exception:double_gold';
-const EXCEPTION_BIG_GOLD = 'log:exception:big_gold';
+const commit = require('../../models/commit');
 
 /**
  * 动态代码，自动生成
  */
-class AccountCommit {
-    constructor(id) {
-        this.__update = [];
-        this.__id = Number(id);
-    }
-
-    get update() {
-        return this.__update;
-    }
-
-    static bIncr(key) {
-        let typeInfo = accountConf.getFieldDef(key);
-        if (typeInfo) {
-            return typeInfo.inc;
-        }
-        return false;
-    }
-
-    _dump(){
-        throw Error('auto crash');
-    }
-    /**
-     * 字段最小值修正
-     * @param {key} key
-     * @param {值} value
-     */
-    _minRevise(key, value) {
-        let typeInfo = accountConf.getFieldDef(key);
-        if (typeInfo && typeInfo.type == 'number') {
-            let _value = Number(value);
-            if (Number.isNaN(_value)) {
-                logger.error('玩家非法数值写入, 禁止写入');
-                let exp_info = {
-                    uid: this.__id,
-                    update: {
-                        key: key,
-                        value: value
-                    },
-                    gold: this.gold,
-                    pear: this.pearl,
-                    time: new Date(),
-                    serverId: omelo.app.getServerId(),
-                    desc: '非法数值, 禁止写入',
-                };
-                try {
-                    this._dump();
-                }catch (e) {
-                    logger.error('===ill_value e=', e);
-                    exp_info.stack = e.stack;
-                }
-                redisConnector.sadd(EXCEPTION_ILL_VALUE, JSON.stringify(exp_info));
-                return null;
-            }
-
-            if (typeInfo.min != null) {
-                let nowValue = this[`_${key}`];
-                let newValue = nowValue + _value;
-                if (newValue < typeInfo.min) {
-                    return _value + Math.abs(newValue) + typeInfo.min;
-                }
-            }
-            return _value;
-        }
-        return value;
-    }
-
-    _modify(key, value) {
-        value = this._minRevise(key, value);
-        if (null == value) {
-            return;
-        }
-        if (AccountCommit.bIncr(key)) {
-            this[`_${key}`] += value;
-        } else {
-            this[`_${key}`] = value;
-        }
-        this.__update.push([key, value]);
-    }
-
-    _value(key) {
-        return this[`_${key}`];
+class AccountCommit extends commit{
+    constructor(id){
+        super(id);
     }
 
     get id() {
-        return this.__id;
+        return Number(this.__id);
     }
 
     set who_invite_me(value) {
@@ -208,44 +125,6 @@ class AccountCommit {
     }
 
     set gold(value) {
-        if (value == this.gold && this.gold > 10001) {
-            let exp_info = {
-                uid: this.__id,
-                gold: this.gold,
-                inc: value,
-                pear: this.pearl,
-                time: new Date(),
-                serverId: omelo.app.getServerId(),
-                desc: '玩家双倍金币数量提交, 监视其金币信息',
-            };
-            try {
-                this._dump();
-            }catch (e) {
-                logger.error('===double gold e=', e);
-                exp_info.stack = e.stack;
-            }
-            redisConnector.sadd(EXCEPTION_DOUBLE_GOLD, JSON.stringify(exp_info));
-        }
-
-        if (Number(value) > 5000000) {
-            let exp_info = {
-                uid: this.__id,
-                gold: this.gold,
-                inc: value,
-                pear: this.pearl,
-                time: new Date(),
-                serverId: omelo.app.getServerId(),
-                desc: '玩家超大金币数量提交, 监视其金币信息',
-            };
-
-            try {
-                this._dump();
-            }catch (e) {
-                logger.error('===big gold e=', e);
-                exp_info.stack = e.stack;
-            }
-            redisConnector.sadd(EXCEPTION_BIG_GOLD, JSON.stringify(exp_info));
-        }
         this._modify('gold', value);
     }
 
@@ -254,24 +133,6 @@ class AccountCommit {
     }
 
     set pearl(value) {
-        if (Number(value) > 100) {
-            let exp_info = {
-                uid: this.__id,
-                gold: this.gold,
-                pear: this.pearl,
-                inc: value,
-                time: new Date(),
-                serverId: omelo.app.getServerId(),
-                desc: '玩家超大钻石数量提交, 监视其钻石信息',
-            };
-            try {
-                this._dump();
-            }catch (e) {
-                logger.error('===double pearl e=', e);
-                exp_info.stack = e.stack;
-            }
-            redisConnector.sadd(EXCEPTION_BIG_PEARL, JSON.stringify(exp_info));
-        }
         this._modify('pearl', value);
     }
 
@@ -1449,6 +1310,55 @@ class AccountCommit {
     set channel_game_friend(value) {
         this._modify('channel_game_friend', value);
     }
+
+    get arena_win() {
+        return this._value('arena_win');
+    }
+
+    set arena_win(value) {
+        this._modify('arena_win', value);
+    }
+
+    get arena_fail() {
+        return this._value('arena_fail');
+    }
+
+    set arena_fail(value) {
+        this._modify('arena_fail', value);
+    }
+
+    get arena_star() {
+        return this._value('arena_star');
+    }
+
+    set arena_star(value) {
+        this._modify('arena_star', value);
+    }
+
+    get arena_box_state() {
+        return this._value('arena_box_state');
+    }
+
+    set arena_box_state(value) {
+        this._modify('arena_box_state', value);
+    }
+
+    get arena_matchid() {
+        return this._value('arena_matchid');
+    }
+
+    set arena_matchid(value) {
+        this._modify('arena_matchid', value);
+    }
+
+    get arena_matchid_list() {
+        return this._value('arena_matchid_list');
+    }
+
+    set arena_matchid_list(value) {
+        this._modify('arena_matchid_list', value);
+    }
+
 
 }
 

@@ -5,13 +5,9 @@ const CommonUtil = require('./CommonUtil');
 const BuzzUtil = require('../utils/BuzzUtil');
 const RedisUtil = require('../utils/RedisUtil');
 const CstError = require('../../../../consts/fish_error');
-const CacheAccount = require('./cache/CacheAccount');
-const buzz_account = require('./buzz_account');
 const buzz_reward = require('./buzz_reward');
-const DaoCommon = require('../dao/dao_common');
 const redisKeys = require('../../../../database').dbConsts.REDISKEY;
 const gameConfig = require('../../../../utils/imports').DESIGN_CFG;
-const daily_dailypast_cfg = gameConfig.daily_dailypast_cfg;// 每日任务领取礼包的配置
 const advert_advert_cfg = gameConfig.advert_advert_cfg;
 const ERROR_OBJ = CstError.ERROR_OBJ;
 

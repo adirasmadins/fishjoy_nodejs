@@ -9,7 +9,7 @@ const consts = require('../consts');
 const GAMECFG = require('../../../utils/imports').DESIGN_CFG;
 const configReader = require('../../../utils/configReader');
 const redisAccountSync = require('../../../utils/redisAccountSync');
-const import_def = require('../../../database/consts');
+const import_def = require('../../../models/index');
 const ACCOUNTKEY = import_def.ACCOUNTKEY;
 const Pirate = require('./pirate');
 const RewardModel = require('../../../utils/account/RewardModel');
@@ -17,10 +17,43 @@ const FishingLog = require('./fishingLog');
 const dropManager = require('../../../utils/DropManager');
 const tools = require('../../../utils/tools');
 const GameEventBroadcast = require('../../../common/broadcast/GameEventBroadcast');
-const rpcSender = require('../../../net/rpcSender');
 const ObjUtil = require('../../../../app/utils/tools/ObjUtil');
 const FIRE_DELAY = 50; //开炮事件服务端与客户端的延时,单位毫秒
 const REDIS_DT = 1000; //redis及时存入周期
+const baseField = [
+    ACCOUNTKEY.NICKNAME,
+    ACCOUNTKEY.SEX,
+    ACCOUNTKEY.LEVEL,
+    ACCOUNTKEY.WEAPON,
+    ACCOUNTKEY.WEAPON_SKIN,
+    ACCOUNTKEY.GOLD,
+    ACCOUNTKEY.PEARL,
+    ACCOUNTKEY.VIP,
+    ACCOUNTKEY.COMEBACK,
+    ACCOUNTKEY.WEAPON_ENERGY,
+    ACCOUNTKEY.HEARTBEAT,
+    ACCOUNTKEY.ROIPCT_TIME,
+    ACCOUNTKEY.SKILL,
+    ACCOUNTKEY.EXP,
+    ACCOUNTKEY.FIGURE_URL,
+    ACCOUNTKEY.BONUS,
+    ACCOUNTKEY.PIRATE,
+    ACCOUNTKEY.BP,
+    ACCOUNTKEY.PLATFORM,
+    ACCOUNTKEY.TOKEN,
+    ACCOUNTKEY.TEST,
+    ACCOUNTKEY.MISSION_DAILY_RESET,
+    ACCOUNTKEY.MISSION_ONLY_ONCE,
+    ACCOUNTKEY.PACKAGE,
+    ACCOUNTKEY.SOCIAL_DAILY_INVITE_REWARD,
+    ACCOUNTKEY.FREE_BOMB,
+    ACCOUNTKEY.ACTIVE_DAILY_RESET,
+    ACCOUNTKEY.ACTIVE,
+    ACCOUNTKEY.DROP_ONCE,
+    ACCOUNTKEY.DROP_RESET,
+    ACCOUNTKEY.PRIVACY,
+    ACCOUNTKEY.BROKE_TIMES,
+];
 
 class FishPlayer extends Player {
     constructor(opts) {
@@ -172,40 +205,6 @@ class FishPlayer extends Player {
     }
 
     static sBaseField() {
-        const baseField = [
-            ACCOUNTKEY.NICKNAME,
-            ACCOUNTKEY.SEX,
-            ACCOUNTKEY.LEVEL,
-            ACCOUNTKEY.WEAPON,
-            ACCOUNTKEY.WEAPON_SKIN,
-            ACCOUNTKEY.GOLD,
-            ACCOUNTKEY.PEARL,
-            ACCOUNTKEY.VIP,
-            ACCOUNTKEY.COMEBACK,
-            ACCOUNTKEY.WEAPON_ENERGY,
-            ACCOUNTKEY.HEARTBEAT,
-            ACCOUNTKEY.ROIPCT_TIME,
-            ACCOUNTKEY.SKILL,
-            ACCOUNTKEY.EXP,
-            ACCOUNTKEY.FIGURE_URL,
-            ACCOUNTKEY.BONUS,
-            ACCOUNTKEY.PIRATE,
-            ACCOUNTKEY.BP,
-            ACCOUNTKEY.PLATFORM,
-            ACCOUNTKEY.TOKEN,
-            ACCOUNTKEY.TEST,
-            ACCOUNTKEY.MISSION_DAILY_RESET,
-            ACCOUNTKEY.MISSION_ONLY_ONCE,
-            ACCOUNTKEY.PACKAGE,
-            ACCOUNTKEY.SOCIAL_DAILY_INVITE_REWARD,
-            ACCOUNTKEY.FREE_BOMB,
-            ACCOUNTKEY.ACTIVE_DAILY_RESET,
-            ACCOUNTKEY.ACTIVE,
-            ACCOUNTKEY.DROP_ONCE,
-            ACCOUNTKEY.DROP_RESET,
-            ACCOUNTKEY.PRIVACY,
-            ACCOUNTKEY.BROKE_TIMES,
-        ];
         return baseField;
     }
 
@@ -774,32 +773,34 @@ class FishPlayer extends Player {
         let saveData = {
             isRightNow: true,
         };
-        this._changeSkill(skillId, -1);//消耗一个技能
-
-        this._mission.updateProcess(RewardModel.TaskType.USE_SKILL, 1, skillId);//使用x技能y次，如果x为0则为任意技能
-
+        ret.costSkillCount && this._changeSkill(skillId, -1);//消耗一个技能
+        !ret.free && this._mission.updateProcess(RewardModel.TaskType.USE_SKILL, 1, skillId);//使用x技能y次，如果x为0则为任意技能
+        
         let costVal = 0;
         ret.costPearl > 0 && (saveData.pearl = -ret.costPearl, costVal = ret.costPearl);
         ret.costGold > 0 && (saveData.gold = -ret.costGold, costVal = ret.costGold);
 
         if (saveData.pearl) {
-            this._log.addDiamondLog(GAMECFG.common_log_const_cfg.SKILL_BUY, saveData.pearl, this._account.level);
+            this._log.addDiamondLog(GAMECFG.common_log_const_cfg.SKILL_BUY, saveData.pearl, this.account.level);
             this._powerSkillCost = saveData.pearl;
+        } else if (saveData.gold) {
+            this._log.addGoldLog(GAMECFG.common_log_const_cfg.SKILL_BUY, saveData.gold, this.account.level, false);
+            this._powerSkillCost = saveData.gold;
+        }
+
+        this._log.addSkillUsingLog(skillId, ret.skillC);
+        this._save(saveData);
+        this._writeNow(); 
+        if (saveData.pearl) {
             logBuilder.addGoldAndItemLog([
                 {
                     item_id: 'i002',
                     item_num: saveData.pearl,
                 }
-            ], this._account, GAMECFG.common_log_const_cfg.SKILL_BUY);
-        } else if (saveData.gold) {
-            this._log.addGoldLog(GAMECFG.common_log_const_cfg.SKILL_BUY, saveData.gold, this._account.level, false);
-            this._powerSkillCost = saveData.gold;
-        } else {
+            ], this.account, GAMECFG.common_log_const_cfg.SKILL_BUY);
+        }else if (!saveData.gold) {
             skillId != consts.SKILL_ID.SK_LASER && this._addSkillItemCostLog(skillId);
         }
-
-        this._log.addSkillUsingLog(skillId, ret.skillC);
-        this._save(saveData);
 
         let common = {
             skill_id: skillId,
@@ -886,6 +887,7 @@ class FishPlayer extends Player {
         }
 
         this._skState[skillId].flag = 0;
+        ret.costSkillCount = true;
         let common = this._afterSkillCost(skillId, ret);
         utils.invokeCallback(cb, null, common);
 
@@ -968,8 +970,10 @@ class FishPlayer extends Player {
         let skillId = data.skill;
         if (data.invite && this._checkInviteRewardNbomb(skillId)) {
             ret = this._cost.useSkill(skillId, data.wp_level, this, true);//因邀请成功而免费释放核弹
+	        ret.free = true;
         } else {
             ret = this._cost.useSkill(skillId, data.wp_level, this);
+	        ret.costSkillCount = true;
         }
         return ret;
     }
@@ -1006,10 +1010,12 @@ class FishPlayer extends Player {
                     wp_level: curWpLv,
                     laser: reset,
                 });
+                this._writeNow(); //激光使用后，及时将内存数据写入redis
             } else {
                 //核弹需要在确认发射时才扣钱
                 let ret = this._deduct_nbombCost(data);
                 if (!ret || ret.notEnough > 0) {
+                    logger.error('000非法12')
                     utils.invokeCallback(cb, FishCode.INVALID_SKILL);
                     return;
                 }
@@ -1024,7 +1030,6 @@ class FishPlayer extends Player {
                     wp_bk: wpBk,
                 }
             });
-            this._writeNow(); //核弹和激光使用后，及时将内存数据写入redis
         } else {
             utils.invokeCallback(cb, FishCode.INVALID_SKILL);
             return;
@@ -1687,6 +1692,7 @@ class FishPlayer extends Player {
                             this._add2Package(itemKey, itemNum, saveData);
                         }
                     }
+                    this._writeNow(); //升级房间之后及时写入redis，方便玩家升级武器时所需道具前后端同步
                 }
             }
             saveData.exp = result.exp; //注意经验是增量

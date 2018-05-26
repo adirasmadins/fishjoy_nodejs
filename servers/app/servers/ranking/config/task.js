@@ -1,5 +1,5 @@
-const REDISKEY = require('../../../database/consts').REDISKEY;
-const ACCOUNTKEY = require('../../../database/consts').ACCOUNTKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
+const ACCOUNTKEY = require('../../../models/index').ACCOUNTKEY;
 const rankScore = require('../../../utils/rankScore');
 const SUBTASK_TYPE = require('../src/consts').SUBTASK_TYPE;
 const REWARD_TYPE = require('../src/consts').REWARD_TYPE;
@@ -155,6 +155,15 @@ module.exports = {
                 limit: 1000,
                 showDetail: 100,
                 ext: [ACCOUNTKEY.NICKNAME, ACCOUNTKEY.FIGURE_URL, ACCOUNTKEY.SEX, ACCOUNTKEY.WEAPON_SKIN, ACCOUNTKEY.VIP, ACCOUNTKEY.CHARM_RANK]
+            },
+            {
+                redisKey: REDISKEY.RANK.ARENA,
+                originScore: null,
+                range: 10000,
+                limit: 1000,
+                showDetail: 100,
+                ext: [ACCOUNTKEY.NICKNAME, ACCOUNTKEY.FIGURE_URL, ACCOUNTKEY.SEX, ACCOUNTKEY.WEAPON_SKIN, ACCOUNTKEY.VIP,
+                    ACCOUNTKEY.CHARM_RANK,ACCOUNTKEY.ARENA_WIN,ACCOUNTKEY.ARENA_FAIL]
             },
             // {
             //     redisKey: REDISKEY.RANK.GAIN,

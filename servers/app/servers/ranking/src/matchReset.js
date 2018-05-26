@@ -1,5 +1,5 @@
-const REDISKEY = require('../../../database/consts').REDISKEY;
-const ACCOUNTKEY = require('../../../database/consts').ACCOUNTKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
+const ACCOUNTKEY = require('../../../models/index').ACCOUNTKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const rank_rankgame_cfg = require('../../../utils/imports').DESIGN_CFG.rank_rankgame_cfg;
 

@@ -2,6 +2,8 @@ const buzz_chat = require('../src/buzz/buzz_chat');
 const logicResponse = require('../../common/logicResponse');
 
 async function getChat(data) {
+    //TODO linyng
+    return logicResponse.ask({});
     return new Promise(function(resolve, reject){
         buzz_chat.getChat(data, function (err, result) {
             if(err){

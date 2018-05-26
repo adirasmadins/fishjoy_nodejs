@@ -2,7 +2,7 @@ const async = require('async');
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const mysqlAccountSync = require('../../../utils/mysqlAccountSync');
 const Task = require('../../../utils/task/task');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 const utils = require('../../../utils/utils');
 const ERROR_CODE = require('../../../consts/fish_error').ERROR_CODE;
 

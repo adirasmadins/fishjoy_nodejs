@@ -1,11 +1,8 @@
 const utils = require('./utils');
 const Account = require('./account/account');
-const keyTypeDef = require('../database/consts/keyTypeDef');
-const accountConf = require('./account/accountConf');
-const accountParser = require('./account/accountParser');
-accountConf.addDataDef(keyTypeDef.AccountDef);
-accountConf.addDataDef(keyTypeDef.OtherDef);
-const REDISKEY = require('../database/consts/').REDISKEY;
+const modelsUtil = require('../models/modelsUtil');
+const redisDataParser = require('../models/redisDataParser');
+const REDISKEY = require('../models/redisKey');
 const ERROR_OBJ = require('../consts/fish_error').ERROR_OBJ;
 const EventHandler = require('./account/eventHandler');
 
@@ -39,7 +36,7 @@ class Util {
     parseHashValue(key, res) {
         let values = [];
         for (let i = 0; i < res.length; i += 2) {
-            values.push(accountParser.parseValue(key, res[i + 1]));
+            values.push(redisDataParser.parseValue(key, res[i + 1]));
         }
         return values;
     }
@@ -47,7 +44,7 @@ class Util {
     convertValue(key, datas) {
         let values = [];
         for (let i = 0; i < datas.length; i++) {
-            values.push(accountParser.parseValue(key, datas[i]));
+            values.push(redisDataParser.parseValue(key, datas[i]));
         }
         return values;
     }
@@ -133,7 +130,7 @@ function _setAccount(id, data, cb) {
             let cmd = Account.getCmd(key);
             if (cmd) {
                 fieldKeys.push(key);
-                cmds.push([cmd, REDISKEY.getKey(key), id, accountParser.serializeValue(key, item[key])]);
+                cmds.push([cmd, REDISKEY.getKey(key), id, redisDataParser.serializeValue(key, item[key])]);
             }
         }
     });
@@ -195,7 +192,7 @@ function _getAccount(uid, fields, cb) {
             let cmds = [];
             let _fileds = null;
             if (all) {
-                _fileds = Array.from(accountConf.cacheFields);
+                _fileds = Array.from(modelsUtil.PlayerModelFields);
             } else {
                 _fileds = fields;
             }
@@ -325,7 +322,7 @@ function _delAccount(uids, cb) {
     return new Promise(function (resolve, reject) {
         let cmds = [];
         uids.forEach(function (uid) {
-            accountConf.cacheFields.forEach(function (item) {
+            modelsUtil.PlayerModelFields.forEach(function (item) {
                 cmds.push(['hdel', REDISKEY.getKey(item), uid]);
             });
         });

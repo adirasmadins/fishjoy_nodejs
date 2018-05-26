@@ -1,5 +1,5 @@
 const CommonUtil = require('../../../hall/src/buzz/CommonUtil');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 const feedback = require('./feedback');
 const redisAccountSync = require('../../../../utils/redisAccountSync');
 

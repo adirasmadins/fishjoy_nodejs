@@ -1,10 +1,16 @@
 const PREFIX = 'pair:uid:';
 const RANK_PREFIX = ':result';
+const ARENA_PREFIX  = 'match:arena:';
+const MAP_PREFIX = 'map:';
+
 // RANK_RESULT_PREFIX:'result:',
 
 module.exports = {
     getKey: function (field) {
         return `${PREFIX}${field}`;
+    },
+    getArenaKey: function (field) {
+        return `${ARENA_PREFIX}${field}`;
     },
 
     getMysqlKey: function (redisKey) {
@@ -90,6 +96,7 @@ module.exports = {
         CHARM: "rank:charm", //魅力值排行{10000名以内天奖励}
         GAIN: "rank:gain", //盈排行榜
         LOSS: "rank:loss", //亏排行榜
+        ARENA: "rank:arena", //竞技场排行榜
     },
 
     CHART: {
@@ -403,7 +410,6 @@ module.exports = {
     "CHEAT_GOLD_TOTAL": PREFIX + "cheat_gold_total",
     "CHEAT_FORBID_TIME": PREFIX + "cheat_forbid_time",
 
-    "OPENID_UID": "pair:openid:uid",
     "UID_QQ_FRIEND": PREFIX + "qq_friend",
     "UID_GAME_FRIEND": PREFIX + "game_friend",
     "TALK_FORBIDDEN": PREFIX + "talk_forbidden",
@@ -446,4 +452,15 @@ module.exports = {
     REALTIME_FIGHT_SERVER_ROOM_COUNT: "pair:realtime:fight_server_room_count", // 实时数据: 战斗服房间并发数
     REALTIME_RANK_MATCH_PLAYER_COUNT: "pair:realtime:rank_match_player_count", // 实时数据: 排位赛玩家并发数
     REALTIME_RANK_MATCH_ROOM_COUNT: "pair:realtime:rank_match_room_count", // 实时数据: 排位赛房间并发数
+
+    //映射表
+    MAP_OPENID_UID: "pair:openid:uid", //openid 和 uid映射
+    MAP_UID_ARENA_MATCHID: MAP_PREFIX + "uid_arena_matchid",
+
+    //arean 1v1对战
+    ARENA_CREATED_AT: ARENA_PREFIX + "arena_created_at",
+    ARENA_INVITER: ARENA_PREFIX + "arena_inviter",
+    ARENA_INVITEE: ARENA_PREFIX + "arena_invitee",
+    ARENA_STATE: ARENA_PREFIX + "arena_state",
+    ARENA_PKINFO: ARENA_PREFIX + "arena_pkInfo",
 };

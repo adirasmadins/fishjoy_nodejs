@@ -25,10 +25,11 @@ module.exports = {
         FIRE: 100, //排位赛100炮
         MSECONDS: 180000, //倒计时3分钟，单位毫秒
     },
+
     ARENA: {
-        FIRE: 50, //1v1对战200炮
-        START_COUNTDOWN: 10000, //单位ms
-        PK_DURATION: 30000, //PK持续时间单位ms
+        FIRE: 100, //1v1对战200炮
+        START_COUNTDOWN: 120000, //单位ms
+        PK_DURATION: 120000, //PK持续时间单位ms
         TICK_DT: 200, //事件轮训周期单位ms
         MATCH_STATE: {
             CREATED: 1,

@@ -140,6 +140,12 @@
 
     "game.fishHandler.c_turn_weapon": {
         "optional uInt32 up": 1
+    },
+
+    "game.fishHandler.c_query_1v1_record": {
+        "required string matchId": 1,
+        "optional sInt32 index": 2
     }
+
 
 }

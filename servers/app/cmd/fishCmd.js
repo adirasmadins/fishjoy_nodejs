@@ -505,6 +505,36 @@ class FishCmd extends SysCmd {
             res: {}
         };
 
+        /**
+         * 1v1对抗赛：继续比赛，例如中途退出或断线重连
+         */
+        this._req.continue_match_1v1 = {
+            route: 'game.fishHandler.c_continue_match_1v1',
+            msg: {
+                enc: 'aes',
+                data: {
+                    result: {},
+                    players: [],
+                }
+            },
+            res: {}
+        };
+
+        /**
+         * 1v1对抗赛：异步对战时查询对手开炮信息，供客户端模拟
+         */
+        this._req.query_1v1_record = {
+            route: 'game.fishHandler.c_query_1v1_record',
+            msg: {
+                enc: 'aes',
+                data: {
+                    result: {},
+                    players: [],
+                }
+            },
+            res: {}
+        };
+
     }
 
     initPush() {

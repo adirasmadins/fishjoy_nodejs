@@ -24,7 +24,7 @@ async function _updateChannelFriends(data) {
     for (let i = 0; i < friends.length; ++i) {
         friends[i] = versionsUtil.getOpenid(friends[i], account.platform);
     }
-    let friendUids = await redisConnector.hmget(REDISKEY.OPENID_UID, friends);
+    let friendUids = await redisConnector.hmget(REDISKEY.MAP_OPENID_UID, friends);
     let uid_list = [];
     for(let i=0;i< friendUids.length; ++i){
         let item = friendUids[i];

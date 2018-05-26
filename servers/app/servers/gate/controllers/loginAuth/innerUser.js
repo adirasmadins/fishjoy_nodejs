@@ -32,8 +32,8 @@ class InnerUser extends User {
     async registe(data) {
         let regData = data;
         regData.openid = data.username;
-        regData.figure_url = data.figure_url || KEYTYPEDEF.OtherDef.figure_url.def;
-        regData.city = data.city || KEYTYPEDEF.AccountDef.city.def;
+        regData.figure_url = data.figure_url || KEYTYPEDEF.PlayerModel.figure_url.def;
+        regData.city = data.city || KEYTYPEDEF.PlayerModel.city.def;
         regData.saltPassword = createSalt(data.username + data.password);
         regData.channel = constDef.AUTH_CHANNEL_ID.INNER;
         regData.device = data.device;

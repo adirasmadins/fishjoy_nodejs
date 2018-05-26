@@ -5,15 +5,20 @@ const loadManagerCmd = require('../../../cmd/loadManagerCmd');
 const ERROR_OBJ = require('../../../consts/fish_error').ERROR_OBJ;
 const globalStatusData = require('../../../utils/globalStatusData');
 const constDef = require('../../../consts/constDef');
+const redisArenaSync = require('../../../utils/redisArenaSync');
 
 
 class QueryGameEntry {
 
     async getEntry(data) {
-        let roomId = data.roomId;
+        let _roomId = data.roomId;
         let serverInfo = null;
-        if (roomId) {
-            serverInfo = this._getEntryByRoomId(roomId);
+        if (_roomId) {
+            let [err, {roomId}] = redisArenaSync.parseMatchId(_roomId);
+            if(!err){
+                _roomId  = roomId;
+            }
+            serverInfo = this._getEntryByRoomId(_roomId);
             if (!serverInfo) {
                 throw ERROR_OBJ.ROOMID_INVALID;
             }

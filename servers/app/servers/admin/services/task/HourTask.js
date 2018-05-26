@@ -1,7 +1,7 @@
 // 每小时执行任务
 const SQL_CONFIG = require('../../configs/sql');
 const tools = require('../../../../utils/tools');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 
 exports.sumUpLastHour = sumUpLastHour;
 

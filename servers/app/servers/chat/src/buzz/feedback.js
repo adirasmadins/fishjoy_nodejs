@@ -1,6 +1,6 @@
 const dao_feedback = require('../dao/dao_feedback');
 const redisAccountSync = require('../../../../utils/redisAccountSync');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 const clone = require('clone');
 
 const LEN = 100;

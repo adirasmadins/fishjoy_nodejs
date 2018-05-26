@@ -325,9 +325,15 @@ const _errorCode = {
     DESIGN_CFGS_NOT_EXIST:7121, //配置文件不存在
     NOT_SUPPORT_MODE_PLAYER: 7122, //不支持此模式玩家
     WEAPON_TURN_GOLD_TOO_LOW: 7123, //你的金币过低，不能使用更高倍率
-    OTHER_PLAYER_MATCHING:7124, //其他玩家正在进行比赛
+    ARENA_OTHER_PLAYER_MATCHING:7124, //其他玩家挑战中
     MATCH_WAIT_TIMEOUT:7125, //比赛已经开始了,只能异步对战了，自己创建房间吧
     PLAYER_READYING:7126, //玩家还未准备好，拒绝操作
+    ARENA_MATCH_NOT_EXIST:7127, //竞技场对战已经不存在
+    ARENA_NOT_FINISHED:7128, //对战未完成，请先完成对战
+    ARENA_MATCHID_INVALID:7129, //比赛ID无效
+    ARENA_MATCHID_BUSY:7130, //有人考虑挑战此比赛，稍后再试试
+    ARENA_MATCH_SELF:7131, //不能挑战自己创建的比赛
+    ARENA_MATCH_FINISH:7132, //对战已经结束
 };
 
 const _errorObj = {
@@ -676,7 +682,6 @@ const _errorObj = {
         msg: i18n.PLAYER_CHEAT[lan]
     },
 
-    //TODO add by linyng
     NOT_SUPPORT_SERVICE: {
         code: _errorCode.NOT_SUPPORT_SERVICE,
         msg: i18n.NOT_SUPPORT_SERVICE[lan]
@@ -1544,10 +1549,43 @@ const _errorObj = {
         msg: '你的金币过低，不能使用更高倍率',
         code: _errorCode.WEAPON_TURN_GOLD_TOO_LOW,
     },
-    OTHER_PLAYER_MATCHING: {
-        msg: '其他玩家正在进行比赛',
-        code: _errorCode.OTHER_PLAYER_MATCHING,
+    ARENA_OTHER_PLAYER_MATCHING: {
+        msg: '其他玩家挑战中',
+        code: _errorCode.ARENA_OTHER_PLAYER_MATCHING,
     },
+    MATCH_WAIT_TIMEOUT: {
+        msg: '比赛已经开始了，自己创建房间吧',
+        code: _errorCode.MATCH_WAIT_TIMEOUT,
+    },
+    PLAYER_READYING: {
+        msg: '玩家还未准备好，拒绝操作',
+        code: _errorCode.PLAYER_READYING,
+    },
+    ARENA_MATCH_NOT_EXIST: {
+        msg: '竞技场对战不存在',
+        code: _errorCode.ARENA_MATCH_NOT_EXIST,
+    },
+    ARENA_NOT_FINISHED: {
+        msg: '对战未完成，请先完成对战',
+        code: _errorCode.ARENA_NOT_FINISHED,
+    },
+    ARENA_MATCHID_INVALID: {
+        msg: '比赛ID无效',
+        code: _errorCode.ARENA_MATCHID_INVALID,
+    },
+    ARENA_MATCHID_BUSY: {
+        msg: '有人考虑挑战此比赛，稍后再试试',
+        code: _errorCode.ARENA_MATCHID_BUSY,
+    },
+    ARENA_MATCH_SELF: {
+        msg: '不能挑战自己创建的比赛',
+        code: _errorCode.ARENA_MATCH_SELF,
+    },
+    ARENA_MATCH_FINISH: {
+        msg: '对战已经结束',
+        code: _errorCode.ARENA_MATCH_FINISH,
+    },
+
     // TODO: 配置表增加字段后解开注释
     // FIRST_RECHARGE_NO_RMB: { code: _errorCode.FIRST_RECHARGE_NO_RMB, msg: i18n.FIRST_RECHARGE_NO_RMB[lan] },
     // FIRST_RECHARGE_ALREADY: { code: _errorCode.FIRST_RECHARGE_ALREADY, msg: i18n.FIRST_RECHARGE_ALREADY[lan] },

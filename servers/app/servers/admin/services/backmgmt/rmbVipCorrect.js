@@ -1,6 +1,6 @@
 const tools = require('../../../../utils/tools');
 const SQL_CONFIG = require('../../configs/sql');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 
 /**
  * 批量纠正玩家VIP和RMB数据

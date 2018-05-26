@@ -4,7 +4,6 @@ const DateUtil = require('../utils/DateUtil');
 const CacheAccount = require('./cache/CacheAccount');
 const Item = require('./pojo/Item');
 const _ = require('underscore');
-const buzz_account = require('./buzz_account');
 const buzz_charts = require('./buzz_charts');
 const cache = require('../rankCache/cache');
 const DaoCommon = require('../dao/dao_common');

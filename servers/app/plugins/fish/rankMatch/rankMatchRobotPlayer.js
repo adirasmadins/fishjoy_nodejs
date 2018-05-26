@@ -24,8 +24,9 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
         this._wpSkin = 1; //武器皮肤
         this._wpLv = 1; //武器等级
         this._curScore = 0; //总共得分
-        this._fireC = 0; //开炮数
-        this._wpChangeFC = 20 + Math.floor(Math.random() * (this._max_fireC - 20)); //指定炮数后切换武器,注意只切换一次
+	    this._maxFireC = config.MATCH.FIRE; //最大开炮数
+        this._fireC = this._maxFireC; //剩余开炮数
+        this._wpChangeFC = this._maxFireC - (20 + Math.floor(Math.random() * (this._maxFireC - 20))); //指定炮数后切换武器,注意只切换一次
 
         let total = 30 + Math.floor(Math.random() * 30); //随机开炮时间，秒
         this._fireInterval = total / 100 * 1000; //平均100炮间隔, 毫秒
@@ -33,6 +34,7 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
         this._fireDt = 0;
         this._chatDt = 0;
         this._chatInterval = 15000;//随机聊天时间，秒
+        
 
         this._initRandomFishes();
         this._initNbomb();
@@ -122,17 +124,16 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
         const FISH_CFGS = GAMECFG.fish_fish_cfg;
         const cfg = FISH_CFGS[name];
 
-        this._fireC += this._wpTimes;
-        this._fireC = Math.min(this._fireC, this._max_fireC);
+        this._fireC -= this._wpTimes;
+        this._fireC = Math.max(this._fireC, 0);
         if (this._fireC === this._wpChangeFC) {
             this._think2ChangeWeaponSkin();
             this._wpChangeFC = -1;
         }
         
-        let fire = Math.max(0, this._max_fireC - this._fireC);
         let temp = {
             score: this._curScore,
-            fire: fire,
+            fire: this._fireC,
             fish_list: [],
         };
 
@@ -268,17 +269,17 @@ class RankMatchRobotPlayer extends RankMatchPlayer {
      */ 
     fire (dt) {
         if (this.isOver()) return;
-        if (this._fireC === this._max_fireC) {
+        if (this._fireC === 0) {
             return;
         }else {
             this._think2Chat(dt);
         }
         if (!this._checkFire(dt)) return;
         this._selectFish2Fire();
-        if (this._fireC === this._max_fireC) {
+        if (this._fireC === 0) {
             this._think2FireWithNbomb();
         }else {
-            this.isProvocativeEnabled() && this._fireC > this._max_fireC*2/3 && this._think2Provocative();
+            this.isProvocativeEnabled() && this._fireC > this._maxFireC/3 && this._think2Provocative();
         }
         
     }

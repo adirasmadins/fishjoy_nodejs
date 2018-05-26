@@ -17,10 +17,21 @@ class ArenaCmd extends SysCmd {
          * 获取对手PK记录
          */
         this._req.getPKRecord = {
-            route: 'game.fishHandler.get_pk_record',
+            route: 'game.fishHandler.c_get_pk_record',
             msg: {},
             res: {}
         };
+
+        /**
+         * pk对战继续
+         * @type {{route: string, msg: {}, res: {}}}
+         */
+        this._req.pk_match_continue = {
+            route: 'game.fishHandler.c_pk_match_continue',
+            msg: {},
+            res: {}
+        };
+
         super.initReq();
     }
 

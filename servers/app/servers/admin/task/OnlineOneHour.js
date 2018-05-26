@@ -2,7 +2,7 @@ const Task = require('../../../utils/task/task');
 const async = require('async');
 const utils = require('../../../utils/utils');
 const tools = require('../../../utils/tools');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 const HourTask = require('../services/task/HourTask');
 
 /**

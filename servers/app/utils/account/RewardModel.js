@@ -83,7 +83,6 @@ class MissionModel {
                         this._ignoreTaskMap[getTaskKey(TASK_PREFIX.MISSION_TASK_ONCE, dailyQuestCfg.type, dailyQuestCfg.condition, dailyQuestCfg.value1)] = true;
                     }
                 }
-
             }
         }
 

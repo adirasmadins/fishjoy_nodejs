@@ -1,5 +1,5 @@
 const redisAccountSync = require('../../utils/redisAccountSync');
-const ACCOUNTKEY = require('../../database/consts').ACCOUNTKEY;
+const ACCOUNTKEY = require('../../models/index').ACCOUNTKEY;
 const ERROR_OBJ = require('../../consts/fish_error').ERROR_OBJ;
 
 module.exports = async function (uid, token) {

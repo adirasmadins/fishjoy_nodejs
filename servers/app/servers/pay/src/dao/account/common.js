@@ -2,9 +2,7 @@ const _ = require('underscore');
 const utils = require('../../buzz/utils');
 const ObjUtil = require('../../buzz/ObjUtil');
 const DateUtil = require('../../utils/DateUtil');
-const account_def = require('../../../../../database/consts').KEYTYPEDEF,
-    AccountDefault = account_def.AccountDef,
-    AccountOtherDef = account_def.OtherDef;
+const PlayerModel = require('../../../../../models/keyTypeDef').PlayerModel;
 const redisAccountSync = require('../../../../../utils/redisAccountSync');
 const buzz_cst_error = require('../../../../../consts/fish_error');
 const gameConfig = require('../../../../../utils/imports').DESIGN_CFG;
@@ -630,13 +628,11 @@ function updateLoginCount(account, cb, vip_fill_this_time) {
 
 function transformSql2Redis(account) {
     let result = {};
-    const FUNC = TAG + "transformSql2Redis() --- ";
-
-    for (let i in AccountDefault) {
+    for (let i in PlayerModel) {
         if (account[i] == null) {
-            result[i] = AccountDefault[i].def;
+            result[i] = PlayerModel[i].def;
         }
-        else if (AccountDefault[i].type == 'object') {
+        else if (PlayerModel[i].type == 'object') {
             try {
                 if (account[i].substring(0, 1) != '{' && account[i].substring(0, 1) != '[') {
                     if (i == 'over_me_friends') {
@@ -660,26 +656,6 @@ function transformSql2Redis(account) {
             catch (err) {
                 logger.error(FUNC + "err:", err);
                 logger.error(FUNC + "i:", i);
-                logger.error(FUNC + "account[i]:", account[i]);
-            }
-        } else {
-            result[i] = account[i];
-        }
-    }
-
-    for (let i in AccountOtherDef) {
-        if (account[i] == null) {
-            result[i] = AccountOtherDef[i].def;
-        }
-        else if (AccountOtherDef[i].type == 'object') {
-            if (account[i].substring(0, 1) != '{' && account[i].substring(0, 1) != '[') {
-                account[i] = "[" + account[i] + "]";
-            }
-            try {
-                result[i] = JSON.parse(account[i]);
-            }
-            catch(err) {
-                logger.error(FUNC + "err:", err);
                 logger.error(FUNC + "account[i]:", account[i]);
             }
         } else {

@@ -1,5 +1,5 @@
 const SQL_CONFIG = require('../../configs/sql');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 const tools = require('../../../../utils/tools');
 
 /**

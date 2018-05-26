@@ -8,6 +8,11 @@ const fishCmd = require('../../cmd/fishCmd');
 const FishCode = CONSTS.SYS_CODE;
 const ROBOT_EVENT = new Set([fishCmd.request.robot_catch_fish.route.split('.')[2]]);
 const DESIGN_CFG = require('../../utils/imports').DESIGN_CFG;
+const redisAccountSync = require('../../utils/redisAccountSync');
+const redisArenaSync = require('../../utils/redisArenaSync');
+const ACCOUNTKEY = require('../../models').ACCOUNTKEY;
+const ERROR_OBJ = require('../../consts/fish_error').ERROR_OBJ;
+const constDef = require('../../consts/constDef');
 const RobotEvent = require('./entity/robotEvent');
 const MatchPlayer = require('./entity/matchPlayer');
 const Player = require('./entity/player');
@@ -122,23 +127,19 @@ class Instance {
         });
     }
 
-    //通过房间号加入游戏
-    async enterGameByRoomId(data) {
+    async enter1V1RoomByRoomId(data) {
         if (!data.roomId || !data.uid || !data.sid) {
             throw CONSTS.SYS_CODE.ARGS_INVALID;
         }
 
-        if (this._entities.has(data.uid)) {
-            this.leaveGame(data);
-        }
-
         let room = this._roomMap.get(data.roomId);
         if (!room) {
-            throw CONSTS.SYS_CODE.PALYER_GAME_ROOM_DISMISS;
+            data.asyncMatch = true;
+            return await this.enterGame(data);
         }
 
         let playerType = this._playerFactory.roomType2PlayerType(data.roomType);
-        if(null == playerType){
+        if (null == playerType) {
             throw CONSTS.SYS_CODE.NOT_SUPPORT_MODE_PLAYER;
         }
 
@@ -150,9 +151,9 @@ class Instance {
             throw err;
         }
 
-        err = room.join(player);
+        err = await room.join(player, data);
         if (err) {
-            if(err == CONSTS.SYS_CODE.MATCH_WAIT_TIMEOUT){
+            if (err == CONSTS.SYS_CODE.MATCH_WAIT_TIMEOUT) {
                 data.asyncMatch = true;
                 return await this.enterGame(data);
             }
@@ -169,6 +170,153 @@ class Instance {
         };
     }
 
+    //通过房间号加入游戏
+    async enterGameByRoomId(data) {
+        if (!data.roomId || !data.uid || !data.sid) {
+            throw CONSTS.SYS_CODE.ARGS_INVALID;
+        }
+
+        if (this._entities.has(data.uid)) {
+            this.leaveGame(data);
+        }
+
+        let room = this._roomMap.get(data.roomId);
+        if (!room) {
+            throw CONSTS.SYS_CODE.PALYER_GAME_ROOM_DISMISS;
+        }
+
+        let playerType = this._playerFactory.roomType2PlayerType(data.roomType);
+        if (null == playerType) {
+            throw CONSTS.SYS_CODE.NOT_SUPPORT_MODE_PLAYER;
+        }
+
+        let player = await this._playerFactory.createPlayer(data, playerType);
+
+        let err = this._access(player.account, room.sceneId);
+        if (err) {
+            logger.error('进入邀请游戏场景条件不满足, err=', err);
+            throw err;
+        }
+
+        err = await room.join(player, data);
+        if (err) {
+            if (err == CONSTS.SYS_CODE.MATCH_WAIT_TIMEOUT) {
+                data.asyncMatch = true;
+                return await this.enterGame(data);
+            }
+            logger.error('加入邀请游戏房间失败, err=', err);
+            throw err;
+        }
+
+        this._roomMap.set(room.roomId, room);
+        this._entities.set(player.uid, room);
+
+        return {
+            roomId: room.roomId,
+            players: room.genAllPlayers(player.uid)
+        };
+    }
+
+    is1v1Match(roomType) {
+        return roomType == consts.ROOM_TYPE.ARENA_MATCH;
+    }
+
+    async isHas1v1Match(uid) {
+        try {
+            let account = await redisAccountSync.getAccountAsync(uid, [ACCOUNTKEY.ARENA_MATCHID]);
+            if (account.matchId) {
+                let arena = await redisArenaSync.getArena(account.matchId);
+                if (arena) {
+                    return true;
+                }
+            }
+        } catch (err) {
+            return false;
+        }
+        return false;
+    }
+
+
+    async match_1v1_check(uid) {
+        try {
+            let account = await redisAccountSync.getAccountAsync(uid, [ACCOUNTKEY.ARENA_MATCHID]);
+            if (account.arena_matchid) {
+                let [err, {
+                    roomId,
+                    serverId
+                }] = redisArenaSync.parseMatchId(account.arena_matchid);
+                if (err) {
+                    throw err;
+                }
+                let arena = await redisArenaSync.getArena(account.arena_matchid);
+                if (arena.arena_state == constDef.ARENA_MATCH_STATE.FINISHED) {
+                    account.arena_matchid = '';
+                    await account.commitSync();
+                    return;
+                }
+
+                let pk_pos = {
+                    roomId: roomId,
+                    serverId: serverId,
+                    matchId: account.arena_matchid
+                };
+                
+                if (arena.arena_inviter.uid == uid) {
+                    if (arena.arena_state != config.ARENA.MATCH_STATE.FINISHED) {
+                        if (serverId != global.SERVER_ID) {
+                            throw ERROR_OBJ.ARENA_NOT_FINISHED;
+                        } else {
+                            return pk_pos;
+                        }
+                    }
+                } else if (arena.arena_invitee.uid == uid) {
+                    if (arena.arena_invitee.state != config.ARENA.MATCH_STATE.FINISHED) {
+                        if (serverId != global.SERVER_ID) {
+                            throw ERROR_OBJ.ARENA_NOT_FINISHED;
+                        } else {
+                            return pk_pos;
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async match_1v1_check_inviteMatchId(matchId, uid) {
+        try {
+            let [err, {
+                roomId,
+                serverId
+            }] = redisArenaSync.parseMatchId(matchId);
+            if (err) {
+                throw err;
+            }
+            let arena = await redisArenaSync.getArena(matchId);
+            let pk_pos = {
+                roomId: roomId,
+                serverId: serverId,
+                matchId: matchId
+            };
+            if (arena.arena_inviter.uid == uid) {
+                if (arena.arena_state == config.ARENA.MATCH_STATE.FINISHED) {
+                    throw ERROR_OBJ.ARENA_MATCH_FINISH;
+                }
+            } else if (arena.arena_invitee.uid == uid) {
+                if (arena.arena_invitee.state == config.ARENA.MATCH_STATE.FINISHED) {
+                    throw ERROR_OBJ.ARENA_MATCH_FINISH;
+                }
+            }
+            return [err, {
+                roomId,
+                serverId
+            }];
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async enterGame(data) {
         if (data.roomType == null || !data.sceneId || !data.uid || !data.sid) {
             throw CONSTS.SYS_CODE.ROOM;
@@ -177,8 +325,9 @@ class Instance {
         if (this._entities.has(data.uid)) {
             this.leaveGame(data);
         }
+
         let playerType = this._playerFactory.roomType2PlayerType(data.roomType);
-        if(null == playerType){
+        if (null == playerType) {
             throw CONSTS.SYS_CODE.NOT_SUPPORT_MODE_PLAYER;
         }
 
@@ -203,7 +352,7 @@ class Instance {
             });
         }
 
-        err = room.join(player, data);
+        err = await room.join(player, data);
         if (err) {
             logger.error('加入游戏房间失败, err=', err);
             throw err;
@@ -246,7 +395,18 @@ class Instance {
             player.prototypeObj = Player.prototype;
             MatchPlayer.attach(player);
             await player.continueMatch(data, cb);
-        }else {
+        } else {
+            throw CONSTS.SYS_CODE.PALYER_GAME_ROOM_DISMISS;
+        }
+    }
+
+    async continue_match_1v1(data, cb) {
+        logger.error('1v1赛继续比赛');
+        let room = this._entities.get(data.uid);
+        if (room) {
+            let player = room.getPlayer(data.uid);
+            await player.continueMatch(data, cb);
+        } else {
             throw CONSTS.SYS_CODE.PALYER_GAME_ROOM_DISMISS;
         }
     }
@@ -272,7 +432,7 @@ class Instance {
     }
 
     async rpc_match_start(data, cb) {
-        logger.error('rpc_match_start排位赛开始比赛',data);
+        logger.error('rpc_match_start排位赛开始比赛', data);
         if (!data.uid) {
             utils.invokeCallback(cb, CONSTS.SYS_CODE.ARGS_INVALID);
             return;
@@ -290,7 +450,7 @@ class Instance {
     }
 
     rpc_match_finish(data, cb) {
-        logger.error('rpc_match_finish排位赛结束',data);
+        logger.error('rpc_match_finish排位赛结束', data);
         if (!data.uid) {
             utils.invokeCallback(cb, CONSTS.SYS_CODE.ARGS_INVALID);
             return;
@@ -335,8 +495,8 @@ class Instance {
 
     _searchMultiRoom(sceneId, robot = false) {
         for (let room of this._roomMap.values()) {
-            if (sceneId == room.sceneId && room.roomType === consts.ROOM_TYPE.MULTI_FREE && (room.playerCount < room.roomPlayerMaxCount
-                    || !robot && room.kickRobot())) {
+            if (sceneId == room.sceneId && room.roomType === consts.ROOM_TYPE.MULTI_FREE && (room.playerCount < room.roomPlayerMaxCount ||
+                    !robot && room.kickRobot())) {
                 return room;
             }
         }
@@ -425,7 +585,7 @@ class Instance {
                 return;
             }
 
-            if(player.ready && route != 'c_heartbeat'){
+            if (player.ready && route != 'c_heartbeat') {
                 logger.error('玩家准备中，无法开炮等操作', route);
                 utils.invokeCallback(cb, FishCode.PLAYER_READYING);
                 return;

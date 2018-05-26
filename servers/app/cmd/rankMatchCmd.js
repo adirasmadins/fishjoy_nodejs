@@ -136,6 +136,18 @@ class RankMatchCmd extends SysCmd {
                 provocativeVal: 2,
             }
         };
+
+         /**
+         * 1v1玩家进入广播
+         */
+        this._push.enter_room_1v1 = {
+            route: 's_match_1v1_enter',
+            msg: {
+                enc: 'aes',
+                data: { }
+            },
+            res: {}
+        };
     }
 
     initRemote(){

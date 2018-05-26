@@ -1,5 +1,5 @@
 const ServerSwitch = require('../../configs/consts/ServerSwitch');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 const payApi = require('../../../api/pay/payClientApiConfig');
 const hallApi = require('../../../api/hall/hallClientApiConfig');
 const tools = require('../../../../utils/tools');

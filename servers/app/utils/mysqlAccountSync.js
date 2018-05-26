@@ -1,18 +1,10 @@
-const async = require('async');
-const sql_pojo = require('../database/consts/sql_pojo'),
-    sql_fields = sql_pojo.fields,
-    sql_tables = sql_pojo.tables;
-const table_def = require('../database/consts/table_def');
-const keyTypeDef = require('../database/consts/keyTypeDef'),
-    AccountDefault = keyTypeDef.AccountDef,
-    AccountOtherDef = keyTypeDef.OtherDef;
+const sql_pojo = require('../models/sql_pojo');
+const sql_fields = sql_pojo.fields;
+const PlayerModel = require('../models/keyTypeDef').PlayerModel;
 const DateUtil = require('./DateUtil');
 const ERROR_OBJ = require('../consts/fish_error').ERROR_OBJ;
 const utils = require('./utils');
 const moment = require('moment');
-
-var DEBUG = 0;
-const TAG = "【mysqlAccountSync】";
 
 /**
  * 获取mysql中account信息
@@ -98,7 +90,6 @@ function setAccount(accounts, cb) {
         accounts = [accounts];
     }
 
-    const FUNC = TAG + "setAccount() --- ";
     let sqlParams = [];
     for (let i in accounts) {
         let account = accounts[i];
@@ -204,9 +195,9 @@ function query_templet(table, fields, condition) {
 
 function transformRedis2Sql(account) {
     let result = {};
-    for (let i in AccountDefault) {
+    for (let i in PlayerModel) {
         if (account[i] != null) {
-            if (AccountDefault[i].type == 'object') {
+            if (PlayerModel[i].type == 'object') {
                 result[i] = JSON.stringify(account[i]);
                 for (let field in sql_pojo.need_update_fields) {
                     if (field == i) {
@@ -228,21 +219,6 @@ function transformRedis2Sql(account) {
 
     }
 
-    for (let i in AccountOtherDef) {
-        if (account[i] != null) {
-            if (AccountOtherDef[i].type == 'object') {
-                result[i] = JSON.stringify(account[i]);
-                for (let field in sql_pojo.need_update_fields) {
-                    if (field == i) {
-                        result[i] = result[i].replace("[", "").replace("]", "");
-                    }
-                }
-            } else {
-                result[i] = account[i];
-            }
-        }
-
-    }
     return result;
 }
 
@@ -443,26 +419,25 @@ function _resultList(table, fields) {
 
 function transformSql2Redis(account) {
     let result = {};
-    const FUNC = TAG + "transformSql2Redis() --- ";
 
-    for (let i in AccountDefault) {
+    for (let i in PlayerModel) {
         if (account[i] != null) {
-            if (AccountDefault[i].type === 'object') {
+            if (PlayerModel[i].type === 'object') {
                 try {
                     result[i] = JSON.parse(account[i]);
                 } catch (err) {
                     try {
-                        if (AccountDefault[i].def instanceof Array) {
+                        if (PlayerModel[i].def instanceof Array) {
                             result[i] = JSON.parse("[" + account[i] + "]");
                         }
-                        else if (typeof AccountDefault[i].def === 'object') {
+                        else if (typeof PlayerModel[i].def === 'object') {
                             result[i] = JSON.parse("{" + account[i] + "}");
                         }
                     } catch (err) {
                         logger.error(`用户${account.id}数据${i}解析错误：${account[i]}`);
                     }
                 }
-            } else if (AccountDefault[i].type === 'timestamp') {
+            } else if (PlayerModel[i].type === 'timestamp') {
                 if (account[i] === '0000-00-00 00:00:00') {
                     account[i] = '1970-01-02 00:00:00';
                 }
@@ -475,33 +450,6 @@ function transformSql2Redis(account) {
         }
     }
 
-    for (let i in AccountOtherDef) {
-        if (account[i] != null) {
-            if (AccountOtherDef[i].type === 'object') {
-                try {
-                    result[i] = JSON.parse(account[i]);
-                } catch (err) {
-                    try {
-                        if (AccountOtherDef[i].def instanceof Array) {
-                            result[i] = JSON.parse("[" + account[i] + "]");
-                        }
-                        else if (typeof AccountOtherDef[i].def === 'object') {
-                            result[i] = JSON.parse("{" + account[i] + "}");
-                        }
-                    } catch (err) {
-                        logger.error(`用户${account.id}数据${i}解析错误：${account[i]}`);
-                    }
-                }
-            } else if (AccountOtherDef[i].type === 'timestamp') {
-                if (account[i] === '0000-00-00 00:00:00') {
-                    account[i] = '1970-01-02 00:00:00';
-                }
-                account[i] = moment(account[i]).format('YYYY-MM-DD HH:mm:ss');
-            } else {
-                result[i] = account[i];
-            }
-        }
-    }
     return result;
 }
 

@@ -4,7 +4,9 @@ const plugins = require('../../plugins');
 const {RedisConnector, MysqlConnector} = require('../../database/dbclient');
 const matchingCmd = require('../../cmd/matchingCmd');
 const constDef = require('../../consts/constDef');
+const ERROR_OBJ = require('../../consts/fish_error').ERROR_OBJ;
 const GAME_TYPE = require('../../utils/imports').sysConfig.GAME_TYPE;
+const redisArenaSync = require('../../utils/redisArenaSync');
 const dropManager = require('../../utils/DropManager');
 const rpcSender = require('../../net/rpcSender');
 const globalStatusData = require('../../utils/globalStatusData');
@@ -124,12 +126,59 @@ class GameApp {
         utils.invokeCallback(cb, null);
     }
 
+    async _enter_1v1_room(msg, session, cb){
+        let resp = await this.instance.match_1v1_check(msg.uid);
+        if(resp){
+            //已经存在比赛的玩家
+            msg.hasMatch = true;
+            let {roomId, matchId} = resp;
+            msg.roomId = roomId;
+            msg.matchId = matchId;
+        }else {
+            //受邀请加入1V1,解析其matchId，得到roomId
+            if(msg.roomId){
+                msg.matchId = msg.roomId;
+                let [err, {roomId}] = await this.instance.match_1v1_check_inviteMatchId(msg.roomId, msg.uid)
+                if(err){
+                    throw err;
+                }
+                msg.roomId = roomId;
+            }
+        }
+
+        //加入指定房间
+        let _respose = null;
+        if (msg.roomId) {
+            _respose = await this._instance.enter1V1RoomByRoomId(msg);
+        } else {
+            _respose = await this._instance.enterGame(msg);
+        }
+
+        session.set('roomId', _respose.roomId);
+        session.set(rpcSender.serverIdKey.game, session.frontendId);
+        session.pushAll(function () {
+            logger.info(`用户[${msg.uid}]加入游戏成功`, _respose);
+            utils.invokeCallback(cb, null, _respose);
+        });
+    }
+
     async c_enter_room(msg, session, cb) {
-        //TODO 测试
-        msg.roomType = 4;
-        msg.sceneId = 'scene_1V1';
+        msg.sid = session.frontendId;
+
         try {
-            msg.sid = session.frontendId;
+            //检查1V1对战是否存在
+            msg.isMatch = this.instance.is1v1Match(msg.roomType);
+            if(msg.isMatch){
+                await this._enter_1v1_room(msg, session, cb);
+                return;
+            }else {
+                if(await this.instance.isHas1v1Match(msg.uid)){
+                    utils.invokeCallback(cb, ERROR_OBJ.ARENA_NOT_FINISHED);
+                    return;
+                }
+            }
+
+
             let recoverRoomId = null;
             let gamePos = await globalStatusData.queryData(constDef.GLOBAL_STATUS_DATA_TYPE.PLAYER_GAME_POS, rpcSender.serverType.game, msg.uid);
             if (gamePos) {
@@ -168,7 +217,6 @@ class GameApp {
             logger.error(`用户[${msg.uid}]加入游戏失败`, err);
             utils.invokeCallback(cb, err);
         }
-
     }
 
     c_leave_room(msg, session, cb) {
@@ -179,6 +227,10 @@ class GameApp {
 
     async c_continue_rmatch(data, session, cb) {
         await this._instance.continue_rmatch(data, cb);
+    }
+
+    async c_continue_match_1v1(data, session, cb) {
+        await this._instance.continue_match_1v1(data, cb);
     }
 
     async _reconnectGame(msg) {

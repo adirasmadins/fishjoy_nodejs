@@ -2,7 +2,7 @@
  * 玩家信息字段及默认值，以下数据从数据库导出所得
  * TODO: 表过于臃肿，待拆分:女神数据，凡是单个字段
  */
-const gamecfgs = require('../../../config/design_cfg');
+const gamecfgs = require('../../config/design_cfg/index');
 const player_users_cfg = gamecfgs.player_users_cfg;
 const active_drawcost_cfg = gamecfgs.active_drawcost_cfg;
 
@@ -20,7 +20,7 @@ function init_free_draw() {
     return free_draw;
 }
 
-module.exports.AccountDef = {
+module.exports.PlayerModel = {
     "id": {
         "def": 0,
         "type": "number"
@@ -467,11 +467,7 @@ module.exports.AccountDef = {
     "mission_only_once_reward": {
         "def": {},
         "type": "object"
-    }
-};
-
-//注意，其他字段来自其他表，参考common的_resultList方法实现
-exports.OtherDef = {
+    },
     "month_sign": {
         "def": [],
         "type": "object"
@@ -753,15 +749,55 @@ exports.OtherDef = {
     "goddess_free_pause_away":{
         "def": [0, 0, 0, 0, 0],
         "type": "object",
-    }
+    },
+
+    "arena_win": {
+        "def": 0,
+        "type": "number",
+        "inc": true
+    },
+    "arena_fail": {
+        "def": 0,
+        "type": "number",
+        "inc": true
+    },
+
+    "arena_star": {
+        "def": 0,
+        "type": "number",
+    },
+
+    "arena_box_state": {
+        "def": 0,
+        "type": "number",
+    },
+
+    "arena_matchid": {
+        "def": '',
+        "type": "string",
+    },
+
+    "arena_matchid_list": {
+        "def": [],
+        "type": "object",
+    },
 };
 
-
-/**
- * 返回指定字段类型和默认值[type, def]
- */
-exports.getField = function (field) {
-    var af = exports.AccountDef[field];
-    af = af || exports.OtherDef[field];
-    return af;
+module.exports.ArenaModel = {
+    "arena_created_at": {
+        "def": '1970-01-02 00:00:00',
+        "type": "timestamp"
+    },
+    "arena_inviter": {
+        "def": {},
+        "type": "object"
+    },
+    "arena_invitee": {
+        "def": {},
+        "type": "object"
+    },
+    "arena_state": {
+        "def": 1,
+        "type": "number"
+    }
 };

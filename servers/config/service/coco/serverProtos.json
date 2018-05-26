@@ -287,6 +287,27 @@
     "s_rank_match_provocative": {
         "required sInt32 uid": 1,
         "optional uInt32 provocativeVal": 2
+    },
+
+    "s_match_1v1_enter": {
+        "message Match1v1Player": {
+            "optional sInt32 uid": 1,
+            "optional uInt32 rank": 2,
+            "optional string nickname": 3,
+            "optional string figure_url": 4,
+            "optional float winning_rate": 5,
+            "optional uInt32 wp_skin": 6,
+            "optional uInt32 nbomb_cost": 7,
+
+            "message Status": {
+                "optional uInt32 fire": 1,
+                "optional uInt32 score": 2
+            },
+            "optional Status status": 8,
+            "optional uInt32 vip": 9,
+            "optional uInt32 winTimes": 10
+        },
+        "repeated Match1v1Player match_1v1_players": 1
     }
 
 }

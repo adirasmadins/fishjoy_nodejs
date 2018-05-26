@@ -1,4 +1,4 @@
-const accountConf = require('./accountConf');
+const modelsUtil = require('./modelsUtil');
 const moment = require('moment');
 
 
@@ -11,7 +11,7 @@ class AccountParser {
      */
     serializeValue(key, value, isDefault = true) {
         let serialVal = null;
-        let typeInfo = accountConf.getFieldDef(key);
+        let typeInfo = modelsUtil.getFieldDef(key);
         if (!typeInfo) {
             logger.error('非法字段，无法写入redis, 请检查字段名是否正确', key, value);
             return null;
@@ -57,7 +57,7 @@ class AccountParser {
                 break;
         }
 
-        if (null == serialVal) {
+        if (null == serialVal && typeInfo.def != null) {
             logger.error('字段值非法，无法写入redis, 请检查数据来源是否正确', key, value);
         }
 
@@ -72,7 +72,7 @@ class AccountParser {
      */
     parseValue(key, value, isDefault = true) {
         let serialVal = null;
-        let typeInfo = accountConf.getFieldDef(key);
+        let typeInfo = modelsUtil.getFieldDef(key);
         if (!typeInfo) {
             logger.error('非法字段，无法解析，请检查字段名是否正确', key, value);
             return null;
@@ -145,7 +145,7 @@ class AccountParser {
                 break;
         }
 
-        if (serialVal == null) {
+        if (serialVal == null && typeInfo.def != null) {
             logger.error('读取REDIS数据值异常, 请检查数据来源是否正确', key, value);
         }
         return serialVal;

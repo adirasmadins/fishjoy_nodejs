@@ -17,6 +17,14 @@ class MatchPlayer extends FishPlayer {
         logger.error('==========MatchPlayer=====');
     }
 
+    static sBaseField() {
+        return FishPlayer.sBaseField();
+    }
+
+    getBaseField() {
+        return MatchPlayer.sBaseField();
+    }
+
     static attach(instObj){
         logger.error('玩家附加比赛属性=', instObj.uid);
         let prototypeNames = Object.getOwnPropertyNames(MatchPlayer.prototype);
@@ -25,7 +33,6 @@ class MatchPlayer extends FishPlayer {
             if(key != 'constructor'){
                 instObj[key] = MatchPlayer.prototype[key];
             }
-
         }
     }
 
@@ -63,7 +70,7 @@ class MatchPlayer extends FishPlayer {
 
     //打鱼分数计
     _catch_fish_count(bks, ret){
-        this._rmHelper.fireCount(bks, ret, this.fishModel);
+        return this._rmHelper.fireCount(bks, ret, this.fishModel);
     }
 
     /**
@@ -91,20 +98,29 @@ class MatchPlayer extends FishPlayer {
      */
     c_room_chat(data, cb) {
         logger.error('排位赛战战斗内聊天');
-        //TODO matchFlag ????
-        if (data.matchFlag > 0) {
-            let tdata = {
-                type: data.type,
-                idx: data.idx,
-                matchFlag: data.matchFlag,
-            };
-            this.matchEventCall(rankMatchCmd.remote.rmatchChat.route, tdata);
-        }
+        let tdata = {
+            type: data.type,
+            idx: data.idx,
+            matchFlag: data.matchFlag,
+        };
+        this.matchEventCall(rankMatchCmd.remote.rmatchChat.route, tdata);
         utils.invokeCallback(cb, null, {
             state: 1,
         });
     }
 
+    /**
+     * 排位赛：抛媚眼
+     */
+    c_rmatch_provocative(data, cb) {
+        let score = this._rmHelper.provocativeAnother();
+        let ret = {
+            provocativeVal: score
+        }
+        this.matchEventCall(rankMatchCmd.remote.provocative.route, ret);
+        utils.invokeCallback(cb, null, ret);
+    }
+    
     /**
      * 切换武器倍率
      */
@@ -130,6 +146,7 @@ class MatchPlayer extends FishPlayer {
     //排位赛时，皮肤变化需要及时通知
     _weapon_skin_change(wpSkin){
         this.matchEventCall(rankMatchCmd.remote.weaponChange.route, {
+            uid: this.uid,
             wp_skin: wpSkin,
         });
     }
@@ -192,11 +209,11 @@ class MatchPlayer extends FishPlayer {
      * 排位赛：正式开始
      */
     startMatch(evtData) {
-        logger.error('排位赛开始');
-        this._generateRmHelper(evtData);
+        logger.error('比赛开始 startMatch');
+        this._generateRmHelper(evtData || {});
         this._rmHelper.setNbCost(evtData.nbomb_cost);
         this._rmHelper.registerUpdateFunc(function (data) {
-            //logger.error('当前战绩===', data);
+            logger.error('当前战绩===', data);
             if (data.nbomb) {
                 this.matchEventCall(rankMatchCmd.remote.useNbomb.route, data);
                 this.stopMatch();
@@ -215,8 +232,6 @@ class MatchPlayer extends FishPlayer {
                         };
                     }
                 }
-
-                logger.error('match pk info==', data);
                 this.matchEventCall(rankMatchCmd.remote.fightInfo.route, data);
             }
         }.bind(this));
@@ -272,6 +287,7 @@ class MatchPlayer extends FishPlayer {
             return {resp: {rmatch: true}};
         } else {
             if (this._cost.checkRmatchWithCost(this._account, this._rmHelper.nbombCost) > 0) {
+                logger.error('--非法调用', this._rmHelper.nbombCost)
                 return {err: FishCode.INVALID_SKILL};
             }
         }
@@ -290,6 +306,8 @@ class MatchPlayer extends FishPlayer {
                 this._rmHelper.nbFlag(true);
             } else {
                 this._rmHelper.nbFlag(false);
+        
+                logger.error('sdfsd----取消核弹', nbCost)
             }
         }
         return ret;

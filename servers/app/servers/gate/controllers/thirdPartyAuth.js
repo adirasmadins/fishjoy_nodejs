@@ -4,7 +4,7 @@ const versionsUtil = require('../../../utils/imports').versionsUtil;
 const logger = require('omelo-logger').getLogger('gate', __filename);
 const logicResponse = require('../../common/logicResponse');
 const RedisUtil = require('../../../utils/tools/RedisUtil');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 
 class ThirdPartyAuth {
     async login(data) {

@@ -1,6 +1,6 @@
 const SQL_CONFIG = require('../../configs/sql');
 const tools = require('../../../../utils/tools');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 
 const STATUS = {
     0: "待确认",

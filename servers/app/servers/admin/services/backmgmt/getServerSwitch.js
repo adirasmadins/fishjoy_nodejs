@@ -1,5 +1,5 @@
 const ServerSwitch = require('../../configs/consts/ServerSwitch');
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 const ERROR_OBJ = require('../../../../consts/fish_error').ERROR_OBJ;
 
 /**

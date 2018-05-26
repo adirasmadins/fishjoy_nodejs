@@ -1,5 +1,5 @@
 const Task = require('../../../utils/task/task');
-const REDISKEY = require('../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../models/index').REDISKEY;
 const redisAccountSync = require('../../../utils/redisAccountSync');
 const DESIGN_CFG = require('../../../utils/imports').DESIGN_CFG;
 const EXPORT_TOOLS = require('../../../utils/account/RewardModel').EXPORT_TOOLS;

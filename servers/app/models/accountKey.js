@@ -148,4 +148,17 @@ module.exports = {
     "SOCIAL_DAILY_INVITE_REWARD": "social_daily_invite_reward",
     "FREE_BOMB": "free_bomb",
     "PRIVACY": "privacy",
+
+    //竞技场新增
+    "ARENA_CREATED_AT": "arena_created_at",
+    "ARENA_INVITER": "arena_inviter",
+    "ARENA_INVITEE": "arena_invitee",
+    "ARENA_STATE": "arena_state",
+    "ARENA_PKINFO": "arena_pkInfo",
+    "ARENA_WIN": "arena_win",
+    "ARENA_FAIL": "arena_fail",
+    "ARENA_STAR": "arena_star",
+    "ARENA_BOX_STATE": "arena_box_state",
+    "ARENA_MATCHID": "arena_matchid",
+    "ARENA_MATCHID_LIST": "arena_matchid_list",
 };

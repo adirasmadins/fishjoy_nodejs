@@ -256,7 +256,7 @@ function _getFriendsCharts(data, cb) {
     }
 
     // 获取PAIR.OPENID_UID中所有玩家的uid.
-    RedisUtil.hmget(redisKeys.OPENID_UID, fopenids, function (err, uid_list) {
+    RedisUtil.hmget(redisKeys.MAP_OPENID_UID, fopenids, function (err, uid_list) {
         if (err) return cb && cb(err);
 
         let list = [];

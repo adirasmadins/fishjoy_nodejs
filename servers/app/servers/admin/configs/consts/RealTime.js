@@ -1,4 +1,4 @@
-const REDISKEY = require('../../../../database/consts').REDISKEY;
+const REDISKEY = require('../../../../models/index').REDISKEY;
 
 module.exports = {
     DATA_MAP: {
