@@ -137,7 +137,7 @@ git config --global core.autocrlf false
 - zip -r node_modules_prod.zip node_modules/
 
 // git submodule 参考:https://blog.csdn.net/wwj_748/article/details/73991862
-- git submodule add https://github.com/linyngfly/fishjoy_design_config.git ./servers/config/design_cfg
+- git submodule add https://github.com/linyngfly/fishjoy_design_config.git design_cfg
 - git add .getmodules design_cfg
 - git commit -m "add design_cfg submodule."
 - git submodule init
